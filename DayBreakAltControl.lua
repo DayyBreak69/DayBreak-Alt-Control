@@ -2612,7 +2612,7 @@ Commands.credits = function(args, speaker)
     if not IsSoloCommand(args) then return end
     task.spawn(function()
         task.wait((SafeIndex()-1)*0.5)
-        ChatSend("🔥 DayBreak ALT Control | Designed by xhy_perion 🔥")
+        ChatSend("🔥 DayBreak ALT Control | Designed by DayBreak 🔥")
     end)
 end
 
@@ -4732,7 +4732,7 @@ do
 end
 
 -- ═══════════════════════════════════════════════════════════
---  HYPERION CLEANUP ENGINE (merged)
+--  DAYBREAK CLEANUP ENGINE (merged)
 --  Strips visual bloat on alt clients for max performance
 --  Keeps: HumanoidRootPart, Humanoid, Head, floors, chat, audio
 -- ═══════════════════════════════════════════════════════════
@@ -4979,7 +4979,7 @@ local function OptimizeAndOverlay()
     InfoLabel.TextYAlignment = Enum.TextYAlignment.Center
     
     InfoLabel.Text = string.format(
-        "ALT Control | Designed by xhy_perion\n" ..
+        "ALT Control | Designed by DayBreak\n" ..
         "Join Discord: https://discord.gg/kfxRmYzp3t\n\n" ..
         "USER: %s\n" ..
         "BOT POSITION: %02d",
@@ -5038,4 +5038,4 @@ if isAltAccount and shouldMusicExecute() then
     end)
 end
 
-print("DayBreak ALT Control | By @xhy_perion")
+print("DayBreak ALT Control | By @DayBreak")
