@@ -2335,6 +2335,264 @@ end
 Commands.flush = Commands.cleanram
 Commands.ramclean = Commands.cleanram
 
+-- ═══════════════════════════════════════════════════════════
+--  FUNNY, VIRAL & MEME COMMANDS
+-- ═══════════════════════════════════════════════════════════
+
+-- 1. Secret Service Bodyguards
+Commands.bodyguard = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Bodyguard"
+    local idx, total = SafeIndex(), SafeTotal()
+    local angle = ((idx - 1) / total) * math.pi * 2
+    local dist = math.max(4, total * 0.8)
+    local lastWarning = 0
+    task.spawn(function()
+        while _G.CurrentCommand == "Bodyguard" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if tHRP and mHRP and mHum then
+                if mHum.Sit then mHum.Sit = false end
+                local offset = Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
+                local goalPos = tHRP.Position + offset
+                mHRP.CFrame = CFrame.new(goalPos, goalPos + offset)
+                mHRP.Velocity = Vector3.zero
+                
+                local now = os.clock()
+                if (now - lastWarning) > 5 then
+                    for _, stranger in ipairs(Players:GetPlayers()) do
+                        if stranger ~= target and stranger ~= LocalPlayer and not IsWhitelisted(stranger.Name) then
+                            local sChar = stranger.Character
+                            local sHRP = sChar and sChar:FindFirstChild("HumanoidRootPart")
+                            if sHRP and (sHRP.Position - tHRP.Position).Magnitude < 7 then
+                                lastWarning = now
+                                if idx == 1 then
+                                    ChatSend("Sir " .. stranger.DisplayName .. ", please step away from the VIP. 🛑")
+                                end
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+-- 2. The Ritual (Cult chant)
+Commands.ritual = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Ritual"
+    local idx, total = SafeIndex(), SafeTotal()
+    local angle = ((idx - 1) / total) * math.pi * 2
+    local dist = math.max(5, total * 0.9)
+    task.spawn(function()
+        while _G.CurrentCommand == "Ritual" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if tHRP and mHRP and mHum then
+                mHum.Sit = true
+                local goalPos = tHRP.Position + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
+                mHRP.CFrame = CFrame.new(goalPos, tHRP.Position)
+                mHRP.Velocity = Vector3.zero
+            end
+            task.wait(0.1)
+        end
+    end)
+    task.spawn(function()
+        local chants = {
+            "🔥 THE RITUAL COMMENCES 🔥",
+            "HE WHO IS CHOSEN 🕯️",
+            "ACCEPT OUR SACRIFICE 👁️",
+            "ALL HAIL THE SUN ☀️",
+            "AMEN 🙏"
+        }
+        task.wait(0.5 + (idx * 0.4))
+        if _G.CurrentCommand == "Ritual" then
+            local myChant = chants[((idx - 1) % #chants) + 1]
+            ChatSend(myChant)
+        end
+    end)
+end
+
+-- 3. Paparazzi (Celebrity Mob)
+Commands.paparazzi = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Paparazzi"
+    local idx, total = SafeIndex(), SafeTotal()
+    local quotes = {
+        "📸 OVER HERE PLEASE!",
+        "📸 LOOK AT THE CAMERA!",
+        "📸 ARE THE RUMORS TRUE?!",
+        "📸 WHO ARE YOU DATING?!",
+        "📸 JUST ONE PHOTO FOR VOGUE!",
+        "📸 SMILE FOR THE FLASH!"
+    }
+    task.spawn(function()
+        local nextFlash = os.clock() + (idx * 1.2)
+        while _G.CurrentCommand == "Paparazzi" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if tHRP and mHRP and mHum then
+                if mHum.Sit then mHum.Sit = false end
+                local angle = tick() * 2 + ((idx / total) * math.pi * 2)
+                local dist = 4 + math.sin(tick() * 3 + idx) * 1.5
+                local goal = tHRP.Position + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
+                mHRP.CFrame = CFrame.new(goal, tHRP.Position)
+                if math.random(1, 15) == 1 then mHum.Jump = true end
+                
+                if os.clock() >= nextFlash then
+                    nextFlash = os.clock() + math.random(4, 7)
+                    ChatSend(quotes[((idx - 1 + math.random(1, 3)) % #quotes) + 1])
+                end
+            end
+            task.wait(0.08)
+        end
+    end)
+end
+
+-- 4. Coffin Dance (Astronomia meme)
+Commands.coffin = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Coffin"
+    local idx = SafeIndex()
+    local slot = ((idx - 1) % 4) + 1
+    local offsets = {
+        Vector3.new(-3, 0, -4),
+        Vector3.new(3, 0, -4),
+        Vector3.new(-3, 0, 4),
+        Vector3.new(3, 0, 4),
+    }
+    if idx == 1 then
+        task.spawn(function()
+            task.wait(0.3)
+            ChatSend("⚰️ 🎵 (Astronomia Intensifies) 🎵 ⚰️")
+        end)
+    end
+    task.spawn(function()
+        local t0 = tick()
+        while _G.CurrentCommand == "Coffin" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if tHRP and mHRP then
+                local el = tick() - t0
+                local swayX = math.sin(el * 5) * 1.2
+                local hopY = math.abs(math.sin(el * 10)) * 0.8
+                local baseOffset = offsets[slot]
+                local currentOffset = Vector3.new(baseOffset.X + swayX, baseOffset.Y + hopY, baseOffset.Z)
+                mHRP.CFrame = (tHRP.CFrame * CFrame.new(currentOffset)) * CFrame.Angles(0, 0, math.sin(el * 5) * 0.15)
+                mHRP.Velocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+-- 5. Conga / Train Line
+Commands.conga = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Conga"
+    local idx = SafeIndex()
+    task.spawn(function()
+        while _G.CurrentCommand == "Conga" and target and target.Character do
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if mHRP and mHum then
+                if mHum.Sit then mHum.Sit = false end
+                local leaderHRP = nil
+                if idx == 1 then
+                    leaderHRP = target.Character:FindFirstChild("HumanoidRootPart")
+                else
+                    local online = GetOnlineBotNames()
+                    local prevName = online[idx - 1]
+                    local prevPlayer = prevName and Players:FindFirstChild(prevName)
+                    leaderHRP = prevPlayer and prevPlayer.Character and prevPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if not leaderHRP then
+                        leaderHRP = target.Character:FindFirstChild("HumanoidRootPart")
+                    end
+                end
+                
+                if leaderHRP then
+                    local dist = (mHRP.Position - leaderHRP.Position).Magnitude
+                    local targetPos = (leaderHRP.CFrame * CFrame.new(0, 0, 3.5)).Position
+                    if dist > 35 then
+                        mHRP.CFrame = CFrame.new(targetPos, leaderHRP.Position)
+                    else
+                        mHum:MoveTo(targetPos)
+                    end
+                    if math.sin(tick() * 4 + (idx * 0.5)) > 0.85 then
+                        mHum.Jump = true
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+Commands.train = Commands.conga
+
+-- 6. The Creepy Stare
+Commands.stare = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Stare"
+    task.spawn(function()
+        while _G.CurrentCommand == "Stare" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if tHRP and mHRP and mHum then
+                mHum.WalkSpeed = 0
+                mHRP.CFrame = CFrame.new(mHRP.Position, Vector3.new(tHRP.Position.X, mHRP.Position.Y, tHRP.Position.Z))
+                mHRP.Velocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+-- 7. Supersonic Tornado Blender
+Commands.tornado = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Tornado"
+    local idx, total = SafeIndex(), SafeTotal()
+    task.spawn(function()
+        local t0 = tick()
+        while _G.CurrentCommand == "Tornado" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if tHRP and mHRP then
+                local el = tick() - t0
+                local spinSpeed = 12
+                local angle = (el * spinSpeed) + ((idx / total) * math.pi * 2)
+                local heightOffset = ((idx - 1) / total) * 12 - 3
+                local radius = 3 + (heightOffset * 0.4)
+                local pos = tHRP.Position + Vector3.new(math.cos(angle) * radius, heightOffset, math.sin(angle) * radius)
+                mHRP.CFrame = CFrame.new(pos, pos + Vector3.new(-math.sin(angle), 0, math.cos(angle))) * CFrame.Angles(0, el * 20, 0)
+                mHRP.Velocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
 
 -- ═══════════════════════════════════════════════════════════
 --  CARPET / FLOOR / BRIDGE
