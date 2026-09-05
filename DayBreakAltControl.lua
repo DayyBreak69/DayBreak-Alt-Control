@@ -2461,26 +2461,21 @@ Commands.paparazzi = function(args, speaker)
     end)
 end
 
--- 4. Coffin Dance (Astronomia meme)
+-- 4. Coffin Dance (Astronomia meme - Scales with any number of bots)
 Commands.coffin = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Coffin"
-    local idx = SafeIndex()
-    local slot = ((idx - 1) % 4) + 1
-    local offsets = {
-        Vector3.new(-3, 0, -4),
-        Vector3.new(3, 0, -4),
-        Vector3.new(-3, 0, 4),
-        Vector3.new(3, 0, 4),
-    }
+    local idx, total = SafeIndex(), SafeTotal()
+    
     if idx == 1 then
         task.spawn(function()
             task.wait(0.3)
             ChatSend("⚰️ 🎵 (Astronomia Intensifies) 🎵 ⚰️")
         end)
     end
+    
     task.spawn(function()
         local t0 = tick()
         while _G.CurrentCommand == "Coffin" and target and target.Character do
@@ -2490,7 +2485,26 @@ Commands.coffin = function(args, speaker)
                 local el = tick() - t0
                 local swayX = math.sin(el * 5) * 1.2
                 local hopY = math.abs(math.sin(el * 10)) * 0.8
-                local baseOffset = offsets[slot]
+                
+                local baseOffset
+                if idx <= 4 then
+                    -- 4 core coffin carriers around target
+                    local coreOffsets = {
+                        Vector3.new(-3, 0, -3.5), -- Front-Left
+                        Vector3.new(3, 0, -3.5),  -- Front-Right
+                        Vector3.new(-3, 0, 3.5),   -- Back-Left
+                        Vector3.new(3, 0, 3.5),    -- Back-Right
+                    }
+                    baseOffset = coreOffsets[idx]
+                else
+                    -- Bots 5+ march in pairs of 2 behind the coffin!
+                    local extraIndex = idx - 5
+                    local row = math.floor(extraIndex / 2) + 1
+                    local sideX = (extraIndex % 2 == 0) and -2.5 or 2.5
+                    local rowZ = 5.5 + (row * 3.5)
+                    baseOffset = Vector3.new(sideX, 0, rowZ)
+                end
+                
                 local currentOffset = Vector3.new(baseOffset.X + swayX, baseOffset.Y + hopY, baseOffset.Z)
                 mHRP.CFrame = (tHRP.CFrame * CFrame.new(currentOffset)) * CFrame.Angles(0, 0, math.sin(el * 5) * 0.15)
                 mHRP.Velocity = Vector3.zero
@@ -2500,7 +2514,7 @@ Commands.coffin = function(args, speaker)
     end)
 end
 
--- 5. Conga / Train Line
+-- 5. Conga / Train Line (Scales smoothly with any bot count, zero clipping)
 Commands.conga = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
@@ -2509,37 +2523,31 @@ Commands.conga = function(args, speaker)
     local idx = SafeIndex()
     task.spawn(function()
         while _G.CurrentCommand == "Conga" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
             local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
             local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
-            if mHRP and mHum then
+            if tHRP and mHRP and mHum then
                 if mHum.Sit then mHum.Sit = false end
-                local leaderHRP = nil
-                if idx == 1 then
-                    leaderHRP = target.Character:FindFirstChild("HumanoidRootPart")
+                -- Each bot is spaced strictly 3.5 studs behind the one in front of it
+                local trainOffset = idx * 3.5
+                -- Conga side-to-side dance wave:
+                local waveSway = math.sin(tick() * 6 - (idx * 0.8)) * 1.5
+                local goalPos = (tHRP.CFrame * CFrame.new(waveSway, 0, trainOffset)).Position
+                local dist = (mHRP.Position - goalPos).Magnitude
+                
+                if dist > 40 then
+                    mHRP.CFrame = CFrame.new(goalPos, tHRP.Position)
+                    mHRP.Velocity = Vector3.zero
                 else
-                    local online = GetOnlineBotNames()
-                    local prevName = online[idx - 1]
-                    local prevPlayer = prevName and Players:FindFirstChild(prevName)
-                    leaderHRP = prevPlayer and prevPlayer.Character and prevPlayer.Character:FindFirstChild("HumanoidRootPart")
-                    if not leaderHRP then
-                        leaderHRP = target.Character:FindFirstChild("HumanoidRootPart")
-                    end
+                    mHum:MoveTo(goalPos)
                 end
                 
-                if leaderHRP then
-                    local dist = (mHRP.Position - leaderHRP.Position).Magnitude
-                    local targetPos = (leaderHRP.CFrame * CFrame.new(0, 0, 3.5)).Position
-                    if dist > 35 then
-                        mHRP.CFrame = CFrame.new(targetPos, leaderHRP.Position)
-                    else
-                        mHum:MoveTo(targetPos)
-                    end
-                    if math.sin(tick() * 4 + (idx * 0.5)) > 0.85 then
-                        mHum.Jump = true
-                    end
+                -- Synchronized hopping ripple down the train
+                if math.sin(tick() * 6 - (idx * 0.8)) > 0.7 then
+                    mHum.Jump = true
                 end
             end
-            task.wait(0.1)
+            task.wait(0.08)
         end
     end)
 end
