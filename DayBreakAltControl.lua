@@ -13,7 +13,8 @@
   >> STATUS: Active & Undetected
   -------------------------------------------------------------------
 --]]
-\n----------------------------------------------------------------
+
+----------------------------------------------------------------
 -- 1. CONFIGURATION
 -- Seamlessly preserves user settings provided before loadstring!
 ----------------------------------------------------------------
@@ -73,7 +74,8 @@ if _G.DayBreakCleanup then
     pcall(_G.DayBreakCleanup)
     task.wait(0.3)
 end
-_G.DayBreakActive     = true\n_G.DayBreakCurrentRun = tick()
+_G.DayBreakActive     = true
+_G.DayBreakCurrentRun = tick()
 _G.DayBreakVersion    = "3.1"
 _G.DayBreakConnections = {}
 
