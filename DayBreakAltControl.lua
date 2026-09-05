@@ -1133,7 +1133,7 @@ end
 
 -- FOLLOW: walk normally, face AWAY from target only when stopped
 Commands.follow = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Follow"
@@ -1187,7 +1187,7 @@ end
 
 -- WALKTO: face TOWARD target when stopped
 Commands.walkto = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "WalkTo"
@@ -1290,7 +1290,7 @@ end
 --  WORM
 -- ═══════════════════════════════════════════════════════════
 Commands.worm = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker); if not target then return end
     _G.CurrentCommand = "Worm"; local idx = SafeIndex()
     task.spawn(function()
@@ -1322,7 +1322,7 @@ end
 --  STALK
 -- ═══════════════════════════════════════════════════════════
 Commands.stalk = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Stalk"
@@ -1672,7 +1672,7 @@ end
 Commands.swarm = function(args, speaker)
     local speed, range, target = ParseSpeedRangeTarget(args, speaker, 40, 18)
     if not target or not target.Character then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "Swarm"
+    StopAll(); _G.CurrentCommand = "Swarm"
     _G.NoclipEnabled = true; _G.NoclipOriginals = {}
     local char = LocalPlayer.Character
     if char then for _, p in ipairs(char:GetDescendants()) do
@@ -1727,7 +1727,7 @@ local sin, cos, abs, sqrt, rad = math.sin, math.cos, math.abs, math.sqrt, math.r
 local function RunOrbitCurve(args, speaker, curveFn, tag)
     local speed, range, target = ParseSpeedRangeTarget(args, speaker, 4, 10)
     if not target or not target.Character then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = tag or "Orbit"
+    StopAll(); _G.CurrentCommand = tag or "Orbit"
     task.spawn(function()
         local idx, total = SafeIndex(), SafeTotal()
         local startT = tick()
@@ -2155,7 +2155,7 @@ for i = 1, 20 do Commands["spiral"..i] = function(a, s) RunOrbitCurve(a, s, Spir
 Commands.helicopter = function(args, speaker)
     local speed, target = ParseSpeedTarget(args, speaker, 18)
     if not target or not target.Character then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "Helicopter"
+    StopAll(); _G.CurrentCommand = "Helicopter"
     task.spawn(function()
         local idx, total = SafeIndex(), SafeTotal()
         -- Fixed angular offset for THIS bot
@@ -2199,7 +2199,7 @@ Commands.exit = Commands.quit; Commands.leave = Commands.quit
 --  SHIELD 1-5
 -- ═══════════════════════════════════════════════════════════
 local function DoShield(args, speaker, sn)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Shield"
@@ -2234,7 +2234,7 @@ for i = 1, 5 do Commands["shield"..i] = function(a,s) DoShield(a,s,i) end end
 Commands.ping = function(args, speaker)
     if not IsSoloCommand(args) then return end
     task.spawn(function()
-        task.wait(SafeIndex() * 0.3)
+        task.wait((SafeIndex() - 1) * 0.05)
         ChatSend("[" .. LocalPlayer.Name .. "] Ping: " .. math.round(LocalPlayer:GetNetworkPing()*1000) .. "ms")
     end)
 end
@@ -2245,7 +2245,7 @@ Commands.memory = function(args, speaker)
     if _G.MemoryLock then return end; _G.MemoryLock = true
     task.spawn(function()
         pcall(function()
-            task.wait(SafeIndex() * 0.7)
+            task.wait((SafeIndex() - 1) * 0.05)
             ChatSend("[" .. LocalPlayer.Name .. "] RAM: " .. math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb()) .. " MB")
         end)
         task.wait(2); _G.MemoryLock = nil
@@ -2322,12 +2322,11 @@ Commands.cleanram = function(args, speaker)
     task.spawn(function()
         local before = math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb())
         collectgarbage("collect")
-        task.wait(0.1)
+        task.wait(0.05)
         collectgarbage("collect")
-        task.wait(0.2)
         local after = math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb())
         local freed = before - after
-        task.wait(SafeIndex() * 0.5)
+        task.wait((SafeIndex() - 1) * 0.05)
         local sign = freed >= 0 and "-" or "+"
         ChatSend("[" .. LocalPlayer.Name .. "] RAM: " .. before .. "MB -> " .. after .. "MB (" .. sign .. math.abs(freed) .. "MB)")
     end)
@@ -2341,7 +2340,7 @@ Commands.ramclean = Commands.cleanram
 
 -- 1. Secret Service Bodyguards
 Commands.bodyguard = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Bodyguard"
@@ -2393,7 +2392,7 @@ end
 
 -- 2. The Ritual (Cult chant)
 Commands.ritual = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Ritual"
@@ -2411,7 +2410,7 @@ Commands.ritual = function(args, speaker)
                 mHRP.CFrame = CFrame.new(goalPos, tHRP.Position)
                 mHRP.Velocity = Vector3.zero
             end
-            task.wait(0.1)
+            RunService.Heartbeat:Wait()
         end
     end)
     task.spawn(function()
@@ -2422,7 +2421,7 @@ Commands.ritual = function(args, speaker)
             "ALL HAIL THE SUN ☀️",
             "AMEN 🙏"
         }
-        task.wait(0.5 + (idx * 0.4))
+        task.wait((idx - 1) * 0.1)
         if _G.CurrentCommand == "Ritual" then
             local myChant = chants[((idx - 1) % #chants) + 1]
             ChatSend(myChant)
@@ -2432,7 +2431,7 @@ end
 
 -- 3. Paparazzi (Celebrity Mob)
 Commands.paparazzi = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Paparazzi"
@@ -2446,7 +2445,7 @@ Commands.paparazzi = function(args, speaker)
         "📸 SMILE FOR THE FLASH!"
     }
     task.spawn(function()
-        local nextFlash = os.clock() + (idx * 1.2)
+        local nextFlash = os.clock() + (idx * 0.8)
         while _G.CurrentCommand == "Paparazzi" and target and target.Character do
             local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
             local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -2464,14 +2463,14 @@ Commands.paparazzi = function(args, speaker)
                     ChatSend(quotes[((idx - 1 + math.random(1, 3)) % #quotes) + 1])
                 end
             end
-            task.wait(0.08)
+            RunService.Heartbeat:Wait()
         end
     end)
 end
 
 -- 4. Coffin Dance (Astronomia meme - Scales with any number of bots)
 Commands.coffin = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Coffin"
@@ -2479,7 +2478,6 @@ Commands.coffin = function(args, speaker)
     
     if idx == 1 then
         task.spawn(function()
-            task.wait(0.3)
             ChatSend("⚰️ 🎵 (Astronomia Intensifies) 🎵 ⚰️")
         end)
     end
@@ -2496,16 +2494,14 @@ Commands.coffin = function(args, speaker)
                 
                 local baseOffset
                 if idx <= 4 then
-                    -- 4 core coffin carriers around target
                     local coreOffsets = {
-                        Vector3.new(-3, 0, -3.5), -- Front-Left
-                        Vector3.new(3, 0, -3.5),  -- Front-Right
-                        Vector3.new(-3, 0, 3.5),   -- Back-Left
-                        Vector3.new(3, 0, 3.5),    -- Back-Right
+                        Vector3.new(-3, 0, -3.5),
+                        Vector3.new(3, 0, -3.5),
+                        Vector3.new(-3, 0, 3.5),
+                        Vector3.new(3, 0, 3.5),
                     }
                     baseOffset = coreOffsets[idx]
                 else
-                    -- Bots 5+ march in pairs of 2 behind the coffin!
                     local extraIndex = idx - 5
                     local row = math.floor(extraIndex / 2) + 1
                     local sideX = (extraIndex % 2 == 0) and -2.5 or 2.5
@@ -2524,7 +2520,7 @@ end
 
 -- 5. Conga / Train Line (Scales smoothly with any bot count, zero clipping)
 Commands.conga = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Conga"
@@ -2536,9 +2532,7 @@ Commands.conga = function(args, speaker)
             local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
             if tHRP and mHRP and mHum then
                 if mHum.Sit then mHum.Sit = false end
-                -- Each bot is spaced strictly 3.5 studs behind the one in front of it
                 local trainOffset = idx * 3.5
-                -- Conga side-to-side dance wave:
                 local waveSway = math.sin(tick() * 6 - (idx * 0.8)) * 1.5
                 local goalPos = (tHRP.CFrame * CFrame.new(waveSway, 0, trainOffset)).Position
                 local dist = (mHRP.Position - goalPos).Magnitude
@@ -2550,12 +2544,11 @@ Commands.conga = function(args, speaker)
                     mHum:MoveTo(goalPos)
                 end
                 
-                -- Synchronized hopping ripple down the train
                 if math.sin(tick() * 6 - (idx * 0.8)) > 0.7 then
                     mHum.Jump = true
                 end
             end
-            task.wait(0.08)
+            RunService.Heartbeat:Wait()
         end
     end)
 end
@@ -2563,7 +2556,7 @@ Commands.train = Commands.conga
 
 -- 6. The Creepy Stare
 Commands.stare = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Stare"
@@ -2584,7 +2577,7 @@ end
 
 -- 7. Supersonic Tornado Blender
 Commands.tornado = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Tornado"
@@ -2614,7 +2607,7 @@ end
 --  CARPET / FLOOR / BRIDGE
 -- ═══════════════════════════════════════════════════════════
 Commands.carpet = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Carpet"
@@ -2645,7 +2638,7 @@ Commands.floor = Commands.carpet; Commands.bridge = Commands.carpet
 -- ═══════════════════════════════════════════════════════════
 Commands.spin = function(args, speaker)
     local spinSpd = tonumber(args[2]) or 20
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "Spin"
+    StopAll(); _G.CurrentCommand = "Spin"
     task.spawn(function()
         local rot = 0; local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
         if h then h.AutoRotate = false end
@@ -2664,7 +2657,7 @@ end
 --  VFLING / KILL
 -- ═══════════════════════════════════════════════════════════
 Commands.vfling = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
@@ -2697,7 +2690,7 @@ Commands.bang = function(args, speaker)
     local spd, target = ParseSpeedTarget(args, speaker, 1)
     if not target or not target.Character then return end
     local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "Bang"
+    StopAll(); _G.CurrentCommand = "Bang"
     task.spawn(function()
         local step, inc = 0, true; local stepInc = 0.45 * spd
         while _G.CurrentCommand == "Bang" and target and target.Character and tR.Parent do
@@ -2722,7 +2715,7 @@ Commands.fbang = function(args, speaker)
     local spd, target = ParseSpeedTarget(args, speaker, 1)
     if not target or not target.Character then return end
     local tHead = target.Character:FindFirstChild("Head"); if not tHead then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "FaceBang"
+    StopAll(); _G.CurrentCommand = "FaceBang"
     -- Disable AutoRotate to prevent the spin
     local myHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
     if myHum then myHum.AutoRotate = false end
@@ -2763,7 +2756,7 @@ local MIRROR_OFFS = {
 }
 for mc, off in pairs(MIRROR_OFFS) do
     Commands[mc] = function(args, speaker)
-        StopAll(); task.wait(0.1)
+        StopAll()
         local target = FindTarget(args[2], speaker)
         if not target or not target.Character then return end
         local tag = mc:upper(); _G.CurrentCommand = tag
@@ -2789,7 +2782,7 @@ end
 --  RIZZ — queue approach, walk close to target, say line
 -- ═══════════════════════════════════════════════════════════
 Commands.rizz = function(args, speaker)
-    StopAll(); task.wait(0.1)
+    StopAll()
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     _G.CurrentCommand = "Rizz"
@@ -2854,7 +2847,7 @@ end
 Commands.mbang = function(args, speaker)
     local spd, target = ParseSpeedTarget(args, speaker, 1)
     if not target or not target.Character then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "MultiBang"
+    StopAll(); _G.CurrentCommand = "MultiBang"
     task.spawn(function()
         local step, inc, oa = 0, true, 0; local stepInc = 0.45 * spd
         while _G.CurrentCommand == "MultiBang" and target and target.Character do
@@ -2940,7 +2933,7 @@ local function DoHS(args, speaker, hsNum)
     local target = FindTarget(args[2], speaker)
     if not target or not target.Character then return end
     local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "HS"
+    StopAll(); _G.CurrentCommand = "HS"
     task.spawn(function()
         local idx, total = SafeIndex(), SafeTotal()
         local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -2980,7 +2973,7 @@ for i = 1, 20 do Commands["hs"..i] = function(a, s) DoHS(a, s, i) end end
 Commands.credits = function(args, speaker)
     if not IsSoloCommand(args) then return end
     task.spawn(function()
-        task.wait((SafeIndex()-1)*0.5)
+        task.wait((SafeIndex() - 1) * 0.05)
         ChatSend("🔥 DayBreak ALT Control | Designed by DayBreak 🔥")
     end)
 end
@@ -3366,7 +3359,7 @@ end
 
 Commands.say = function(args, speaker)
     local m = table.concat(args, " ", 2)
-    if m ~= "" then task.spawn(function() task.wait((SafeIndex()-1)*0.15); ChatSend(m) end) end
+    if m ~= "" then task.spawn(function() task.wait((SafeIndex() - 1) * 0.05); ChatSend(m) end) end
 end
 Commands.chat = Commands.say
 
@@ -3780,7 +3773,7 @@ Commands.wave = function(args, speaker)
     if not IsSoloCommand(args) then return end
     StopAll(); _G.CurrentCommand = "Wave"; local idx = SafeIndex()
     task.spawn(function()
-        task.wait(idx * 0.3)
+        task.wait((idx - 1) * 0.08)
         local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
         if h and _G.CurrentCommand == "Wave" then h.Jump = true; task.wait(0.5); ChatSend("/e wave") end
     end)
