@@ -13,8 +13,7 @@
   >> STATUS: Active & Undetected
   -------------------------------------------------------------------
 --]]
-
-----------------------------------------------------------------
+\n----------------------------------------------------------------
 -- 1. CONFIGURATION
 -- Seamlessly preserves user settings provided before loadstring!
 ----------------------------------------------------------------
@@ -40,6 +39,9 @@ local defaultSettings = {
 
     -- ANNOUNCEMENTS
     announceOnLoad      = true,
+
+    -- LOW RAM & PERFORMANCE
+    lowRamMode          = false,
 
     -- VC BAN DETECTION
     vcbTimerSeconds     = 360,
@@ -71,7 +73,7 @@ if _G.DayBreakCleanup then
     pcall(_G.DayBreakCleanup)
     task.wait(0.3)
 end
-_G.DayBreakActive     = true
+_G.DayBreakActive     = true\n_G.DayBreakCurrentRun = tick()
 _G.DayBreakVersion    = "3.1"
 _G.DayBreakConnections = {}
 
@@ -210,7 +212,16 @@ end
 ----------------------------------------------------------------
 -- 5. CHAT DISPATCHER
 ----------------------------------------------------------------
+local _lastChatText = nil
+local _lastChatTime = 0
 local function ChatSend(text)
+    local now = os.clock()
+    -- Drop rapid duplicate messages sent within 0.4s
+    if text == _lastChatText and (now - _lastChatTime) < 0.4 then
+        return
+    end
+    _lastChatText = text
+    _lastChatTime = now
     pcall(function()
         if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
             local ch = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
@@ -2240,6 +2251,61 @@ Commands.memory = function(args, speaker)
 end
 Commands.ram = Commands.memory
 
+-- ═══════════════════════════════════════════════════════════
+--  ULTRA LOW RAM & RENDERING ENGINE
+-- ═══════════════════════════════════════════════════════════
+Commands.render = function(args, speaker)
+    local state = args[2] and tostring(args[2]):lower() or ""
+    local enabled = true
+    if state == "off" or state == "false" or state == "0" then
+        enabled = false
+    elseif state == "on" or state == "true" or state == "1" then
+        enabled = true
+    else
+        local ok, is3d = pcall(function() return RunService:Is3dRenderingEnabled() end)
+        if ok then enabled = not is3d else enabled = false end
+    end
+    pcall(function()
+        if RunService.Set3dRenderingEnabled then
+            RunService:Set3dRenderingEnabled(enabled)
+        end
+    end)
+    if SafeIndex() == 1 then
+        ChatSend("[DayBreak] 3D Rendering: " .. (enabled and "Enabled 👁️" or "Disabled (Ultra Low RAM) ⚡"))
+    end
+end
+
+Commands.lowram = function(args, speaker)
+    pcall(function()
+        if RunService.Set3dRenderingEnabled then
+            RunService:Set3dRenderingEnabled(false)
+        end
+        collectgarbage("collect")
+    end)
+    if SafeIndex() == 1 then
+        ChatSend("[DayBreak] Ultra Low RAM Active ⚡ (-250MB+ saved)")
+    end
+end
+Commands.unlowram = function(args, speaker)
+    Commands.render({args[1], "on"}, speaker)
+end
+
+Commands.cleanram = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    task.spawn(function()
+        local before = math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb())
+        collectgarbage("collect")
+        task.wait(0.2)
+        local after = math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb())
+        local freed = before - after
+        task.wait(SafeIndex() * 0.5)
+        local sign = freed > 0 and "-" or "+"
+        ChatSend("[" .. LocalPlayer.Name .. "] RAM Cleaned: " .. before .. "MB -> " .. after .. "MB (" .. sign .. math.abs(freed) .. "MB)")
+    end)
+end
+Commands.flush = Commands.cleanram
+Commands.ramclean = Commands.cleanram
+
 
 -- ═══════════════════════════════════════════════════════════
 --  CARPET / FLOOR / BRIDGE
@@ -3488,9 +3554,18 @@ end
 -- ═══════════════════════════════════════════════════════════
 --  14. CHAT LISTENER
 -- ═══════════════════════════════════════════════════════════
+local _lastPlayerMsg = {}
+local _lastPlayerTime = {}
 local function SetupChatListener(p)
     getgenv().TrackConnection(p.Chatted:Connect(function(msg)
+        local now = os.clock()
         local nl = p.Name:lower()
+        -- TextChatService duplicate event filter: ignores duplicate message from same speaker within 0.5s
+        if _lastPlayerMsg[nl] == msg and (now - (_lastPlayerTime[nl] or 0)) < 0.5 then
+            return
+        end
+        _lastPlayerMsg[nl] = msg
+        _lastPlayerTime[nl] = now
         local prefix = getgenv().Settings.prefix
         
         if IsWhitelisted(p.Name) then
@@ -4936,7 +5011,14 @@ end
 -- ═══════════════════════════════════════════════════════════
 local function OptimizeAndOverlay()
     pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
-    pcall(function() if setfpscap then setfpscap(10) end end)
+    pcall(function() if setfpscap then setfpscap(getgenv().Settings.fpsCap or 10) end end)
+    if getgenv().Settings.lowRamMode then
+        pcall(function()
+            if RunService.Set3dRenderingEnabled then
+                RunService:Set3dRenderingEnabled(false)
+            end
+        end)
+    end
 
     CleanLightingEffects()
     CleanTerrain()
@@ -4993,10 +5075,13 @@ if LocalPlayer.Name ~= getgenv().Settings.mainAccount then
     OptimizeAndOverlay()
     
     if getgenv().Settings.announceOnLoad then
+        local thisRun = _G.DayBreakCurrentRun
         task.spawn(function()
             local idx = SafeIndex() or 1
             task.wait(3.0 + (idx * 1.5))
-            ChatSend("🔥DayBreak Alt Control Loaded.🔥")
+            if _G.DayBreakActive and _G.DayBreakCurrentRun == thisRun then
+                ChatSend("🔥DayBreak Alt Control Loaded.🔥")
+            end
         end)
     end
 end
