@@ -671,6 +671,9 @@ local function StopAll()
         pcall(function() _G.StackPart:Destroy() end)
         _G.StackPart = nil
     end
+    if _G.ActiveLaserBeam then pcall(function() _G.ActiveLaserBeam:Destroy() end); _G.ActiveLaserBeam = nil end
+    if _G.ActiveLaserAtt0 then pcall(function() _G.ActiveLaserAtt0:Destroy() end); _G.ActiveLaserAtt0 = nil end
+    if _G.ActiveLaserAtt1 then pcall(function() _G.ActiveLaserAtt1:Destroy() end); _G.ActiveLaserAtt1 = nil end
 
     local myChar = LocalPlayer.Character
     local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
@@ -2601,6 +2604,74 @@ Commands.tornado = function(args, speaker)
         end
     end)
 end
+
+-- 8. Sci-Fi Laser Grid Target System
+Commands.laser = function(args, speaker)
+    StopAll()
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Laser"
+    
+    local mChar = LocalPlayer.Character
+    local tChar = target.Character
+    local mHRP = mChar and mChar:FindFirstChild("HumanoidRootPart")
+    local tHRP = tChar and tChar:FindFirstChild("HumanoidRootPart")
+    if not mHRP or not tHRP then return end
+
+    if _G.ActiveLaserBeam then pcall(function() _G.ActiveLaserBeam:Destroy() end); _G.ActiveLaserBeam = nil end
+    if _G.ActiveLaserAtt0 then pcall(function() _G.ActiveLaserAtt0:Destroy() end); _G.ActiveLaserAtt0 = nil end
+    if _G.ActiveLaserAtt1 then pcall(function() _G.ActiveLaserAtt1:Destroy() end); _G.ActiveLaserAtt1 = nil end
+
+    local att0 = Instance.new("Attachment")
+    att0.Name = "DayBreakLaserAtt0"
+    att0.Parent = mHRP
+    _G.ActiveLaserAtt0 = att0
+
+    local att1 = Instance.new("Attachment")
+    att1.Name = "DayBreakLaserAtt1"
+    att1.Parent = tHRP
+    _G.ActiveLaserAtt1 = att1
+
+    local beam = Instance.new("Beam")
+    beam.Name = "DayBreakLaserBeam"
+    beam.Attachment0 = att0
+    beam.Attachment1 = att1
+    beam.Color = ColorSequence.new(Color3.fromRGB(255, 35, 35))
+    beam.Width0 = 0.45
+    beam.Width1 = 0.45
+    beam.Texture = "rbxassetid://10842065842"
+    beam.TextureMode = Enum.TextureMode.Wrap
+    beam.TextureSpeed = 3
+    beam.LightEmission = 1
+    beam.LightInfluence = 0
+    beam.FaceCamera = true
+    beam.Parent = mHRP
+    _G.ActiveLaserBeam = beam
+
+    if SafeIndex() == 1 then
+        ChatSend("[DayBreak] ⚡ Laser Grid Locked: " .. target.DisplayName)
+    end
+
+    task.spawn(function()
+        while _G.CurrentCommand == "Laser" and target and target.Character and _G.ActiveLaserBeam do
+            RunService.Heartbeat:Wait()
+        end
+        if _G.ActiveLaserBeam then pcall(function() _G.ActiveLaserBeam:Destroy() end); _G.ActiveLaserBeam = nil end
+        if _G.ActiveLaserAtt0 then pcall(function() _G.ActiveLaserAtt0:Destroy() end); _G.ActiveLaserAtt0 = nil end
+        if _G.ActiveLaserAtt1 then pcall(function() _G.ActiveLaserAtt1:Destroy() end); _G.ActiveLaserAtt1 = nil end
+    end)
+end
+
+Commands.unlaser = function(args, speaker)
+    if _G.ActiveLaserBeam then pcall(function() _G.ActiveLaserBeam:Destroy() end); _G.ActiveLaserBeam = nil end
+    if _G.ActiveLaserAtt0 then pcall(function() _G.ActiveLaserAtt0:Destroy() end); _G.ActiveLaserAtt0 = nil end
+    if _G.ActiveLaserAtt1 then pcall(function() _G.ActiveLaserAtt1:Destroy() end); _G.ActiveLaserAtt1 = nil end
+    if _G.CurrentCommand == "Laser" then _G.CurrentCommand = "None" end
+    if SafeIndex() == 1 then
+        ChatSend("[DayBreak] ⚡ Laser Grid Disengaged")
+    end
+end
+Commands.clearlaser = Commands.unlaser
 
 
 -- ═══════════════════════════════════════════════════════════
