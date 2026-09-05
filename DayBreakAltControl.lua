@@ -1400,18 +1400,35 @@ end
 -- ═══════════════════════════════════════════════════════════
 --  EMOTE SYSTEM (Dynamic Catalog)
 -- ═══════════════════════════════════════════════════════════
-if not _G.DayBreakEmoteCatalog then
-    task.spawn(function()
-        pcall(function()
-            local HTTP = game:GetService("HttpService")
-            local raw = game:HttpGet("https://raw.githubusercontent.com/DayBreakBackend/DayBreakScripts/refs/heads/main/EmoteIDs.lua")
-            local result = HTTP:JSONDecode(raw)
-            if result and (result.data or type(result) == "table") then
-                _G.DayBreakEmoteCatalog = result.data or result
-            end
-        end)
+local defaultEmotes = {
+    {name = "floss", id = 10714340553},
+    {name = "flossing", id = 10714340553},
+    {name = "stadium", id = 3337966527},
+    {name = "tilt", id = 3337978748},
+    {name = "shrug", id = 3337969827},
+    {name = "point", id = 3337994105},
+    {name = "hello", id = 3337971777},
+    {name = "wave", id = 3337971777},
+    {name = "dab", id = 3337976867},
+    {name = "applaud", id = 3337968406},
+    {name = "cheer", id = 3337968406},
+    {name = "laugh", id = 3337974418},
+    {name = "salute", id = 3360689775},
+}
+
+_G.DayBreakEmoteCatalog = _G.DayBreakEmoteCatalog or defaultEmotes
+
+task.spawn(function()
+    pcall(function()
+        local HTTP = game:GetService("HttpService")
+        local raw = game:HttpGet("https://raw.githubusercontent.com/HyperionBackend/HyperionScripts/refs/heads/main/EmoteIDs.lua")
+        local result = HTTP:JSONDecode(raw)
+        local fetched = result and (result.data or (type(result) == "table" and result))
+        if fetched and type(fetched) == "table" and #fetched > 0 then
+            _G.DayBreakEmoteCatalog = fetched
+        end
     end)
-end
+end)
 
 local function isDancing(character, animIdStr)
     local animate = character:FindFirstChild("Animate")
@@ -1488,34 +1505,84 @@ Commands.emote = function(args, speaker)
             track:Play()
             return
         end
-        -- Universal UGC Catalog Asset & Animation ID Resolver
-        local resolvedAnimId = "rbxassetid://" .. tostring(targetId)
-        pcall(function()
-            local objects = game:GetObjects("rbxassetid://" .. tostring(targetId))
-            if objects and #objects > 0 then
-                for _, obj in ipairs(objects) do
-                    if obj:IsA("Animation") then
-                        resolvedAnimId = obj.AnimationId
-                        break
-                    else
-                        local innerAnim = obj:FindFirstChildWhichIsA("Animation", true)
+        -- 5-Method Bulletproof Universal UGC & Catalog Emote Engine
+        local played = false
+
+        -- Method 1: Native Roblox R15 PlayEmote API
+        local ok1, track1 = pcall(function() return hum:PlayEmoteAndGetAnimTrackById(targetId) end)
+        if ok1 and track1 and typeof(track1) == "Instance" and track1:IsA("AnimationTrack") then
+            _G.CurrentEmoteTrack = track1
+            track1.Priority = Enum.AnimationPriority.Action
+            track1:Play()
+            played = true
+        end
+
+        -- Method 2: Direct Animation Load (rbxassetid://ID)
+        if not played then
+            local animObj = Instance.new("Animation")
+            animObj.AnimationId = "rbxassetid://" .. tostring(targetId)
+            local ok2, track2 = pcall(function() return anim:LoadAnimation(animObj) end)
+            if ok2 and track2 then
+                _G.CurrentEmoteTrack = track2
+                track2.Priority = Enum.AnimationPriority.Action
+                track2.Looped = true
+                track2:Play()
+                played = true
+            end
+        end
+
+        -- Method 3: game:GetObjects (Extract internal Animation object from UGC Catalog Model)
+        if not played then
+            pcall(function()
+                local objects = game:GetObjects("rbxassetid://" .. tostring(targetId))
+                if objects and #objects > 0 then
+                    for _, obj in ipairs(objects) do
+                        local innerAnim = obj:IsA("Animation") and obj or obj:FindFirstChildWhichIsA("Animation", true)
                         if innerAnim then
-                            resolvedAnimId = innerAnim.AnimationId
-                            break
+                            local ok3, track3 = pcall(function() return anim:LoadAnimation(innerAnim) end)
+                            if ok3 and track3 then
+                                _G.CurrentEmoteTrack = track3
+                                track3.Priority = Enum.AnimationPriority.Action
+                                track3.Looped = true
+                                track3:Play()
+                                played = true
+                                break
+                            end
                         end
                     end
                 end
-            end
-        end)
+            end)
+        end
 
-        local obj = Instance.new("Animation")
-        obj.AnimationId = resolvedAnimId
-        local ok2, tr = pcall(function() return anim:LoadAnimation(obj) end)
-        if ok2 and tr then
-            _G.CurrentEmoteTrack = tr
-            tr.Priority = Enum.AnimationPriority.Action
-            tr.Looped = true
-            tr:Play()
+        -- Method 4: InsertService LoadAsset
+        if not played then
+            pcall(function()
+                local model = game:GetService("InsertService"):LoadAsset(targetId)
+                if model then
+                    local innerAnim = model:FindFirstChildWhichIsA("Animation", true)
+                    if innerAnim then
+                        local ok4, track4 = pcall(function() return anim:LoadAnimation(innerAnim) end)
+                        if ok4 and track4 then
+                            _G.CurrentEmoteTrack = track4
+                            track4.Priority = Enum.AnimationPriority.Action
+                            track4.Looped = true
+                            track4:Play()
+                            played = true
+                        end
+                    end
+                    model:Destroy()
+                end
+            end)
+        end
+
+        -- Method 5: R15 Animate Script Emote Injection
+        if not played and char:FindFirstChild("Animate") and hum.RigType == Enum.HumanoidRigType.R15 then
+            pcall(function()
+                local playEmoteBindable = char.Animate:FindFirstChild("PlayEmote")
+                if playEmoteBindable and playEmoteBindable:IsA("BindableFunction") then
+                    playEmoteBindable:Invoke(tostring(targetId))
+                end
+            end)
         end
     end
 
@@ -3523,7 +3590,7 @@ end
 
 Commands.say = function(args, speaker)
     local m = table.concat(args, " ", 2)
-    if m ~= "" then task.spawn(function() task.wait((SafeIndex() - 1) * 0.05); ChatSend(m) end) end
+    if m ~= "" then task.spawn(function() task.wait((SafeIndex()-1)*0.15); ChatSend(m) end) end
 end
 Commands.chat = Commands.say
 
@@ -3937,7 +4004,7 @@ Commands.wave = function(args, speaker)
     if not IsSoloCommand(args) then return end
     StopAll(); _G.CurrentCommand = "Wave"; local idx = SafeIndex()
     task.spawn(function()
-        task.wait((idx - 1) * 0.08)
+        task.wait(idx * 0.3)
         local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
         if h and _G.CurrentCommand == "Wave" then h.Jump = true; task.wait(0.5); ChatSend("/e wave") end
     end)
