@@ -2363,8 +2363,16 @@ Commands.bodyguard = function(args, speaker)
                 
                 local now = os.clock()
                 if (now - lastWarning) > 5 then
+                    local alts = getgenv().Settings.altAccounts or {}
                     for _, stranger in ipairs(Players:GetPlayers()) do
-                        if stranger ~= target and stranger ~= LocalPlayer and not IsWhitelisted(stranger.Name) then
+                        local sName = stranger.Name:lower()
+                        local isAlt = alts[sName] or false
+                        if not isAlt then
+                            for a in pairs(alts) do
+                                if a:lower() == sName then isAlt = true; break end
+                            end
+                        end
+                        if stranger ~= target and stranger ~= LocalPlayer and not isAlt and not IsWhitelisted(stranger.Name) then
                             local sChar = stranger.Character
                             local sHRP = sChar and sChar:FindFirstChild("HumanoidRootPart")
                             if sHRP and (sHRP.Position - tHRP.Position).Magnitude < 7 then
