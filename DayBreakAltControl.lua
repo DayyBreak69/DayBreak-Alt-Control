@@ -324,19 +324,6 @@ local function doMicUnmute()
 end
 
 ----------------------------------------------------------------
--- 5c. VCB DETECTION ENGINE
--- Monitors CoreGui for toggle_mic_mute existence.
--- When it disappears = VC banned.
-----------------------------------------------------------------
-_G.VCBDetected = false
-_G.VCBTimerActive = false
-
-local function isVCBanned()
-    local micFrame = findMicFrame()
-    return micFrame == nil
-end
-
-----------------------------------------------------------------
 -- 5d. REJOIN & TELEPORT ENGINE
 -- Saves CFrame, queues teleport script, rejoins same server.
 ----------------------------------------------------------------
