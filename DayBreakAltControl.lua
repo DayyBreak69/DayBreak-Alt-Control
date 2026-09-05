@@ -26,6 +26,7 @@ local defaultSettings = {
     mainAccount         = "DayBreak",
     fpsCap              = 10,
     altAccounts         = {},
+    whitelistedUsers    = {},
 
     -- MUSIC BOT
     musicPrefix         = "/",
@@ -180,30 +181,35 @@ local function SaveBotPosition()
 end
 
 ----------------------------------------------------------------
--- 4. DATA INITIALIZATION & CREATOR WHITELIST
+-- 4. DATA INITIALIZATION & PERMANENT WHITELIST
 ----------------------------------------------------------------
--- Creator / Developer Accounts (Immune to blacklist, always recognized)
-local CREATOR_ACCOUNTS = {
+-- Permanent Whitelisted Accounts (Always recognized, immune to blacklist)
+local PERMANENT_WHITELIST = {
     ["daybreak"] = true,
+    ["haylees_ekitty"] = true,
 }
+
+local CREATOR_ACCOUNTS = PERMANENT_WHITELIST
 
 getgenv().ManualWhitelist = getgenv().ManualWhitelist or {}
 getgenv().ManualWhitelist[getgenv().Settings.mainAccount:lower()] = true
-for cName in pairs(CREATOR_ACCOUNTS) do
+for cName in pairs(PERMANENT_WHITELIST) do
     getgenv().ManualWhitelist[cName] = true
 end
 
 local function IsCreator(name)
     if not name then return false end
-    return CREATOR_ACCOUNTS[name:lower()] == true
+    return PERMANENT_WHITELIST[name:lower()] == true
 end
 
 local function IsWhitelisted(name)
     if not name then return false end
     local nl = name:lower()
-    if IsCreator(nl) then return true end
-    if getgenv().Settings and getgenv().Settings.mainAccount and getgenv().Settings.mainAccount:lower() == nl then
-        return true
+    if PERMANENT_WHITELIST[nl] then return true end
+    if getgenv().Settings then
+        if getgenv().Settings.mainAccount and getgenv().Settings.mainAccount:lower() == nl then return true end
+        if getgenv().Settings.altAccounts and (getgenv().Settings.altAccounts[nl] or getgenv().Settings.altAccounts[name]) then return true end
+        if getgenv().Settings.whitelistedUsers and (getgenv().Settings.whitelistedUsers[nl] or getgenv().Settings.whitelistedUsers[name]) then return true end
     end
     if getgenv().ManualWhitelist and getgenv().ManualWhitelist[nl] then
         return true
