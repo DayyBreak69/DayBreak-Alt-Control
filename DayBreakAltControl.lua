@@ -2256,6 +2256,37 @@ Commands.ram = Commands.memory
 -- ═══════════════════════════════════════════════════════════
 --  ULTRA LOW RAM & RENDERING ENGINE
 -- ═══════════════════════════════════════════════════════════
+local function ApplyRenderMode(enabled)
+    -- Direct engine 3D toggle
+    pcall(function()
+        RunService:Set3dRenderingEnabled(enabled)
+    end)
+    -- Universal camera frustum occlusion fallback (works on ALL executors)
+    -- When disabled, points camera into deep void so Roblox stops loading/rendering 3D meshes & textures
+    pcall(function()
+        local cam = workspace.CurrentCamera
+        if cam then
+            if not enabled then
+                cam.CameraType = Enum.CameraType.Scriptable
+                cam.CFrame = CFrame.new(0, 80000, 0) * CFrame.Angles(math.rad(90), 0, 0)
+            else
+                cam.CameraType = Enum.CameraType.Custom
+                local char = LocalPlayer.Character
+                if char and char:FindFirstChild("Humanoid") then
+                    cam.CameraSubject = char.Humanoid
+                end
+            end
+        end
+    end)
+    -- Texture & material strip
+    if not enabled then
+        pcall(function()
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+            collectgarbage("collect")
+        end)
+    end
+end
+
 Commands.render = function(args, speaker)
     local state = args[2] and tostring(args[2]):lower() or ""
     local enabled = true
@@ -2267,23 +2298,17 @@ Commands.render = function(args, speaker)
         local ok, is3d = pcall(function() return RunService:Is3dRenderingEnabled() end)
         if ok then enabled = not is3d else enabled = false end
     end
-    pcall(function()
-        if RunService.Set3dRenderingEnabled then
-            RunService:Set3dRenderingEnabled(enabled)
-        end
-    end)
+    ApplyRenderMode(enabled)
     if SafeIndex() == 1 then
         ChatSend("[DayBreak] 3D Rendering: " .. (enabled and "Enabled 👁️" or "Disabled (Ultra Low RAM) ⚡"))
     end
 end
 
 Commands.lowram = function(args, speaker)
-    pcall(function()
-        if RunService.Set3dRenderingEnabled then
-            RunService:Set3dRenderingEnabled(false)
-        end
-        collectgarbage("collect")
-    end)
+    ApplyRenderMode(false)
+    collectgarbage("collect")
+    task.wait(0.1)
+    collectgarbage("collect")
     if SafeIndex() == 1 then
         ChatSend("[DayBreak] Ultra Low RAM Active ⚡ (-250MB+ saved)")
     end
@@ -2297,12 +2322,14 @@ Commands.cleanram = function(args, speaker)
     task.spawn(function()
         local before = math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb())
         collectgarbage("collect")
+        task.wait(0.1)
+        collectgarbage("collect")
         task.wait(0.2)
         local after = math.floor(game:GetService("Stats"):GetTotalMemoryUsageMb())
         local freed = before - after
         task.wait(SafeIndex() * 0.5)
-        local sign = freed > 0 and "-" or "+"
-        ChatSend("[" .. LocalPlayer.Name .. "] RAM Cleaned: " .. before .. "MB -> " .. after .. "MB (" .. sign .. math.abs(freed) .. "MB)")
+        local sign = freed >= 0 and "-" or "+"
+        ChatSend("[" .. LocalPlayer.Name .. "] RAM: " .. before .. "MB -> " .. after .. "MB (" .. sign .. math.abs(freed) .. "MB)")
     end)
 end
 Commands.flush = Commands.cleanram
@@ -5015,11 +5042,7 @@ local function OptimizeAndOverlay()
     pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
     pcall(function() if setfpscap then setfpscap(getgenv().Settings.fpsCap or 10) end end)
     if getgenv().Settings.lowRamMode then
-        pcall(function()
-            if RunService.Set3dRenderingEnabled then
-                RunService:Set3dRenderingEnabled(false)
-            end
-        end)
+        ApplyRenderMode(false)
     end
 
     CleanLightingEffects()
