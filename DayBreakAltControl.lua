@@ -1432,17 +1432,21 @@ end
 Commands.emote = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
-    if not _G.DayBreakEmoteCatalog then return end
     
     local query = table.concat(newArgs, " ", 2):lower()
     if query == "" then return end
 
     local targetId
-    for _, e in ipairs(_G.DayBreakEmoteCatalog) do
-        local name = tostring(e.name or ""):lower()
-        if name:find(query, 1, true) then
-            targetId = tonumber(e.id)
-            if name == query then break end
+    local rawNum = tonumber(query:match("^%d+$") or query:match("rbxassetid://(%d+)"))
+    if rawNum then
+        targetId = rawNum
+    else
+        for _, e in ipairs(_G.DayBreakEmoteCatalog or {}) do
+            local name = tostring(e.name or ""):lower()
+            if name:find(query, 1, true) then
+                targetId = tonumber(e.id)
+                if name == query then break end
+            end
         end
     end
 
@@ -1484,8 +1488,28 @@ Commands.emote = function(args, speaker)
             track:Play()
             return
         end
+        -- Universal UGC Catalog Asset & Animation ID Resolver
+        local resolvedAnimId = "rbxassetid://" .. tostring(targetId)
+        pcall(function()
+            local objects = game:GetObjects("rbxassetid://" .. tostring(targetId))
+            if objects and #objects > 0 then
+                for _, obj in ipairs(objects) do
+                    if obj:IsA("Animation") then
+                        resolvedAnimId = obj.AnimationId
+                        break
+                    else
+                        local innerAnim = obj:FindFirstChildWhichIsA("Animation", true)
+                        if innerAnim then
+                            resolvedAnimId = innerAnim.AnimationId
+                            break
+                        end
+                    end
+                end
+            end
+        end)
+
         local obj = Instance.new("Animation")
-        obj.AnimationId = "rbxassetid://" .. tostring(targetId)
+        obj.AnimationId = resolvedAnimId
         local ok2, tr = pcall(function() return anim:LoadAnimation(obj) end)
         if ok2 and tr then
             _G.CurrentEmoteTrack = tr
