@@ -2673,6 +2673,69 @@ Commands.unlaser = function(args, speaker)
 end
 Commands.clearlaser = Commands.unlaser
 
+-- 9. Red Light Green Light Stalker Creeper
+Commands.creeper = function(args, speaker)
+    StopAll()
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Creeper"
+    local idx = SafeIndex()
+    if idx == 1 then
+        ChatSend("[DayBreak] 🙈 Stalker Creeper Active on " .. target.DisplayName)
+    end
+    task.spawn(function()
+        while _G.CurrentCommand == "Creeper" and target and target.Character do
+            local tHRP = target.Character:FindFirstChild("HumanoidRootPart")
+            local mHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if tHRP and mHRP and mHum then
+                local tLook = tHRP.CFrame.LookVector
+                local dirToAlt = (mHRP.Position - tHRP.Position)
+                local dist = dirToAlt.Magnitude
+                local dirFlat = Vector3.new(dirToAlt.X, 0, dirToAlt.Z)
+                local tLookFlat = Vector3.new(tLook.X, 0, tLook.Z)
+                
+                local isLooking = false
+                if dirFlat.Magnitude > 0.1 and tLookFlat.Magnitude > 0.1 then
+                    local dot = tLookFlat.Unit:Dot(dirFlat.Unit)
+                    if dot > 0.2 then
+                        isLooking = true
+                    end
+                end
+
+                if isLooking then
+                    -- RED LIGHT: Freeze dead in tracks!
+                    mHum.WalkSpeed = 0
+                    mHRP.Velocity = Vector3.zero
+                else
+                    -- GREEN LIGHT: Creep closer!
+                    mHum.WalkSpeed = 16
+                    if dist > 3.5 then
+                        local goalPos = tHRP.Position + Vector3.new(math.sin(idx * 1.5) * 2.5, 0, math.cos(idx * 1.5) * 2.5)
+                        mHum:MoveTo(goalPos)
+                    end
+                end
+            end
+            RunService.Heartbeat:Wait()
+        end
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end
+    end)
+end
+Commands.stalker = Commands.creeper
+
+Commands.uncreeper = function(args, speaker)
+    if _G.CurrentCommand == "Creeper" then _G.CurrentCommand = "None" end
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.WalkSpeed = 16
+    end
+    if SafeIndex() == 1 then
+        ChatSend("[DayBreak] 🙈 Stalker Creeper Disengaged")
+    end
+end
+Commands.unstalker = Commands.uncreeper
+
 
 -- ═══════════════════════════════════════════════════════════
 --  CARPET / FLOOR / BRIDGE
