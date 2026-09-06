@@ -188,6 +188,7 @@ local PERMANENT_WHITELIST = {
     ["daybreak"] = true,
     ["haylees_ekitty"] = true,
     ["Hxyleexoxo"] = true,
+    ["furyrAin620"] = true,
 }
 
 local CREATOR_ACCOUNTS = PERMANENT_WHITELIST
