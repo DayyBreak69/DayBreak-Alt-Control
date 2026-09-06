@@ -187,7 +187,7 @@ end
 local PERMANENT_WHITELIST = {
     ["daybreak"] = true,
     ["haylees_ekitty"] = true,
-    ["Hxyleexoxo"] = true,
+    ["hxyleexoxo"] = true,
     ["furyrAin620"] = true,
 }
 
