@@ -185,7 +185,7 @@ end
 ----------------------------------------------------------------
 -- Permanent Whitelisted Accounts (Always recognized, immune to blacklist)
 local PERMANENT_WHITELIST = {
-    ["daybreak"] = true,
+    ["dayybreak66"] = true,
     ["haylees_ekitty"] = true,
     ["hxyleexoxo"] = true,
     ["furyrAin620"] = true,
