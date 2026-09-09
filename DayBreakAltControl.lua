@@ -185,10 +185,8 @@ end
 ----------------------------------------------------------------
 -- Permanent Whitelisted Accounts (Always recognized, immune to blacklist)
 local PERMANENT_WHITELIST = {
-    ["dayybreak66"] = true,
+    ["daybreak"] = true,
     ["haylees_ekitty"] = true,
-    ["hxyleexoxo"] = true,
-    ["furyrain620"] = true,
 }
 
 local CREATOR_ACCOUNTS = PERMANENT_WHITELIST
@@ -326,6 +324,19 @@ local function doMicUnmute()
 end
 
 ----------------------------------------------------------------
+-- 5c. VCB DETECTION ENGINE
+-- Monitors CoreGui for toggle_mic_mute existence.
+-- When it disappears = VC banned.
+----------------------------------------------------------------
+_G.VCBDetected = false
+_G.VCBTimerActive = false
+
+local function isVCBanned()
+    local micFrame = findMicFrame()
+    return micFrame == nil
+end
+
+----------------------------------------------------------------
 -- 5d. REJOIN & TELEPORT ENGINE
 -- Saves CFrame, queues teleport script, rejoins same server.
 ----------------------------------------------------------------
@@ -373,6 +384,82 @@ local function doRejoinTP()
 
     pcall(function()
         TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+    end)
+end
+
+----------------------------------------------------------------
+-- 5e. VCB MONITOR (runs in background for alt accounts)
+-- Detects VC ban, runs countdown, auto-rejoin + TP + unmute
+----------------------------------------------------------------
+local function StartVCBMonitor()
+    if isMainAccount then return end -- Only bots monitor
+    if not isAltAccount then return end
+
+    task.spawn(function()
+        -- Wait for TopBarApp to load
+        task.wait(10)
+
+        while _G.DayBreakActive do
+            task.wait(getgenv().Settings.vcbCheckInterval or 5)
+
+            -- Check if mic button disappeared (VC banned)
+            if not _G.VCBDetected and isVCBanned() then
+                _G.VCBDetected = true
+                _G.VCBTimerActive = true
+
+                local totalTime = getgenv().Settings.vcbTimerSeconds or 360
+                local chatDelay = getgenv().Settings.vcbChatDelay or 0.3
+                local idx = SafeIndex()
+
+                -- Announce VCB detected
+                task.wait(idx * chatDelay)
+                ChatSend("VCB Detected💀")
+                task.wait(1)
+                ChatSend("Timer started - " .. math.floor(totalTime / 60) .. "min ⏳")
+
+                -- Countdown
+                local elapsed = 0
+                local sent3min = false
+                local sent1min = false
+
+                while elapsed < totalTime and _G.VCBTimerActive do
+                    task.wait(1)
+                    elapsed = elapsed + 1
+                    local remaining = totalTime - elapsed
+
+                    -- 3 minutes left
+                    if remaining <= 180 and remaining > 179 and not sent3min then
+                        sent3min = true
+                        task.wait(idx * chatDelay)
+                        ChatSend("3min left ⌛")
+                    end
+
+                    -- 1 minute left
+                    if remaining <= 60 and remaining > 59 and not sent1min then
+                        sent1min = true
+                        task.wait(idx * chatDelay)
+                        ChatSend("Rejoining in 1min...")
+                    end
+                end
+
+                if _G.VCBTimerActive then
+                    -- Timer ended
+                    task.wait(idx * chatDelay)
+                    ChatSend("Unbanned 😼")
+                    task.wait(1)
+                    ChatSend("Rejoining...")
+
+                    -- Wait before rejoin
+                    task.wait(getgenv().Settings.rejoinDelay or 10)
+
+                    if getgenv().Settings.vcbAutoRejoin then
+                        doRejoinTP()
+                    end
+                end
+
+                _G.VCBTimerActive = false
+            end
+        end
     end)
 end
 
@@ -5498,7 +5585,7 @@ local function OptimizeAndOverlay()
     
     InfoLabel.Text = string.format(
         "ALT Control | Designed by DayBreak\n" ..
-        "Join Discord: https://discord.gg/kfxRmYzp3t\n\n" ..
+        "Join Discord: https://discord.gg/ws5Zb2EzYA\n\n" ..
         "USER: %s\n" ..
         "BOT POSITION: %02d",
         LocalPlayer.Name,
