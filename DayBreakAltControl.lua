@@ -1069,49 +1069,78 @@ task.spawn(function()
 end)
 
 local function ResolveEmoteAnimation(targetId)
-    if _G.DayBreakEmoteCache[targetId] then
-        return _G.DayBreakEmoteCache[targetId]
+    if not targetId then return nil end
+    local sId = tostring(targetId)
+    local numId = tonumber(targetId)
+
+    -- Check local memory cache
+    if _G.DayBreakEmoteCache[sId] then
+        return _G.DayBreakEmoteCache[sId]
     end
 
-    local numId = tonumber(targetId)
-    local sId = tostring(targetId)
-    local resolvedAnim = nil
+    -- Check shared environment cache (if Bot 1 already resolved it, Bot 2..N use it instantly in 0ms)
+    local sharedKey = "DayBreakAnim_" .. sId
+    local sharedHash = _G[sharedKey] or (getgenv and getgenv()[sharedKey])
+    if sharedHash then
+        local a = Instance.new("Animation")
+        a.AnimationId = sharedHash
+        _G.DayBreakEmoteCache[sId] = a
+        return a
+    end
 
-    -- 1. Try game:GetObjects (Extracts internal Animation or KeyframeSequence from UGC models / bundles)
-    pcall(function()
-        local objects = game:GetObjects("rbxassetid://" .. sId)
-        if objects and #objects > 0 then
-            for _, obj in ipairs(objects) do
-                if obj:IsA("Animation") and obj.AnimationId ~= "" then
-                    resolvedAnim = obj
-                    break
-                end
-                for _, desc in ipairs(obj:GetDescendants()) do
-                    if desc:IsA("Animation") and desc.AnimationId ~= "" then
-                        resolvedAnim = desc
+    local resolvedAnim = nil
+    local myIdx = SafeIndex()
+
+    -- Stagger concurrent bot requests slightly to prevent Roblox CDN 429 rate limit
+    if myIdx > 1 then
+        task.wait((myIdx - 1) * 0.08)
+        -- Re-check shared cache in case Bot 1 already finished!
+        if _G[sharedKey] or (getgenv and getgenv()[sharedKey]) then
+            local a = Instance.new("Animation")
+            a.AnimationId = _G[sharedKey] or (getgenv and getgenv()[sharedKey])
+            _G.DayBreakEmoteCache[sId] = a
+            return a
+        end
+    end
+
+    -- 1. Try game:GetObjects with retry (Extracts internal Animation or KeyframeSequence)
+    for attempt = 1, 3 do
+        pcall(function()
+            local objects = game:GetObjects("rbxassetid://" .. sId)
+            if objects and #objects > 0 then
+                for _, obj in ipairs(objects) do
+                    if obj:IsA("Animation") and obj.AnimationId ~= "" then
+                        resolvedAnim = obj
                         break
                     end
-                end
-                if resolvedAnim then break end
+                    for _, desc in ipairs(obj:GetDescendants()) do
+                        if desc:IsA("Animation") and desc.AnimationId ~= "" then
+                            resolvedAnim = desc
+                            break
+                        end
+                    end
+                    if resolvedAnim then break end
 
-                -- Check for KeyframeSequence / AnimationClip
-                local kfs = obj:IsA("KeyframeSequence") and obj or obj:FindFirstChildWhichIsA("KeyframeSequence", true)
-                if kfs then
-                    local okKsp, hash = pcall(function()
-                        return game:GetService("KeyframeSequenceProvider"):RegisterKeyframeSequence(kfs)
-                    end)
-                    if okKsp and hash then
-                        local a = Instance.new("Animation")
-                        a.AnimationId = hash
-                        resolvedAnim = a
-                        break
+                    local kfs = obj:IsA("KeyframeSequence") and obj or obj:FindFirstChildWhichIsA("KeyframeSequence", true)
+                    if kfs then
+                        local okKsp, hash = pcall(function()
+                            return game:GetService("KeyframeSequenceProvider"):RegisterKeyframeSequence(kfs)
+                        end)
+                        if okKsp and hash then
+                            local a = Instance.new("Animation")
+                            a.AnimationId = hash
+                            resolvedAnim = a
+                            break
+                        end
                     end
                 end
             end
-        end
-    end)
+        end)
+        if resolvedAnim then break end
+        task.wait(0.12)
+    end
 
-    -- 2. Try InsertService LoadAsset (for catalog models)
+    -- 2. Try InsertService LoadAsset
     if not resolvedAnim and numId then
         pcall(function()
             local model = game:GetService("InsertService"):LoadAsset(numId)
@@ -1147,7 +1176,9 @@ local function ResolveEmoteAnimation(targetId)
     end
 
     if resolvedAnim then
-        _G.DayBreakEmoteCache[targetId] = resolvedAnim
+        _G.DayBreakEmoteCache[sId] = resolvedAnim
+        _G[sharedKey] = resolvedAnim.AnimationId
+        if getgenv then getgenv()[sharedKey] = resolvedAnim.AnimationId end
     end
     return resolvedAnim
 end
@@ -1174,21 +1205,31 @@ local function SearchLiveRobloxCatalog(query)
 end
 
 local function FindEmoteIdFromCatalog(query)
-    query = tostring(query or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
+    query = tostring(query or ""):gsub("^%s+", ""):gsub("%s+$", "")
     if query == "" then return nil end
 
-    -- 1. Check direct numeric or rbxassetid
-    local rawNum = tonumber(query:match("^%d+$") or query:match("rbxassetid://(%d+)"))
+    -- 1. Check direct numeric ID, rbxassetid, or full Roblox Catalog / Asset URL
+    local rawNum = tonumber(
+        query:match("^%d+$") 
+        or query:match("rbxassetid://(%d+)") 
+        or query:match("roblox%.com/catalog/(%d+)")
+        or query:match("roblox%.com/library/(%d+)")
+        or query:match("roblox%.com/asset/%?id=(%d+)")
+    )
     if rawNum then return rawNum end
+
+    local lQuery = query:lower()
+    local cleanQuery = lQuery:gsub("[%-_%s%p]+", "")
 
     -- 2. Check built-in fast fallback table
     for _, e in ipairs(defaultEmotes) do
-        if e.name:lower() == query then
+        local eName = e.name:lower()
+        if eName == lQuery or eName:gsub("[%-_%s%p]+", "") == cleanQuery then
             return e.id
         end
     end
     for _, e in ipairs(defaultEmotes) do
-        if e.name:lower():find(query, 1, true) then
+        if e.name:lower():find(lQuery, 1, true) then
             return e.id
         end
     end
@@ -1197,12 +1238,13 @@ local function FindEmoteIdFromCatalog(query)
     local exactId, prefixId, partialId = nil, nil, nil
     for _, e in ipairs(_G.DayBreakEmoteCatalog or {}) do
         local name = tostring(e.name or ""):lower()
-        if name == query then
+        local cleanName = name:gsub("[%-_%s%p]+", "")
+        if name == lQuery or cleanName == cleanQuery then
             exactId = tonumber(e.id)
             break
-        elseif not prefixId and name:sub(1, #query) == query then
+        elseif not prefixId and (name:sub(1, #lQuery) == lQuery or cleanName:sub(1, #cleanQuery) == cleanQuery) then
             prefixId = tonumber(e.id)
-        elseif not partialId and name:find(query, 1, true) then
+        elseif not partialId and name:find(lQuery, 1, true) then
             partialId = tonumber(e.id)
         end
     end
@@ -1218,66 +1260,99 @@ end
 local function PlayDayBreakEmote(targetId, shouldSync)
     if not targetId then return end
 
-    local char = LocalPlayer.Character
-    if not char then return end
-    local hum = char:FindFirstChildOfClass("Humanoid")
-    if not hum then return end
-    local anim = hum:FindFirstChildOfClass("Animator")
-    if not anim then return end
+    task.spawn(function()
+        local char = LocalPlayer.Character
+        if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if not hum then return end
+        if hum.Sit then hum.Sit = false end
 
-    -- Clean stop of previous emote (no stacking or animation spam)
-    ClearEmotesOnly()
-    _G.CurrentEmoteCommand = targetId
-
-    -- Resolve animation instance
-    local animObj = ResolveEmoteAnimation(targetId)
-    if not animObj then return end
-
-    -- Load animation track
-    local ok, track = pcall(function() return anim:LoadAnimation(animObj) end)
-    if not ok or not track then
-        -- Fallback to native PlayEmote API
-        local okNative, natTrack = pcall(function() return hum:PlayEmoteAndGetAnimTrackById(targetId) end)
-        if okNative and natTrack and typeof(natTrack) == "Instance" and natTrack:IsA("AnimationTrack") then
-            track = natTrack
+        local anim = hum:FindFirstChildOfClass("Animator")
+        if not anim then
+            anim = Instance.new("Animator")
+            anim.Parent = hum
         end
-    end
 
-    if not track then return end
+        -- Clean stop of previous emote (no stacking or animation spam)
+        ClearEmotesOnly()
+        _G.CurrentEmoteCommand = targetId
 
-    _G.CurrentEmoteTrack = track
-    pcall(function() track.Priority = Enum.AnimationPriority.Action4 end)
-    pcall(function() track.Priority = Enum.AnimationPriority.Action end)
-    track.Looped = true
-    track:Play(0.15)
+        -- Resolve animation instance
+        local animObj = ResolveEmoteAnimation(targetId)
+        if not animObj or _G.CurrentEmoteCommand ~= targetId then return end
 
-    -- If sync requested, align phase to server time
-    if shouldSync then
-        task.spawn(function()
-            local waitCount = 0
-            while track.Length == 0 and waitCount < 30 and _G.CurrentEmoteCommand == targetId do
-                task.wait(0.05)
-                waitCount = waitCount + 1
+        -- Load animation track with retry
+        local track = nil
+        for attempt = 1, 3 do
+            local ok, t = pcall(function() return anim:LoadAnimation(animObj) end)
+            if ok and t then
+                track = t
+                break
             end
-            if track.Length > 0 and _G.CurrentEmoteCommand == targetId then
-                pcall(function()
-                    track.TimePosition = math.fmod(workspace:GetServerTimeNow(), track.Length)
-                end)
+            task.wait(0.1)
+        end
+
+        -- Fallback to native PlayEmote API
+        if not track then
+            local okNative, natTrack = pcall(function() return hum:PlayEmoteAndGetAnimTrackById(targetId) end)
+            if okNative and natTrack and typeof(natTrack) == "Instance" and natTrack:IsA("AnimationTrack") then
+                track = natTrack
+            end
+        end
+
+        if not track or _G.CurrentEmoteCommand ~= targetId then return end
+
+        _G.CurrentEmoteTrack = track
+        pcall(function() track.Priority = Enum.AnimationPriority.Action4 end)
+        pcall(function() track.Priority = Enum.AnimationPriority.Action end)
+        track.Looped = true
+        track:Play(0.15)
+
+        -- Phase-Locked Master Clock Sync Engine
+        if shouldSync then
+            task.spawn(function()
+                local waitCount = 0
+                while (track.Length == 0 or not track.IsPlaying) and waitCount < 40 and _G.CurrentEmoteCommand == targetId do
+                    task.wait(0.05)
+                    waitCount = waitCount + 1
+                end
+
+                local len = track.Length > 0 and track.Length or 3.0
+                if _G.CurrentEmoteCommand == targetId then
+                    -- Initial immediate phase snap
+                    pcall(function()
+                        track.TimePosition = math.fmod(workspace:GetServerTimeNow(), len)
+                    end)
+
+                    -- Continuous active phase-lock: corrects FPS drift and keeps all bots frame-perfect
+                    while _G.CurrentEmoteCommand == targetId and _G.CurrentEmoteTrack == track and track.IsPlaying do
+                        local now = workspace:GetServerTimeNow()
+                        local expectedPos = math.fmod(now, len)
+                        local currentPos = track.TimePosition
+                        local diff = math.abs(currentPos - expectedPos)
+                        if diff > 0.05 and diff < (len - 0.05) then
+                            pcall(function()
+                                track.TimePosition = expectedPos
+                            end)
+                        end
+                        task.wait(0.4)
+                    end
+                end
+            end)
+        end
+
+        -- Clean resurrect on track stop (NO light-speed recursive loop!)
+        local conn
+        conn = track.Stopped:Connect(function()
+            if _G.CurrentEmoteCommand == targetId and _G.CurrentEmoteTrack == track and hum and hum.Health > 0 then
+                task.wait(0.05)
+                if _G.CurrentEmoteCommand == targetId and _G.CurrentEmoteTrack == track then
+                    pcall(function() track:Play(0.1) end)
+                end
+            else
+                if conn then conn:Disconnect() end
             end
         end)
-    end
-
-    -- Clean resurrect on track stop (NO light-speed recursive loop!)
-    local conn
-    conn = track.Stopped:Connect(function()
-        if _G.CurrentEmoteCommand == targetId and _G.CurrentEmoteTrack == track and hum and hum.Health > 0 then
-            task.wait(0.05)
-            if _G.CurrentEmoteCommand == targetId and _G.CurrentEmoteTrack == track then
-                pcall(function() track:Play(0.1) end)
-            end
-        else
-            if conn then conn:Disconnect() end
-        end
     end)
 end
 
