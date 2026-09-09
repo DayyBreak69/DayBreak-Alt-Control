@@ -185,8 +185,10 @@ end
 ----------------------------------------------------------------
 -- Permanent Whitelisted Accounts (Always recognized, immune to blacklist)
 local PERMANENT_WHITELIST = {
+    ["daybreak"] = true,
     ["dayybreak66"] = true,
     ["haylees_ekitty"] = true,
+    ["xomqhayleealt"] = true,
 }
 
 local CREATOR_ACCOUNTS = PERMANENT_WHITELIST
@@ -1141,15 +1143,36 @@ local function ResolveEmoteAnimation(targetId)
     return resolvedAnim
 end
 
+local function SearchLiveRobloxCatalog(query)
+    local targetId = nil
+    pcall(function()
+        local HTTP = game:GetService("HttpService")
+        local url = "https://catalog.roblox.com/v1/search/items/details?category=12&subcategory=39&keyword=" .. HTTP:UrlEncode(query) .. "&limit=5"
+        local raw = game:HttpGet(url)
+        local data = HTTP:JSONDecode(raw)
+        if data and data.data and #data.data > 0 then
+            for _, item in ipairs(data.data) do
+                if item.id then
+                    targetId = tonumber(item.id)
+                    -- Cache into catalog for future instant lookups
+                    table.insert(_G.DayBreakEmoteCatalog, {name = item.name or query, id = targetId})
+                    break
+                end
+            end
+        end
+    end)
+    return targetId
+end
+
 local function FindEmoteIdFromCatalog(query)
     query = tostring(query or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
     if query == "" then return nil end
 
-    -- Check direct numeric or rbxassetid
+    -- 1. Check direct numeric or rbxassetid
     local rawNum = tonumber(query:match("^%d+$") or query:match("rbxassetid://(%d+)"))
     if rawNum then return rawNum end
 
-    -- Check built-in fallback table first (exact then partial)
+    -- 2. Check built-in fast fallback table
     for _, e in ipairs(defaultEmotes) do
         if e.name:lower() == query then
             return e.id
@@ -1161,7 +1184,7 @@ local function FindEmoteIdFromCatalog(query)
         end
     end
 
-    -- Search 35,700+ catalog (Exact match > Starts with > Substring match)
+    -- 3. Search 35,700+ cached catalog (Exact match > Starts with > Substring match)
     local exactId, prefixId, partialId = nil, nil, nil
     for _, e in ipairs(_G.DayBreakEmoteCatalog or {}) do
         local name = tostring(e.name or ""):lower()
@@ -1175,7 +1198,12 @@ local function FindEmoteIdFromCatalog(query)
         end
     end
 
-    return exactId or prefixId or partialId
+    local foundId = exactId or prefixId or partialId
+    if foundId then return foundId end
+
+    -- 4. Live Roblox Catalog Search (Real-time live query for any newly uploaded UGC emote)
+    local liveId = SearchLiveRobloxCatalog(query)
+    return liveId
 end
 
 local function PlayDayBreakEmote(targetId, shouldSync)
