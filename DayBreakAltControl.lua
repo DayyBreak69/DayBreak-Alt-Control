@@ -1052,6 +1052,9 @@ local defaultEmotes = {
     {name = "ninja", id = 3338014582},
     {name = "headbanging", id = 3576686195},
     {name = "fashion", id = 3338025566},
+    {name = "igotthatfeeling", id = 138266689765563},
+    {name = "i got that feeling", id = 138266689765563},
+    {name = "feeling", id = 138266689765563},
 }
 
 _G.DayBreakEmoteCatalog = _G.DayBreakEmoteCatalog or defaultEmotes
@@ -1277,27 +1280,54 @@ local function PlayDayBreakEmote(targetId, shouldSync)
         ClearEmotesOnly()
         _G.CurrentEmoteCommand = targetId
 
-        -- Resolve animation instance
-        local animObj = ResolveEmoteAnimation(targetId)
-        if not animObj or _G.CurrentEmoteCommand ~= targetId then return end
-
-        -- Load animation track with retry
         local track = nil
-        for attempt = 1, 3 do
-            local ok, t = pcall(function() return anim:LoadAnimation(animObj) end)
-            if ok and t then
-                track = t
-                break
+        local numId = tonumber(targetId)
+
+        -- 1. Primary Method for Catalog & UGC Collectibles: Native Roblox Engine
+        if numId then
+            local okNative, natTrack = pcall(function()
+                return hum:PlayEmoteAndGetAnimTrackById(numId)
+            end)
+            if okNative and natTrack and typeof(natTrack) == "Instance" and natTrack:IsA("AnimationTrack") then
+                local tStart = tick()
+                while natTrack.Length == 0 and (tick() - tStart) < 0.25 do
+                    task.wait(0.02)
+                end
+                if natTrack.Length > 0 or natTrack.IsPlaying then
+                    track = natTrack
+                end
             end
-            task.wait(0.1)
         end
 
-        -- Fallback to native PlayEmote API
+        -- 2. Secondary Method: Universal UGC Extractor (game:GetObjects / InsertService / raw AnimationId)
         if not track then
-            local okNative, natTrack = pcall(function() return hum:PlayEmoteAndGetAnimTrackById(targetId) end)
-            if okNative and natTrack and typeof(natTrack) == "Instance" and natTrack:IsA("AnimationTrack") then
-                track = natTrack
+            local animObj = ResolveEmoteAnimation(targetId)
+            if animObj and _G.CurrentEmoteCommand == targetId then
+                for attempt = 1, 3 do
+                    local ok, t = pcall(function() return anim:LoadAnimation(animObj) end)
+                    if ok and t then
+                        local tStart = tick()
+                        while t.Length == 0 and (tick() - tStart) < 0.2 do
+                            task.wait(0.02)
+                        end
+                        if t.Length > 0 or t.IsPlaying then
+                            track = t
+                            break
+                        end
+                    end
+                    task.wait(0.1)
+                end
             end
+        end
+
+        -- 3. Tertiary Fallback: Direct PlayEmoteAndGetAnimTrackById
+        if not track and numId then
+            pcall(function()
+                local okNative, natTrack = pcall(function() return hum:PlayEmoteAndGetAnimTrackById(numId) end)
+                if okNative and natTrack and typeof(natTrack) == "Instance" and natTrack:IsA("AnimationTrack") then
+                    track = natTrack
+                end
+            end)
         end
 
         if not track or _G.CurrentEmoteCommand ~= targetId then return end
@@ -1306,7 +1336,9 @@ local function PlayDayBreakEmote(targetId, shouldSync)
         pcall(function() track.Priority = Enum.AnimationPriority.Action4 end)
         pcall(function() track.Priority = Enum.AnimationPriority.Action end)
         track.Looped = true
-        track:Play(0.15)
+        if not track.IsPlaying then
+            pcall(function() track:Play(0.15) end)
+        end
 
         -- Phase-Locked Master Clock Sync Engine
         if shouldSync then
