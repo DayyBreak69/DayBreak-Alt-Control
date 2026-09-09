@@ -26,7 +26,14 @@ local defaultSettings = {
     mainAccount         = "DayBreak",
     fpsCap              = 10,
     altAccounts         = {},
-    whitelistedUsers    = {},
+    whitelistedUsers    = {
+        ["daybreak"] = true,
+        ["dayybreak66"] = true,
+        ["haylees_ekitty"] = true,
+        ["Haylees_Ekitty"] = true,
+        ["xomqhayleealt"] = true,
+        ["xOmqhayleealt"] = true,
+    },
 
     -- MUSIC BOT
     musicPrefix         = "/",
@@ -188,7 +195,9 @@ local PERMANENT_WHITELIST = {
     ["daybreak"] = true,
     ["dayybreak66"] = true,
     ["haylees_ekitty"] = true,
+    ["Haylees_Ekitty"] = true,
     ["xomqhayleealt"] = true,
+    ["xOmqhayleealt"] = true,
 }
 
 local CREATOR_ACCOUNTS = PERMANENT_WHITELIST
