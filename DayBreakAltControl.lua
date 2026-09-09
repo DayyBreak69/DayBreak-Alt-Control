@@ -52,12 +52,6 @@ local defaultSettings = {
     -- LOW RAM & PERFORMANCE
     lowRamMode          = false,
 
-    -- VC BAN DETECTION
-    vcbTimerSeconds     = 360,
-    vcbAutoRejoin       = true,
-    vcbCheckInterval    = 5,
-    vcbChatDelay        = 0.3,
-
     -- MIC TOGGLE
     micUnmuteDelay      = 30,
     micAutoUnmute       = true,
