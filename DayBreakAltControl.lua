@@ -1,15 +1,357 @@
 --[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+  â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+  â•‘               â˜€ï¸ DAYBREAK ALT CONTROL v3.0 â˜€ï¸                 â•‘
+  â•‘             NOCTURNAL STARLIGHT & MEME SQUAD EDITION         â•‘
+  â•‘                                                              â•‘
+  â•‘  Developed by: DayBreak                                      â•‘
+  â•‘  Discord: discord.gg/ws5Zb2EzYA                              â•‘
+  â•‘  GitHub:  github.com/DayyBreak69/DayBreak-Alt-Control        â•‘
+  â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--]]
 
-]]--
+getgenv().Settings = {
+    -- CONTROLLER & PREFIX
+    prefix              = "!",
+    mainAccount         = "DayBreak",
+    fpsCap              = 10,
 
-getgenv().Settings={prefix="!",mainAccount="DayBreak",fpsCap=39 -29 ,altAccounts={daybreak=true,dayybreak66=true,haylees_ekitty=true,Haylees_Ekitty=true,xomqhayleealt=true,xOmqhayleealt=true},musicPrefix="/",musicBotAccount="",musicServerURL="http://127.0.0.1:5000",musicApiKey="",musicGlobalCooldown=1131 -(107 + 1021) ,musicPlayCooldown=874 -(196 + 668) ,musicEnableQueue=true,musicEnableStats=true,musicEnableVolume=true,announceOnLoad=true,lowRamMode=false,micUnmuteDelay=118 -88 ,micAutoUnmute=true,micPostRejoinDelay=20 -10 ,rejoinDelay=843 -(171 + 662) ,scriptFile="DayBreakAltControl.lua",scriptLoadstring=""};local v1=getgenv().Settings;local v2=getgenv().DayBreakSettings or getgenv().Settings or {} ;for v279,v280 in pairs(v1) do if (v2[v279]==nil) then v2[v279]=v280;end end getgenv().Settings=v2;if _G.DayBreakCleanup then pcall(_G.DayBreakCleanup);task.wait(93.3 -(4 + 89) );end _G.DayBreakActive=true;_G.DayBreakVersion="3.1";_G.DayBreakConnections={};getgenv().TrackConnection=function(v281) local v282=0;while true do if (v282==(0 -0)) then if v281 then table.insert(_G.DayBreakConnections,v281);end return v281;end end end;_G.SavedBotPosition=nil;do local v283="DayBreakPos_"   .. game:GetService("Players").LocalPlayer.Name   .. ".txt" ;pcall(function() local v1385=0 + 0 ;local v1386;while true do if (v1385==0) then v1386=readfile(v283);if (v1386 and tonumber(v1386)) then _G.SavedBotPosition=tonumber(v1386);end break;end end end);end local v4=game:GetService("Players");local v5=game:GetService("RunService");local v6=game:GetService("HttpService");local v7=game:GetService("TeleportService");local v8=game:GetService("TextChatService");local v9=game:GetService("ReplicatedStorage");local v10=game:GetService("VirtualUser");local v11=game:GetService("Lighting");local v12=v4.LocalPlayer;local v13=v12.Name:lower()==getgenv().Settings.mainAccount:lower() ;local v14=false;do local v284=v12.Name:lower();for v1387 in pairs(getgenv().Settings.altAccounts) do if (v1387:lower()==v284) then v14=true;break;end end end local v15={list={},map={},total=0,lastUpdate=0};local function v16() local v285=0 -0 ;local v286;local v287;local v288;local v289;while true do if (v285==3) then v289={};for v1904,v1905 in ipairs(v288) do v289[v1905]=v1904;end v285=4;end if (4==v285) then v15.list,v15.map,v15.total=v288,v289, #v288;break;end if (v285==2) then for v1907,v1908 in ipairs(v4:GetPlayers()) do local v1909=0;local v1910;while true do if (v1909==(0 + 0)) then v1910=v1908.Name:lower();for v2467 in pairs(v287) do if (v2467:lower()==v1910) then table.insert(v288,v1910);break;end end break;end end end table.sort(v288);v285=1489 -(35 + 1451) ;end if (v285==(1454 -(28 + 1425))) then v15.lastUpdate=v286;v287,v288=getgenv().Settings.altAccounts,{};v285=1995 -(941 + 1052) ;end if (v285==(0 + 0)) then v286=tick();if ((v286-v15.lastUpdate)<2) then return;end v285=1515 -(822 + 692) ;end end end local function v17() v16();return v15.map[v12.Name:lower()] or (0 -0) ;end local function v18() local v290=0 + 0 ;while true do if (v290==0) then v16();return v15.total;end end end local function v19() v16();return v15.list;end local function v20() local v291=v17();if (v291>0) then return v291;end if (_G.SavedBotPosition and (_G.SavedBotPosition>0)) then return _G.SavedBotPosition;end return 1;end local function v21() local v292=v18();return ((v292>(297 -(45 + 252))) and v292) or (1 + 0) ;end local function v22() pcall(function() local v1388="DayBreakPos_"   .. v12.Name   .. ".txt" ;writefile(v1388,tostring(v20()));end);end local v23={daybreak=true,dayybreak66=true,haylees_ekitty=true,Haylees_Ekitty=true,xomqhayleealt=true,xOmqhayleealt=true};local v24=v23;getgenv().ManualWhitelist=getgenv().ManualWhitelist or {} ;getgenv().ManualWhitelist[getgenv().Settings.mainAccount:lower()]=true;for v293 in pairs(v23) do getgenv().ManualWhitelist[v293]=true;end local function v27(v295) if  not v295 then return false;end return v23[v295:lower()]==true ;end local function v28(v296) if  not v296 then return false;end local v297=v296:lower();if v23[v297] then return true;end if getgenv().Settings then if (v297==getgenv().Settings.mainAccount:lower()) then return true;end if (getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[v297]) then return true;end end if (getgenv().ManualWhitelist and getgenv().ManualWhitelist[v297]) then return true;end return false;end local v29=nil;local v30=0 + 0 ;local function v31(v298) local v299=os.clock();if ((v298==v29) and ((v299-v30)<(0.25 -0))) then return;end v29=v298;v30=v299;pcall(function() if (v8.ChatVersion==Enum.ChatVersion.TextChatService) then local v1794=v8.TextChannels:FindFirstChild("RBXGeneral");if v1794 then v1794:SendAsync(v298);end else local v1795=433 -(114 + 319) ;local v1796;local v1797;while true do if (v1795==(0 -0)) then v1796=v9:FindFirstChild("DefaultChatSystemChatEvents");v1797=v1796 and v1796:FindFirstChild("SayMessageRequest") ;v1795=1 -0 ;end if (v1795==(1 + 0)) then if v1797 then v1797:FireServer(v298,"All");end break;end end end end);end ChatWrapper=v31;local v32=game:GetService("CoreGui");local v33=game:GetService("GuiService");local v34=game:GetService("VirtualInputManager");local function v35() local v300=0;local v301;while true do if ((1 -0)==v300) then for v1911,v1912 in ipairs(v301:GetDescendants()) do if ((v1912.Name=="toggle_mic_mute") and v1912:IsA("Frame")) then return v1912;end end return nil;end if (v300==(0 -0)) then v301=v32:FindFirstChild("TopBarApp");if  not v301 then return nil;end v300=1964 -(556 + 1407) ;end end end local function v36() local v302=0;local v303;local v304;local v305;local v306;local v307;local v308;while true do if (3==v302) then v308=v304.Y + (v305.Y/(1208 -(741 + 465))) + v306.Y ;if (v308<(470 -(170 + 295))) then v308=20;end v302=4;end if (v302==4) then return v307,v308;end if (v302==1) then v304=v303.AbsolutePosition;v305=v303.AbsoluteSize;v302=2;end if (v302==(0 + 0)) then v303=v35();if  not v303 then return nil,nil;end v302=1 + 0 ;end if (v302==2) then v306=v33:GetGuiInset();v307=v304.X + (v305.X/(4 -2)) ;v302=3 + 0 ;end end end local function v37() local v309=0;local v310;while true do if (v309==(1 + 0)) then return  not v310.Active;end if (v309==0) then v310=v12:FindFirstChildOfClass("AudioDeviceInput");if  not v310 then return true;end v309=1;end end end local v38=false;local function v39() local v311=0 + 0 ;local v312;local v313;local v314;local v315;while true do if (v311==(1231 -(957 + 273))) then v314=v37();pcall(function() v34:SendMouseMoveEvent(v312,v313,game);end);task.wait(0.1 + 0 );pcall(function() v34:SendMouseButtonEvent(v312,v313,0 + 0 ,true,game,0);end);v311=2;end if (v311==(7 -5)) then task.wait(0.1 -0 );pcall(function() v34:SendMouseButtonEvent(v312,v313,0,false,game,0);end);task.wait(0.05 -0 );pcall(function() local v1913=workspace.CurrentCamera.ViewportSize;v34:SendMouseMoveEvent(v1913.X/(9 -7) ,v1913.Y/2 ,game);end);v311=3;end if (v311==(1783 -(389 + 1391))) then task.wait(0.2 + 0 );v315=v37();v38=false;return v315~=v314 ;end if (v311==(0 + 0)) then if v38 then return false;end v38=true;v312,v313=v36();if  not v312 then v38=false;return false;end v311=1;end end end local function v40() for v1389=2 -1 ,3 do if  not v37() then return;end local v1390=v35();if  not v1390 then task.wait(953 -(783 + 168) );continue;end v39();task.wait(0.5 -0 );if  not v37() then return;end task.wait(1);end warn("[MicToggle] Failed to unmute after 3 attempts");end local function v41() v22();local v316=v12.Character;if  not v316 then return;end local v317=v316:FindFirstChild("HumanoidRootPart");if  not v317 then return;end local v318,v319,v320,v321,v322,v323,v324,v325,v326,v327,v328,v329=v317.CFrame:GetComponents();local v330=string.format([[
+    -- ALT ACCOUNTS (Fill with your alt usernames)
+    altAccounts         = {
+        ["AltAccount1"] = true,
+        ["AltAccount2"] = true,
+        ["AltAccount3"] = true,
+    },
+
+    -- MUSIC BOT
+    musicPrefix         = "/",
+    musicBotAccount     = "",
+    musicServerURL      = "http://127.0.0.1:5000",
+    musicApiKey         = "",
+    musicGlobalCooldown = 3,
+    musicPlayCooldown   = 10,
+    musicEnableQueue    = true,
+    musicEnableStats    = true,
+    musicEnableVolume   = true,
+
+    -- ANNOUNCEMENTS
+    announceOnLoad      = true,
+
+    -- LOW RAM & PERFORMANCE
+    lowRamMode          = false,
+
+    -- MIC TOGGLE
+    micUnmuteDelay      = 30,
+    micAutoUnmute       = true,
+    micPostRejoinDelay  = 10,
+
+    -- REJOIN & TELEPORT
+    rejoinDelay         = 10,
+    scriptFile          = "DayBreakAltControl.lua",
+    scriptLoadstring    = ""
+}
+
+local defaultSettings = getgenv().Settings
+local userSettings = getgenv().DayBreakSettings or getgenv().Settings or {}
+for k, v in pairs(defaultSettings) do
+    if userSettings[k] == nil then
+        userSettings[k] = v
+    end
+end
+getgenv().Settings = userSettings
+
+-- 0. RE-EXECUTION CLEANUP
+----------------------------------------------------------------
+if _G.DayBreakCleanup then
+    pcall(_G.DayBreakCleanup)
+    task.wait(0.3)
+end
+_G.DayBreakActive     = true
+_G.DayBreakVersion    = "3.1"
+_G.DayBreakConnections = {}
+
+getgenv().TrackConnection = function(conn)
+    if conn then table.insert(_G.DayBreakConnections, conn) end
+    return conn
+end
+
+----------------------------------------------------------------
+-- 0b. BOT POSITION PERSISTENCE
+-- Reads saved position from workspace file on startup.
+-- Live in-server counter still adjusts dynamically.
+----------------------------------------------------------------
+_G.SavedBotPosition = nil
+do
+    local posFile = "DayBreakPos_" .. game:GetService("Players").LocalPlayer.Name .. ".txt"
+    pcall(function()
+        local data = readfile(posFile)
+        if data and tonumber(data) then
+            _G.SavedBotPosition = tonumber(data)
+        end
+    end)
+end
+
+----------------------------------------------------------------
+-- 2. SERVICES & SMART ROLE RESOLUTION
+----------------------------------------------------------------
+local Players           = game:GetService("Players")
+local RunService        = game:GetService("RunService")
+local HttpService       = game:GetService("HttpService")
+local TeleportService   = game:GetService("TeleportService")
+local TextChatService   = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local VirtualUser       = game:GetService("VirtualUser")
+local Lighting          = game:GetService("Lighting")
+local LocalPlayer       = Players.LocalPlayer
+
+local _lpNameLower = LocalPlayer.Name:lower()
+local _mainAccSetting = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
+
+-- Smart Creator & Controller Detection:
+local _isPrimaryCreator = (_lpNameLower == "daybreak" or _lpNameLower == "dayybreak66" or _lpNameLower == "haylees_ekitty" or _lpNameLower == "xomqhayleealt")
+local isMainAccount = false
+
+if _lpNameLower == _mainAccSetting then
+    isMainAccount = true
+elseif (_mainAccSetting == "daybreak" or _mainAccSetting == "your_main_account_username" or _mainAccSetting == "") and _isPrimaryCreator then
+    isMainAccount = true
+end
+
+local isAltAccount = false
+if not isMainAccount then
+    if getgenv().Settings and getgenv().Settings.altAccounts then
+        for a in pairs(getgenv().Settings.altAccounts) do
+            if a:lower() == _lpNameLower then
+                isAltAccount = true
+                break
+            end
+        end
+    end
+    if not isAltAccount and getgenv().Settings and not _isPrimaryCreator then
+        isAltAccount = true
+    end
+end
+
+----------------------------------------------------------------
+-- 3. DYNAMIC BOT INDEXING (Unlimited, Case-Insensitive)
+----------------------------------------------------------------
+local _bc = { list = {}, map = {}, total = 0, lastUpdate = 0 }
+
+local function RefreshBotCache()
+    local now = tick()
+    if now - _bc.lastUpdate < 2 then return end
+    _bc.lastUpdate = now
+    local am, online = getgenv().Settings.altAccounts, {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        local nl = p.Name:lower()
+        for a in pairs(am) do
+            if a:lower() == nl then table.insert(online, nl); break end
+        end
+    end
+    table.sort(online)
+    local m = {}
+    for i, n in ipairs(online) do m[n] = i end
+    _bc.list, _bc.map, _bc.total = online, m, #online
+end
+
+local function MyIndex()
+    RefreshBotCache()
+    return _bc.map[LocalPlayer.Name:lower()] or 0
+end
+
+local function TotalBots()
+    RefreshBotCache()
+    return _bc.total
+end
+
+local function GetOnlineBotNames()
+    RefreshBotCache()
+    return _bc.list
+end
+
+local function SafeIndex()
+    local i = MyIndex()
+    if i > 0 then return i end
+    -- Fallback to saved position from last session (before all bots load in)
+    if _G.SavedBotPosition and _G.SavedBotPosition > 0 then return _G.SavedBotPosition end
+    return 1
+end
+
+local function SafeTotal()
+    local t = TotalBots(); return t > 0 and t or 1
+end
+
+-- Save current position to workspace file (called before rejoin)
+local function SaveBotPosition()
+    pcall(function()
+        local posFile = "DayBreakPos_" .. LocalPlayer.Name .. ".txt"
+        writefile(posFile, tostring(SafeIndex()))
+    end)
+end
+
+----------------------------------------------------------------
+-- 4. DATA INITIALIZATION & PERMANENT WHITELIST
+----------------------------------------------------------------
+-- Permanent Whitelisted Accounts (Always recognized, immune to blacklist)
+local PERMANENT_WHITELIST = {
+    ["daybreak"] = true,
+    ["dayybreak66"] = true,
+    ["haylees_ekitty"] = true,
+    ["Haylees_Ekitty"] = true,
+    ["xomqhayleealt"] = true,
+    ["xOmqhayleealt"] = true,
+}
+
+local CREATOR_ACCOUNTS = PERMANENT_WHITELIST
+
+getgenv().ManualWhitelist = getgenv().ManualWhitelist or {}
+getgenv().ManualWhitelist[getgenv().Settings.mainAccount:lower()] = true
+for cName in pairs(PERMANENT_WHITELIST) do
+    getgenv().ManualWhitelist[cName] = true
+end
+
+local function IsCreator(name)
+    if not name then return false end
+    return PERMANENT_WHITELIST[name:lower()] == true
+end
+
+local function IsWhitelisted(name)
+    if not name then return false end
+    local nl = name:lower()
+    if PERMANENT_WHITELIST[nl] then return true end
+    if getgenv().Settings then
+        if nl == getgenv().Settings.mainAccount:lower() then return true end
+        if getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[nl] then return true end
+    end
+    if getgenv().ManualWhitelist and getgenv().ManualWhitelist[nl] then return true end
+    return false
+end
+
+----------------------------------------------------------------
+-- 5. CHAT DISPATCHER
+----------------------------------------------------------------
+local _lastChatText = nil
+local _lastChatTime = 0
+local function ChatSend(text)
+    local now = os.clock()
+    if text == _lastChatText and (now - _lastChatTime) < 0.25 then
+        return
+    end
+    _lastChatText = text
+    _lastChatTime = now
+
+    pcall(function()
+        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            local ch = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+            if ch then ch:SendAsync(text) end
+        else
+            local r = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+            local s = r and r:FindFirstChild("SayMessageRequest")
+            if s then s:FireServer(text, "All") end
+        end
+    end)
+end
+ChatWrapper = ChatSend
+
+----------------------------------------------------------------
+-- 5b. MIC TOGGLE ENGINE (VIM Hover + Click)
+-- Confirmed working: must SendMouseMoveEvent first (hover),
+-- then SendMouseButtonEvent (click). React needs hover state.
+----------------------------------------------------------------
+local CoreGui = game:GetService("CoreGui")
+local GuiService = game:GetService("GuiService")
+local VIM = game:GetService("VirtualInputManager")
+
+local function findMicFrame()
+    local topBarApp = CoreGui:FindFirstChild("TopBarApp")
+    if not topBarApp then return nil end
+    for _, desc in ipairs(topBarApp:GetDescendants()) do
+        if desc.Name == "toggle_mic_mute" and desc:IsA("Frame") then
+            return desc
+        end
+    end
+    return nil
+end
+
+local function getMicScreenPos()
+    local micFrame = findMicFrame()
+    if not micFrame then return nil, nil end
+    local absPos = micFrame.AbsolutePosition
+    local absSize = micFrame.AbsoluteSize
+    local guiInset = GuiService:GetGuiInset()
+    local cx = absPos.X + (absSize.X / 2)
+    local cy = absPos.Y + (absSize.Y / 2) + guiInset.Y
+    if cy < 5 then cy = 20 end
+    return cx, cy
+end
+
+local function isMicMuted()
+    local adi = LocalPlayer:FindFirstChildOfClass("AudioDeviceInput")
+    if not adi then return true end
+    return not adi.Active
+end
+
+local _micToggling = false
+local function doMicToggle()
+    if _micToggling then return false end
+    _micToggling = true
+    local cx, cy = getMicScreenPos()
+    if not cx then _micToggling = false; return false end
+    local wasMuted = isMicMuted()
+    pcall(function() VIM:SendMouseMoveEvent(cx, cy, game) end)
+    task.wait(0.1)
+    pcall(function() VIM:SendMouseButtonEvent(cx, cy, 0, true, game, 0) end)
+    task.wait(0.1)
+    pcall(function() VIM:SendMouseButtonEvent(cx, cy, 0, false, game, 0) end)
+    -- Move mouse away to prevent hover sticking
+    task.wait(0.05)
+    pcall(function()
+        local vp = workspace.CurrentCamera.ViewportSize
+        VIM:SendMouseMoveEvent(vp.X / 2, vp.Y / 2, game)
+    end)
+    task.wait(0.2)
+    local nowMuted = isMicMuted()
+    _micToggling = false
+    return nowMuted ~= wasMuted
+end
+
+local function doMicUnmute()
+    -- Retry up to 3 times with 1s gaps
+    for attempt = 1, 3 do
+        if not isMicMuted() then return end -- Already unmuted
+        local micFrame = findMicFrame()
+        if not micFrame then
+            -- Mic frame not loaded yet, wait and retry
+            task.wait(2)
+            continue
+        end
+        doMicToggle()
+        task.wait(0.5)
+        if not isMicMuted() then return end -- Success
+        task.wait(1) -- Wait before retry
+    end
+    warn("[MicToggle] Failed to unmute after 3 attempts")
+end
+
+----------------------------------------------------------------
+-- 5c. VCB ENGINE (Removed)
+----------------------------------------------------------------
+
+----------------------------------------------------------------
+-- 5d. REJOIN & TELEPORT ENGINE
+-- Saves CFrame, queues teleport script, rejoins same server.
+----------------------------------------------------------------
+local function doRejoinTP()
+    -- Save bot position before rejoin so it remembers on re-execution
+    SaveBotPosition()
+
+    local char = LocalPlayer.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local x, y, z, r00, r01, r02, r10, r11, r12, r20, r21, r22 = hrp.CFrame:GetComponents()
+
+    local teleportCode = string.format([[
         local targetCFrame = CFrame.new(%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f)
         local Players = game:GetService("Players")
         local LP = Players.LocalPlayer
@@ -19,4 +361,5376 @@ getgenv().Settings={prefix="!",mainAccount="DayBreak",fpsCap=39 -29 ,altAccounts
         end
         if LP.Character then tpChar(LP.Character) end
         LP.CharacterAdded:Connect(tpChar)
-    ]],v318,v319,v320,v321,v322,v323,v324,v325,v326,v327,v328,v329);local v331=queue_on_teleport or (syn and syn.queue_on_teleport) or queueonteleport ;if v331 then local v1621=0 + 0 ;local v1622;local v1623;while true do if (v1621==(312 -(309 + 2))) then v1623=getgenv().Settings.scriptFile or "" ;if (v1623~="") then local v2344='task.wait(3); pcall(function() loadstring(readfile("'   .. v1623   .. '"))() end)' ;v331(v2344);elseif (v1622~="") then local v2538='task.wait(3); pcall(function() loadstring(game:HttpGet("'   .. v1622   .. '"))() end)' ;v331(v2538);end break;end if (v1621==(0 -0)) then v331(v330);v1622=getgenv().Settings.scriptLoadstring or "" ;v1621=1;end end end pcall(function() v7:TeleportToPlaceInstance(game.PlaceId,game.JobId,v12);end);end local v42={lastCommandTime={},lastPlayTime={}};local function v43() return v12.Name==getgenv().Settings.musicBotAccount ;end local function v44() if v43() then return true;end if  not v4:FindFirstChild(getgenv().Settings.musicBotAccount) then local v1624=0;while true do if ((1212 -(1090 + 122))==v1624) then v16();return ( #v15.list>(0 + 0)) and (v15.list[1]==v12.Name:lower()) ;end end end return false;end local function v45(v332) if v44() then task.spawn(function() v31(v332);end);end end local function v46(v333,v334) if  not v44() then return nil;end v334=v334 or {} ;local v335=getgenv().Settings.musicServerURL   .. v333 ;local v336={};for v1391,v1392 in pairs(v334) do table.insert(v336,v1391   .. "="   .. v6:UrlEncode(tostring(v1392)) );end if ( #v336>0) then v335=v335   .. "?"   .. table.concat(v336,"&") ;end local v337=(syn and syn.request) or http_request or request ;if  not v337 then return nil;end for v1393=3 -2 ,3 + 0  do local v1394,v1395=pcall(function() return v337({Url=v335,Method="GET",Headers={["X-API-Key"]=getgenv().Settings.musicApiKey,["Content-Type"]="application/json"}});end);if v1394 then local v1800=0;while true do if (0==v1800) then if (v1395.StatusCode==401) then v45("❌ API key error");return nil;end if ((v1395.StatusCode>=200) and (v1395.StatusCode<500)) then local v2468,v2469=pcall(function() return v6:JSONDecode(v1395.Body);end);if v2468 then return v2469;end end break;end end end if (v1393<3) then task.wait((1120 -(628 + 490)) * v1393 );end end return nil;end local function v47(v338,v339) local v340=0;local v341;while true do if (v340==0) then if ( not v338 or (v338=="")) then return v339;end v341=v338:lower();v340=1;end if (v340==(1 + 1)) then if (v341=="all") then return nil;end for v1914,v1915 in ipairs(v4:GetPlayers()) do if ((v1915.Name:lower():sub(2 -1 , #v338)==v341) or (v1915.DisplayName:lower():sub(4 -3 , #v338)==v341)) then return v1915;end end v340=3;end if (v340==(777 -(431 + 343))) then return nil;end if (v340==(1 -0)) then if (v341=="me") then return v339;end if (v341=="random") then local v2110=0 -0 ;local v2111;while true do if (0==v2110) then v2111=v4:GetPlayers();return (( #v2111>(0 + 0)) and v2111[math.random( #v2111)]) or nil ;end end end v340=1 + 1 ;end end end local function v48(v342,v343,v344) local v345,v346=v344,nil;if v342[2] then local v1625=tonumber(v342[1697 -(556 + 1139) ]);if v1625 then local v1916=0;while true do if (v1916==0) then v345=v1625;v346=v342[18 -(6 + 9) ];break;end end else v346=v342[2];end end return v345,v47(v346,v343);end local function v49(v347,v348,v349,v350) local v351=0 + 0 ;local v352;local v353;local v354;while true do if (v351==0) then v352,v353,v354=v349,v350,nil;if v347[2 + 0 ] then local v2112=169 -(28 + 141) ;local v2113;while true do if (v2112==(0 + 0)) then v2113=tonumber(v347[2]);if v2113 then v352=v2113;if v347[3 -0 ] then local v2690=tonumber(v347[3 + 0 ]);if v2690 then v353=v2690;v354=v347[1321 -(486 + 831) ];else v354=v347[7 -4 ];end end else v354=v347[6 -4 ];end break;end end end v351=1 + 0 ;end if (v351==(3 -2)) then return v352,v353,v47(v354,v348);end end end local function v50(v355) return (v355[2]==nil) or (v355[2]=="") ;end local function v51(v356) local v357=0;local v358;while true do if (v357==1) then if v358 then local v2114=1263 -(668 + 595) ;local v2115;local v2116;local v2117;while true do if (v2114==(0 + 0)) then v2115=tonumber(v358);v2116=v20();v2114=1 + 0 ;end if (v2114==2) then if (v2116~=v2115) then return false,v2117;end return true,v2117;end if (v2114==(2 -1)) then v2117={v356[1945 -(1129 + 815) ]};for v2539=390 -(371 + 16) , #v356 do table.insert(v2117,v356[v2539]);end v2114=2;end end end return true,v356;end if (v357==0) then if  not v356[1752 -(1326 + 424) ] then return true,v356;end v358=v356[3 -1 ]:lower():match("^bot(%d+)$");v357=3 -2 ;end end end local function v52() local v359=118 -(88 + 30) ;local v360;while true do if ((771 -(720 + 51))==v359) then v360=v12.Idled:Connect(function() local v1918=0 -0 ;while true do if ((1776 -(421 + 1355))==v1918) then v10:CaptureController();v10:ClickButton2(Vector2.new());break;end end end);getgenv().TrackConnection(v360);v359=1 -0 ;end if (v359==1) then task.spawn(function() while _G.DayBreakActive do local v2118=0 + 0 ;while true do if (v2118==(1083 -(286 + 797))) then task.wait(219 -159 );pcall(function() v10:CaptureController();v10:ClickButton2(Vector2.new());end);break;end end end end);break;end end end _G.CurrentCommand="None";_G.ScriptStartTime=tick();_G.Spamming=false;_G.CurrentSpamID=nil;_G.AntiVoidActive=false;_G.AVPlatform=nil;_G.SpeedLock=nil;_G.NoclipEnabled=false;_G.NoclipConn=nil;_G.NoclipOriginals={};_G.LoopCloneActive=false;_G.IsPlaying=false;_G.MusicQueue={};_G.GrabActive=false;local function v53() local v361=0 -0 ;local v362;local v363;local v364;while true do if (v361==3) then if v364 then local v2119=0;while true do if (v2119==(439 -(397 + 42))) then v364.AutoRotate=true;if  not _G.SpeedLock then v364.WalkSpeed=5 + 11 ;end v2119=801 -(24 + 776) ;end if (1==v2119) then pcall(function() local v2540=0;local v2541;while true do if (v2540==(0 -0)) then v2541=v364:FindFirstChildOfClass("Animator");if v2541 then for v2805,v2806 in pairs(v2541:GetPlayingAnimationTracks()) do if (v2806.Priority==Enum.AnimationPriority.Action) then v2806:Stop(0);end end end break;end end end);break;end end end break;end if (v361==(786 -(222 + 563))) then _G.EmoteDebounce=false;if _G.EmoteFreezeConn then _G.EmoteFreezeConn:Disconnect();_G.EmoteFreezeConn=nil;end if _G.CurrentEmoteTrack then local v2120=0;while true do if (v2120==(1 -0)) then _G.CurrentEmoteTrack=nil;break;end if (v2120==0) then pcall(function() _G.CurrentEmoteTrack:Stop(0 + 0 );end);pcall(function() _G.CurrentEmoteTrack:Destroy();end);v2120=191 -(23 + 167) ;end end end if _G.StackPart then pcall(function() _G.StackPart:Destroy();end);_G.StackPart=nil;end v361=1800 -(690 + 1108) ;end if (v361==(1 + 1)) then v362=v12.Character;v363=v362 and v362:FindFirstChild("HumanoidRootPart") ;v364=v362 and v362:FindFirstChild("Humanoid") ;if v363 then local v2121=0;while true do if (v2121==0) then v363.Velocity=Vector3.zero;v363.RotVelocity=Vector3.zero;v2121=1 + 0 ;end if (v2121==(849 -(40 + 808))) then v363.Anchored=false;break;end end end v361=3;end if (v361==(0 + 0)) then _G.CurrentCommand="None";_G.IsPlaying=false;_G.MusicQueue={};_G.CurrentEmoteCommand=nil;v361=3 -2 ;end end end _G.DayBreakCleanup=function() local v365=0 + 0 ;while true do if (v365==3) then for v1919,v1920 in ipairs(_G.DayBreakConnections or {} ) do pcall(function() v1920:Disconnect();end);end _G.DayBreakConnections={};pcall(function() local v1921=v12:FindFirstChild("PlayerGui");if v1921 then local v2281=0 + 0 ;local v2282;while true do if (v2281==(0 + 0)) then v2282=v1921:FindFirstChild("DayBreakCommandGUI");if v2282 then v2282:Destroy();end break;end end end end);_G.CurrentCommand="None";v365=575 -(47 + 524) ;end if (v365==(2 + 0)) then for v1922,v1923 in pairs(_G.NoclipOriginals or {} ) do if (v1922 and v1922.Parent) then pcall(function() v1922.CanCollide=v1923;end);end end _G.NoclipOriginals={};if _G.AVPlatform then pcall(function() _G.AVPlatform:Destroy();end);_G.AVPlatform=nil;end v53();v365=8 -5 ;end if (v365==(0 -0)) then _G.DayBreakActive=false;_G.Spamming=false;_G.CurrentSpamID=nil;_G.AntiVoidActive=false;v365=2 -1 ;end if (v365==1) then _G.SpeedLock=nil;_G.NoclipEnabled=false;_G.LoopCloneActive=false;if _G.NoclipConn then pcall(function() _G.NoclipConn:Disconnect();end);_G.NoclipConn=nil;end v365=2;end if (v365==4) then _G.ScanInProgress=false;_G.MemoryLock=nil;_G.CPULock=nil;_G.GrabActive=false;break;end end end;local v54={};v54.stop=function(v366,v367) v53();end;v54.unall=v54.stop;v54.whitelist=function(v368,v369) local v370=v47(v368[1728 -(1165 + 561) ],v369);if v370 then local v1626=pcall(function() getgenv().ManualWhitelist[v370.Name:lower()]=true;end);if (v20()==(1 + 0)) then if v1626 then v31("Whitelisted "   .. v370.Name );else v31("Whitelist Fail");end end elseif (v20()==(3 -2)) then v31("Whitelist Fail");end end;v54.blacklist=function(v371,v372) local v373=v47(v371[1 + 1 ],v372);if v373 then local v1627=0;local v1628;while true do if (v1627==0) then v1628=v373.Name:lower();if v27(v1628) then if (v20()==(480 -(341 + 138))) then v31("Cannot blacklist Creator");end return;end v1627=1;end if (v1627==(1 + 0)) then if (v1628~=getgenv().Settings.mainAccount:lower()) then local v2347=0;while true do if (v2347==0) then getgenv().ManualWhitelist[v1628]=nil;if (v20()==1) then v31("Blacklisted "   .. v373.Name );end break;end end end break;end end end end;v54.noclip=function(v374,v375) local v376=0 -0 ;local v377;while true do if ((327 -(89 + 237))==v376) then _G.NoclipEnabled=true;_G.NoclipOriginals={};v376=6 -4 ;end if (v376==(3 -1)) then v377=v12.Character;if v377 then for v2283,v2284 in ipairs(v377:GetDescendants()) do if v2284:IsA("BasePart") then _G.NoclipOriginals[v2284]=v2284.CanCollide;end end end v376=884 -(581 + 300) ;end if (v376==0) then if  not v50(v374) then return;end if _G.NoclipEnabled then return;end v376=1221 -(855 + 365) ;end if (v376==(6 -3)) then _G.NoclipConn=v5.Stepped:Connect(function() if  not _G.NoclipEnabled then return;end local v1924=v12.Character;if v1924 then for v2348,v2349 in ipairs(v1924:GetDescendants()) do if v2349:IsA("BasePart") then if (_G.NoclipOriginals[v2349]==nil) then _G.NoclipOriginals[v2349]=v2349.CanCollide;end v2349.CanCollide=false;end end end end);getgenv().TrackConnection(_G.NoclipConn);break;end end end;v54.clip=function(v378,v379) local v380=0 + 0 ;while true do if (v380==1) then if _G.NoclipConn then local v2122=1235 -(1030 + 205) ;while true do if (v2122==(0 + 0)) then pcall(function() _G.NoclipConn:Disconnect();end);_G.NoclipConn=nil;break;end end end for v1925,v1926 in pairs(_G.NoclipOriginals or {} ) do if (v1925 and v1925.Parent) then pcall(function() v1925.CanCollide=v1926;end);end end v380=2;end if (v380==(0 + 0)) then if  not v50(v378) then return;end _G.NoclipEnabled=false;v380=1;end if (v380==2) then _G.NoclipOriginals={};break;end end end;v54.ws=function(v381,v382) local v383=tonumber(v381[2]);if  not v383 then v54.unws(v381,v382);return;end local v384=v12.Character and v12.Character:FindFirstChild("Humanoid") ;if v384 then local v1629=286 -(156 + 130) ;while true do if ((0 -0)==v1629) then if v384.Sit then v384.Sit=false;end v384.WalkSpeed=v383;v1629=1 -0 ;end if (v1629==(1 -0)) then _G.SpeedLock=v383;task.spawn(function() local v2285=0;local v2286;while true do if (0==v2285) then v2286=v383;while _G.SpeedLock==v2286  do local v2592=0;local v2593;while true do if (v2592==(0 + 0)) then v2593=v12.Character and v12.Character:FindFirstChild("Humanoid") ;if (v2593 and (v2593.WalkSpeed~=v2286)) then v2593.WalkSpeed=v2286;end v2592=1 + 0 ;end if (v2592==(70 -(10 + 59))) then task.wait(0.5 + 0 );break;end end end break;end end end);break;end end end end;v54.speed=v54.ws;v54.unws=function(v385,v386) local v387=0;local v388;while true do if (v387==(4 -3)) then if v388 then v388.WalkSpeed=1179 -(671 + 492) ;end break;end if ((0 + 0)==v387) then _G.SpeedLock=nil;v388=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v387=1;end end end;v54.unspeed=v54.unws;v54.antivoid=function(v389,v390) local v391=1215 -(369 + 846) ;local v392;while true do if (v391==2) then v392.CanCollide=true;v392.Parent=workspace;_G.AVPlatform=v392;task.spawn(function() local v1927=0 + 0 ;while true do if (v1927==0) then while _G.AntiVoidActive do local v2476=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if (v2476 and _G.AVPlatform) then _G.AVPlatform.CFrame=CFrame.new(v2476.Position.X,0 + 0 ,v2476.Position.Z);end v5.Heartbeat:Wait();end if _G.AVPlatform then pcall(function() _G.AVPlatform:Destroy();end);_G.AVPlatform=nil;end break;end end end);break;end if (v391==(1945 -(1036 + 909))) then if  not v50(v389) then return;end if _G.AntiVoidActive then return;end _G.AntiVoidActive=true;v392=Instance.new("Part");v391=1 + 0 ;end if (v391==1) then v392.Name="DayBreakAntiVoid";v392.Size=Vector3.new(3438 -1390 ,204 -(11 + 192) ,1035 + 1013 );v392.Transparency=1;v392.Anchored=true;v391=2;end end end;v54.unantivoid=function(v393,v394) if  not v50(v393) then return;end _G.AntiVoidActive=false;if _G.AVPlatform then local v1630=0;while true do if (v1630==(175 -(135 + 40))) then pcall(function() _G.AVPlatform:Destroy();end);_G.AVPlatform=nil;break;end end end end;v54.spam=function(v395,v396) _G.Spamming=false;task.wait(0.1);local v397=tonumber(v395[4 -2 ]);local v398=v397 or (1 + 0) ;local v399=(v397 and table.concat(v395," ",6 -3 )) or table.concat(v395," ",2) ;if (v399~="") then local v1631=0 -0 ;local v1632;while true do if ((176 -(50 + 126))==v1631) then _G.Spamming=true;v1632=tick();v1631=1;end if (v1631==(2 -1)) then _G.CurrentSpamID=v1632;task.spawn(function() while _G.Spamming and (_G.CurrentSpamID==v1632)  do v31(v399);task.wait(v398);end end);break;end end end end;v54.unspam=function(v400,v401) local v402=0 + 0 ;while true do if (v402==(1415 -(1233 + 180))) then _G.CurrentSpamID=nil;break;end if (v402==0) then if  not v50(v400) then return;end v54.mimic=function(v1928,v1929) local v1930=969 -(522 + 447) ;local v1931;local v1932;local v1933;while true do if (0==v1930) then v1931,v1932=v51(v1928);if  not v1931 then return;end v1930=1422 -(107 + 1314) ;end if (v1930==(1 + 0)) then v1933=v47(v1932[5 -3 ],v1929);if  not v1933 then return;end v1930=1 + 1 ;end if (v1930==(3 -1)) then _G.Mimicking=true;_G.MimicTarget=v1933.Name:lower();break;end end end;v402=3 -2 ;end if (v402==(1911 -(716 + 1194))) then v54.unmimic=function(v1934,v1935) local v1936=0 + 0 ;while true do if ((1 + 0)==v1936) then _G.MimicTarget=nil;break;end if (v1936==(503 -(74 + 429))) then if  not v50(v1934) then return;end _G.Mimicking=false;v1936=1 -0 ;end end end;_G.Spamming=false;v402=2;end end end;v54.circle=function(v403,v404) local v405=0 + 0 ;local v406;local v407;local v408;local v409;local v410;local v411;local v412;local v413;while true do if (3==v405) then v412=v407.Character:FindFirstChild("HumanoidRootPart");v413=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v405=8 -4 ;end if (v405==1) then v408,v409=v20(),v21();v406=v406 or math.max(6 + 2 ,v409 * (2.2 -1) ) ;v405=2;end if (v405==2) then v410=(v408/v409) * (4 -2) * math.pi ;v411=Vector3.new(math.cos(v410) * v406 ,433 -(279 + 154) ,math.sin(v410) * v406 );v405=781 -(454 + 324) ;end if (v405==(4 + 0)) then if (v412 and v413) then v413.CFrame=CFrame.new(v412.Position + v411 ,v412.Position);end break;end if (v405==0) then v406,v407=v48(v403,v404,nil);if ( not v407 or  not v407.Character or  not v407.Character:FindFirstChild("HumanoidRootPart")) then return;end v405=18 -(12 + 5) ;end end end;v54.loopcircle=function(v414,v415) local v416=0;local v417;local v418;while true do if (v416==(2 + 0)) then task.spawn(function() while (_G.CurrentCommand=="LoopCircle") and v418 and v418.Character  do local v2126,v2127=v20(),v21();local v2128=v417 or math.max(20 -12 ,v2127 * (1.2 + 0) ) ;local v2129=(v2126/v2127) * (1095 -(277 + 816)) * math.pi ;local v2130=Vector3.new(math.cos(v2129) * v2128 ,0,math.sin(v2129) * v2128 );local v2131=v418.Character and v418.Character:FindFirstChild("HumanoidRootPart") ;local v2132=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if (v2131 and v2132) then v2132.CFrame=CFrame.new(v2131.Position + v2130 ,v2131.Position);end task.wait();end end);break;end if (v416==(4 -3)) then v53();_G.CurrentCommand="LoopCircle";v416=1185 -(1058 + 125) ;end if (v416==0) then v417,v418=v48(v414,v415,nil);if ( not v418 or  not v418.Character) then return;end v416=1;end end end;local v71={rline=Vector3.new(4,0 + 0 ,975 -(815 + 160) ),lline=Vector3.new( -(17 -13),0 -0 ,0 + 0 ),fline=Vector3.new(0 -0 ,1898 -(41 + 1857) , -(1897 -(1222 + 671))),bline=Vector3.new(0 -0 ,0 -0 ,4)};local function v72(v419,v420,v421) local v422=1182 -(229 + 953) ;local v423;local v424;local v425;local v426;local v427;local v428;while true do if (v422==(1778 -(1111 + 663))) then if v421 then local v2133=1579 -(874 + 705) ;while true do if (v2133==0) then v53();_G.CurrentCommand="LoopLine";v2133=1 + 0 ;end if ((1 + 0)==v2133) then task.spawn(function() while (_G.CurrentCommand=="LoopLine") and v426 and v426.Character  do local v2594=v426.Character:FindFirstChild("HumanoidRootPart");local v2595=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if (v2594 and v2595) then local v2691=0 -0 ;while true do if (v2691==0) then v2595.CFrame=v2594.CFrame * v428 ;v2595.Velocity=Vector3.zero;break;end end end v5.Heartbeat:Wait();end end);break;end end else local v2134=v426.Character:FindFirstChild("HumanoidRootPart");local v2135=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if (v2134 and v2135) then v2135.CFrame=v2134.CFrame * v428 ;v2135.Velocity=Vector3.zero;end end break;end if ((1 + 2)==v422) then v427=v20();v428=CFrame.new(v425 * v427 );v422=683 -(642 + 37) ;end if (v422==(1 + 0)) then v425=v71[v424];if  not v425 then return;end v422=1 + 1 ;end if ((4 -2)==v422) then v426=v47(v419[456 -(233 + 221) ],v420);if ( not v426 or  not v426.Character or  not v426.Character:FindFirstChild("HumanoidRootPart")) then return;end v422=3;end if (v422==(0 -0)) then v423=v419[1 + 0 ]:lower():sub( #getgenv().Settings.prefix + 1 );v424=(v421 and v423:sub(5)) or v423 ;v422=1542 -(718 + 823) ;end end end for v429 in pairs(v71) do v54[v429]=function(v1396,v1397) v72(v1396,v1397,false);end;v54["loop"   .. v429 ]=function(v1398,v1399) v72(v1398,v1399,true);end;end _G.CurrentEmoteTrack=nil;_G.EmoteDebounce=false;local function v73() if _G.CurrentEmoteTrack then pcall(function() _G.CurrentEmoteTrack:Stop(0 + 0 );end);pcall(function() _G.CurrentEmoteTrack:Destroy();end);_G.CurrentEmoteTrack=nil;end end local function v74() local v432=805 -(266 + 539) ;local v433;local v434;while true do if (v432==3) then if v434 then local v2136=v434:FindFirstChildOfClass("Animator");if v2136 then for v2477,v2478 in pairs(v2136:GetPlayingAnimationTracks()) do if (v2478.Priority==Enum.AnimationPriority.Action) then pcall(function() v2478:Stop(0 -0 );end);end end end end break;end if (v432==(1225 -(636 + 589))) then _G.CurrentEmoteCommand=nil;_G.EmoteDebounce=false;v432=2 -1 ;end if (v432==2) then v433=v12.Character;v434=v433 and v433:FindFirstChildOfClass("Humanoid") ;v432=3;end if (v432==(1 -0)) then if _G.EmoteFreezeConn then pcall(function() _G.EmoteFreezeConn:Disconnect();end);_G.EmoteFreezeConn=nil;end v73();v432=2 + 0 ;end end end local v75={};local function v76(v435) if ( not v435 or (v435=="")) then return nil;end local v436=v435:lower();if v75[v436] then return v75[v436];end if _G.DayBreakEmoteCatalog then for v1814,v1815 in ipairs(_G.DayBreakEmoteCatalog) do local v1816=0 + 0 ;local v1817;while true do if ((1015 -(657 + 358))==v1816) then v1817=tostring(v1815.name or "" ):lower();if ((v1817==v436) or v1817:find(v436,2 -1 ,true)) then v75[v436]=tonumber(v1815.id);return tonumber(v1815.id);end break;end end end end return nil;end local function v77(v437,v438) local v439=v12.Character;if  not v439 then return false;end local v440=v439:FindFirstChildOfClass("Humanoid");if  not v440 then return false;end local v441=v440:FindFirstChildOfClass("Animator");v73();local v442=pcall(function() if (v438 and v440:FindFirstChild("PlayEmote")) then local v1818=0 -0 ;while true do if (v1818==(1187 -(1151 + 36))) then v440:PlayEmote(v438);return true;end end end end);if v442 then return true;end if (v441 and v437) then local v1633=0 + 0 ;local v1634;local v1635;local v1636;while true do if (1==v1633) then v1635,v1636=pcall(function() return v441:LoadAnimation(v1634);end);if (v1635 and v1636) then v1636.Priority=Enum.AnimationPriority.Action4;v1636.Looped=true;v1636:Play(0.15 + 0 );_G.CurrentEmoteTrack=v1636;return true;end break;end if (v1633==(0 -0)) then v1634=Instance.new("Animation");v1634.AnimationId="rbxassetid://"   .. tostring(v437) ;v1633=1833 -(1552 + 280) ;end end end local v443=v439:FindFirstChild("Animate");if (v443 and v443:FindFirstChild("playEmote")) then local v1637=834 -(64 + 770) ;local v1638;while true do if (v1637==(0 + 0)) then v1638=pcall(function() v443.playEmote:Invoke(v438 or tostring(v437) );end);if v1638 then return true;end break;end end end return false;end v54.sync=function(v444,v445) local v446,v447=v51(v444);if  not v446 then return;end local v448=table.concat(v447," ",4 -2 ):lower();if (v448=="") then return;end local v449=v76(v448);if  not v449 then local v1639=0 + 0 ;while true do if (0==v1639) then if (v20()==1) then v31("Emote not found in catalog");end return;end end end local v450=_G.CurrentEmoteCommand~=nil ;v74();if v450 then local v1640=v12.Character and v12.Character:FindFirstChildOfClass("Humanoid") ;if v1640 then v1640.Jump=true;end task.wait(0.2);end _G.CurrentEmoteCommand=v449;local v451=v20();task.spawn(function() local v1400=1243 -(157 + 1086) ;while true do if (v1400==(0 -0)) then task.wait((v451-(4 -3)) * (0.08 -0) );if ((_G.CurrentEmoteCommand==v449) and _G.DayBreakActive) then v77(v449,v448);end break;end end end);end;v54.emote=v54.sync;v54.dance=function(v452,v453) local v454=(v452[2 -0 ] and tostring(v452[821 -(599 + 220) ]):lower()) or "1" ;if ((v454=="1") or (v454=="")) then v54.sync({"!sync","dance"},v453);elseif (v454=="2") then v54.sync({"!sync","dance2"},v453);elseif (v454=="3") then v54.sync({"!sync","dance3"},v453);else v54.sync(v452,v453);end end;v54.unemote=function(v455,v456) v73();v74();local v457=v12.Character and v12.Character:FindFirstChildOfClass("Humanoid") ;if v457 then v457.Jump=true;end if (v20()==1) then v31("Emotes stopped");end end;v54.jump=function(v458,v459) local v460=1217 -(841 + 376) ;local v461;local v462;local v463;while true do if ((2 -0)==v460) then if v463 then v463.Jump=true;end break;end if (v460==(0 + 0)) then v461,v462=v51(v458);if  not v461 then return;end v460=2 -1 ;end if ((860 -(464 + 395))==v460) then v74();v463=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v460=5 -3 ;end end end;v54.sit=function(v464,v465) local v466=0;local v467;while true do if ((1 + 0)==v466) then if v467 then v467.Sit=true;end break;end if (v466==0) then if  not v50(v464) then return;end v467=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v466=838 -(467 + 370) ;end end end;v54.wonder=function(v468,v469) local v470=0 -0 ;while true do if (v470==0) then if  not v50(v468) then return;end v53();v470=1 + 0 ;end if (v470==(3 -2)) then _G.CurrentCommand="Wonder";task.spawn(function() while _G.CurrentCommand=="Wonder"  do local v2140=0 + 0 ;local v2141;local v2142;local v2143;while true do if (v2140==(2 -1)) then v2143=v2141 and v2141:FindFirstChild("HumanoidRootPart") ;if (v2142 and v2143) then if v2142.Sit then v2142.Sit=false;end local v2596=Random.new(tick() + v20() );v2142:MoveTo(v2143.Position + Vector3.new(v2596:NextNumber( -(550 -(150 + 370)),1312 -(74 + 1208) ),0,v2596:NextNumber( -30,73 -43 )) );local v2597,v2598,v2599=false,0 -0 ,nil;v2599=v2142.MoveToFinished:Connect(function() v2597=true;end);repeat task.wait(0.1 + 0 );v2598+=0.1 until v2597 or (_G.CurrentCommand~="Wonder") or (v2598>10)  if v2599 then v2599:Disconnect();end end v2140=2;end if (v2140==(390 -(14 + 376))) then v2141=v12.Character;v2142=v2141 and v2141:FindFirstChild("Humanoid") ;v2140=1 -0 ;end if (v2140==2) then task.wait(math.random(1 + 0 ,2));break;end end end end);break;end end end;v54["goto"]=function(v471,v472) local v473=0;local v474;local v475;while true do if (v473==0) then v474=v47(v471[2 + 0 ],v472);if ( not v474 or  not v474.Character or  not v474.Character:FindFirstChild("HumanoidRootPart")) then return;end v473=1 + 0 ;end if ((2 -1)==v473) then v475=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v475 then local v2144=0 + 0 ;local v2145;local v2146;local v2147;while true do if (v2144==(79 -(23 + 55))) then v475.CFrame=v474.Character.HumanoidRootPart.CFrame * CFrame.new(math.cos(v2147) * 6 ,0,math.sin(v2147) * 6 ) * CFrame.Angles(0 -0 ,v2147 + math.pi ,0) ;break;end if (v2144==0) then v2145,v2146=v20(),v21();v2147=(v2145/v2146) * math.pi * 2 ;v2144=1 + 0 ;end end end break;end end end;v54.follow=function(v476,v477) v53();task.wait(0.1);local v478=v47(v476[2],v477);if ( not v478 or  not v478.Character) then return;end _G.CurrentCommand="Follow";task.spawn(function() while (_G.CurrentCommand=="Follow") and v478 and v478.Character  do local v1642=0;local v1643;local v1644;local v1645;local v1646;while true do if (v1642==2) then if (v1644 and v1645 and v1646) then if v1644.Sit then v1644.Sit=false;end local v2359,v2360=v20(),v21();local v2361=(v2359/v2360) * math.pi * (2 + 0) ;local v2362=v1646.Position + Vector3.new(math.cos(v2361) * (7 -2) ,0 + 0 ,math.sin(v2361) * (906 -(652 + 249)) ) ;if ((v1645.Position-v2362).Magnitude>(133 -83)) then v1645.CFrame=CFrame.new(v2362,v1646.Position);else v1644:MoveTo(v2362);end if ((v1645.Position-v2362).Magnitude<3) then local v2545=1868 -(708 + 1160) ;local v2546;while true do if (v2545==(0 -0)) then v2546=v1645.Position-v1646.Position ;if (v2546.Magnitude>(0.1 -0)) then local v2778=v1645.Position + (Vector3.new(v2546.X,27 -(10 + 17) ,v2546.Z).Unit * (3 + 7)) ;v1645.CFrame=CFrame.new(v1645.Position,v2778);end break;end end end end task.wait(1732.15 -(1400 + 332) );break;end if (v1642==(1 -0)) then v1645=v1643 and v1643:FindFirstChild("HumanoidRootPart") ;v1646=v478.Character and v478.Character:FindFirstChild("HumanoidRootPart") ;v1642=2;end if (v1642==0) then v1643=v12.Character;v1644=v1643 and v1643:FindFirstChild("Humanoid") ;v1642=1909 -(242 + 1666) ;end end end end);end;v54.bring=function(v479,v480) local v481=v47(v479[1 + 1 ],v480);if ( not v481 or  not v481.Character or  not v481.Character:FindFirstChild("HumanoidRootPart")) then return;end local v482=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v482 then local v1647=0 + 0 ;local v1648;local v1649;local v1650;local v1651;local v1652;local v1653;local v1654;while true do if (v1647==(0 + 0)) then v1648,v1649=v20(),v21();v1650=math.ceil(math.sqrt(v1649));v1647=1;end if (v1647==2) then v1653=(v1652-((v1650-(941 -(850 + 90)))/(3 -1))) * 4 ;v1654=(v1651 + 1) * (1394 -(360 + 1030)) ;v1647=3 + 0 ;end if ((2 -1)==v1647) then v1651=math.floor((v1648-(1 -0))/v1650 );v1652=(v1648-(1662 -(909 + 752)))%v1650 ;v1647=2;end if (v1647==(1226 -(109 + 1114))) then v482.CFrame=v481.Character.HumanoidRootPart.CFrame * CFrame.new(v1653,0 -0 ,v1654) ;v482.Velocity=Vector3.zero;break;end end end end;v54.rest=function(v483,v484) if  not v50(v483) then return;end local v485=v12.Character;if v485 then v485:BreakJoints();end end;v54.walkto=function(v486,v487) v53();task.wait(0.1 + 0 );local v488=v47(v486[244 -(6 + 236) ],v487);if ( not v488 or  not v488.Character) then return;end _G.CurrentCommand="WalkTo";task.spawn(function() while (_G.CurrentCommand=="WalkTo") and v488 and v488.Character  do local v1655=0 + 0 ;local v1656;local v1657;local v1658;local v1659;while true do if (v1655==1) then v1658=v1656 and v1656:FindFirstChild("HumanoidRootPart") ;v1659=v488.Character and v488.Character:FindFirstChild("HumanoidRootPart") ;v1655=2 + 0 ;end if (v1655==2) then if (v1657 and v1658 and v1659) then if v1657.Sit then v1657.Sit=false;end local v2363,v2364=v20(),v21();local v2365=math.ceil(math.sqrt(v2364));local v2366=math.floor((v2363-1)/v2365 );local v2367=(v2363-(2 -1))%v2365 ;local v2368=(v2367-((v2365-(1 -0))/(1135 -(1076 + 57)))) * 5 ;local v2369=(v2366 + 1 + 0) * 5 ;local v2370=(v1659.CFrame * CFrame.new(v2368,689 -(579 + 110) ,v2369)).Position;v1657:MoveTo(v2370);task.wait(0.1 + 0 );pcall(function() local v2482=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;local v2483=v488.Character and v488.Character:FindFirstChild("HumanoidRootPart") ;if (v2482 and v2483) then v2482.CFrame=CFrame.new(v2482.Position,Vector3.new(v2483.Position.X,v2482.Position.Y,v2483.Position.Z));end end);end task.wait(0.1 + 0 );break;end if (v1655==(0 + 0)) then v1656=v12.Character;v1657=v1656 and v1656:FindFirstChild("Humanoid") ;v1655=408 -(174 + 233) ;end end end end);end;v54.stackon=function(v489,v490) v53();local v491=v47(v489[5 -3 ],v490);if  not v491 then return;end local v492=Instance.new("Part");v492.Name="DayBreakStackPlatform";v492.Size=Vector3.new(4,1 -0 ,2 + 2 );v492.Transparency=1175 -(663 + 511) ;v492.Anchored=true;v492.CanCollide=true;v492.Parent=workspace;_G.StackPart=v492;_G.CurrentCommand="Stack";local v499=v20() * (5 + 0) ;task.spawn(function() while _G.CurrentCommand=="Stack"  do local v1660=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;local v1661=v491.Character and v491.Character:FindFirstChild("HumanoidRootPart") ;if (v1661 and v1660) then local v1938=v1661.CFrame * CFrame.new(0 + 0 ,v499,0 -0 ) ;v492.CFrame=v1938;v1660.CFrame=v1938 * CFrame.new(0,1.5 + 0 ,0 -0 ) ;v1660.Velocity=Vector3.zero;v1660.RotVelocity=Vector3.zero;else break;end v5.Heartbeat:Wait();end if _G.StackPart then pcall(function() _G.StackPart:Destroy();end);_G.StackPart=nil;end end);end;local v91=v9:FindFirstChild("GrabStatus");local v92=v9:FindFirstChild("event_clone_avatar");local v93=v9:FindFirstChild("event_modify_refresh");v54.clone=function(v500,v501) local v502=v47(v500[4 -2 ],v501);if (v502 and v91 and v92) then pcall(function() local v1819=0 + 0 ;while true do if (1==v1819) then v92:FireServer(v502.UserId);break;end if (0==v1819) then v91:InvokeServer(v502.UserId);task.wait(0.1 -0 );v1819=1;end end end);end end;v54.loopclone=function(v503,v504) local v505=0 + 0 ;while true do if (v505==0) then if  not v50(v503) then return;end _G.LoopCloneActive=true;v505=1 + 0 ;end if (v505==(723 -(478 + 244))) then task.spawn(function() while _G.LoopCloneActive do for v2287,v2288 in ipairs(v4:GetPlayers()) do if  not _G.LoopCloneActive then break;end if ((v2288~=v12) and v12:IsFriendsWith(v2288.UserId)) then if (v91 and v92) then pcall(function() local v2669=0;while true do if (v2669==1) then v92:FireServer(v2288.UserId);break;end if (v2669==(517 -(440 + 77))) then v91:InvokeServer(v2288.UserId);task.wait(0.1 + 0 );v2669=1;end end end);end task.wait(3.5 -2 );end end task.wait(1558 -(655 + 901) );end end);break;end end end;v54.unloopclone=function(v506,v507) if  not v50(v506) then return;end _G.LoopCloneActive=false;end;v54.ref=function(v508,v509) if  not v50(v508) then return;end if v93 then pcall(function() v93:FireServer();end);end end;v54.worm=function(v510,v511) v53();task.wait(0.1);local v512=v47(v510[1 + 1 ],v511);if  not v512 then return;end _G.CurrentCommand="Worm";local v513=v20();task.spawn(function() while _G.CurrentCommand=="Worm"  do local v1662=v12.Character;local v1663=v1662 and v1662:FindFirstChild("Humanoid") ;if (v1663 and v1663.Sit) then v1663.Sit=false;end local v1664=v19();local v1665;if (v513==1) then v1665=v512;else local v1945=0 + 0 ;local v1946;while true do if (v1945==0) then v1946=v1664[v513-1 ];if v1946 then for v2601,v2602 in ipairs(v4:GetPlayers()) do if (v2602.Name:lower()==v1946) then v1665=v2602;break;end end end break;end end end if (v1663 and v1665 and v1665.Character) then local v1947=0 + 0 ;local v1948;local v1949;while true do if (v1947==0) then v1948=v1665.Character:FindFirstChild("HumanoidRootPart");v1949=v1662 and v1662:FindFirstChild("HumanoidRootPart") ;v1947=3 -2 ;end if (v1947==(1446 -(695 + 750))) then if (v1948 and v1949) then if ((v1949.Position-v1948.Position).Magnitude>(13 -9)) then v1663:MoveTo(v1948.Position);else v1663:MoveTo(v1949.Position);end end break;end end end task.wait(0.1 -0 );end end);end;v54.stalk=function(v514,v515) v53();task.wait(0.1 -0 );local v516=v47(v514[353 -(285 + 66) ],v515);if ( not v516 or  not v516.Character) then return;end _G.CurrentCommand="Stalk";task.spawn(function() while (_G.CurrentCommand=="Stalk") and v516 and v516.Character  do local v1666=0 -0 ;local v1667;local v1668;local v1669;local v1670;while true do if (v1666==(1312 -(682 + 628))) then if (v1668 and v1669 and v1670) then if v1668.Sit then v1668.Sit=false;end local v2372=v20();local v2373=(v2372-(1 + 0))%3 ;local v2374=math.floor((v2372-(300 -(176 + 123)))/3 );local v2375=v1670.CFrame * CFrame.new((v2373-1) * (2 + 2) ,0,(v2374 + 1 + 0) * (273 -(239 + 30)) ) ;local v2376=v1669.Position-v1670.Position ;if (v2376.Magnitude>0.1) then local v2549=v2376.Unit:Dot(v1670.CFrame.LookVector);if ((v2549>0.3) or (v1670.Velocity.Magnitude>100)) then local v2670=0 + 0 ;while true do if (v2670==(0 + 0)) then v1669.CFrame=v2375;v1669.Velocity=Vector3.zero;break;end end else v1668:MoveTo(v2375.Position);end else v1669.CFrame=v2375;end v1669.CFrame=CFrame.new(v1669.Position,Vector3.new(v1670.Position.X,v1669.Position.Y,v1670.Position.Z));end task.wait(0.05);break;end if (v1666==(0 -0)) then v1667=v12.Character;v1668=v1667 and v1667:FindFirstChild("Humanoid") ;v1666=1;end if (v1666==(2 -1)) then v1669=v1667 and v1667:FindFirstChild("HumanoidRootPart") ;v1670=v516.Character and v516.Character:FindFirstChild("HumanoidRootPart") ;v1666=2;end end end end);end;for v517,v518 in ipairs({"dance1","dance2","dance3"}) do v54[v518]=function(v1401,v1402) local v1403=0 + 0 ;local v1404;local v1405;while true do if (v1403==(0 + 0)) then if  not v50(v1401) then return;end v53();v1403=1;end if (v1403==1) then v1404=v12.Character;v1405=v1404 and v1404:FindFirstChild("Humanoid") ;v1403=2;end if ((1 + 1)==v1403) then if v1405 then if v1405.Sit then v1405.Sit=false;task.wait(0.1 -0 );end v31("/e "   .. (((v518=="dance1") and "dance") or v518) );end break;end end end;end v54.dance=v54.dance1;for v520=1,1383 -(1140 + 235)  do v54["emote"   .. v520 ]=function(v1406,v1407) if  not v50(v1406) then return;end v53();local v1408=v12.Character;local v1409=v1408 and v1408:FindFirstChild("Humanoid") ;local v1410=v1408 and v1408:FindFirstChild("HumanoidRootPart") ;if (v1409 and v1410) then local v1820=0 + 0 ;while true do if (v1820==(3 + 0)) then task.wait(0.2);v1410.Anchored=false;v1820=4;end if ((0 + 0)==v1820) then v1409.Sit=false;v1409:MoveTo(v1410.Position);v1820=53 -(33 + 19) ;end if (v1820==(1 + 1)) then v1409.AutoRotate=false;v1410.Anchored=true;v1820=8 -5 ;end if (v1820==(2 + 2)) then v31("/e emote"   .. v520 );task.spawn(function() local v2378=0;while true do if (v2378==(0 -0)) then task.wait(0.5 + 0 );if (v1409 and v1409.Parent) then v1409.AutoRotate=true;end break;end end end);break;end if (v1820==(690 -(586 + 103))) then v1410.Velocity=Vector3.zero;v1410.RotVelocity=Vector3.zero;v1820=1 + 1 ;end end end end;end for v522,v523 in ipairs({"laugh","point","cheer"}) do v54[v523]=function(v1411,v1412) local v1413=0 + 0 ;while true do if ((0 -0)==v1413) then if  not v50(v1411) then return;end v31("/e "   .. v523 );break;end end end;end if  not _G.DayBreakEmoteCatalog then task.spawn(function() pcall(function() local v1821=game:GetService("HttpService");local v1822=game:HttpGet("https://raw.githubusercontent.com/DayBreakBackend/DayBreakScripts/refs/heads/main/EmoteIDs.lua");local v1823=v1821:JSONDecode(v1822);if (v1823 and (v1823.data or (type(v1823)=="table"))) then _G.DayBreakEmoteCatalog=v1823.data or v1823 ;end end);end);end local function v101(v525,v526) local v527=0 + 0 ;local v528;while true do if (v527==(0 -0)) then v528=v525:FindFirstChild("Animate");if  not v528 then return true;end v527=1;end if ((1 -0)==v527) then for v1951,v1952 in ipairs(v528:GetChildren()) do if v1952:IsA("StringValue") then for v2379,v2380 in ipairs(v1952:GetChildren()) do if v2380:IsA("Animation") then local v2551=609 -(295 + 314) ;local v2552;while true do if (v2551==(0 -0)) then v2552=tostring(v2380.AnimationId):gsub("http://www%.roblox%.com/asset/%?id=",""):gsub("rbxassetid://","");if (v2552==v526) then return false;end break;end end end end end end return true;end end end v54.emote=function(v529,v530) local v531=1962 -(1300 + 662) ;local v532;local v533;local v534;local v535;local v536;local v537;local v538;local v539;local v540;local v541;while true do if (v531==5) then function v540() local v1953=0 -0 ;local v1954;local v1955;local v1956;local v1957;local v1958;while true do if (v1953==3) then v1957,v1958=pcall(function() return v539:LoadAnimation(v1956);end);if (v1957 and v1958) then local v2553=1755 -(1178 + 577) ;while true do if (0==v2553) then _G.CurrentEmoteTrack=v1958;v1958.Priority=Enum.AnimationPriority.Action;v2553=1;end if (v2553==(1 + 0)) then v1958.Looped=true;v1958:Play();break;end end end break;end if (v1953==(0 -0)) then if (_G.CurrentEmoteCommand~=v535) then return;end v73();v1953=1406 -(851 + 554) ;end if (2==v1953) then v1956=Instance.new("Animation");v1956.AnimationId="rbxassetid://"   .. tostring(v535) ;v1953=3;end if (v1953==(1 + 0)) then v1954,v1955=pcall(function() return v538:PlayEmoteAndGetAnimTrackById(v535);end);if (v1954 and v1955 and (typeof(v1955)=="Instance") and v1955:IsA("AnimationTrack")) then _G.CurrentEmoteTrack=v1955;v1955.Priority=Enum.AnimationPriority.Action;v1955:Play();return;end v1953=5 -3 ;end end end v540();if _G.EmoteFreezeConn then _G.EmoteFreezeConn:Disconnect();end v541=tostring(v535);v531=6;end if (v531==4) then v539=v538:FindFirstChildOfClass("Animator");if  not v539 then return;end for v1959,v1960 in pairs(v539:GetPlayingAnimationTracks()) do if (v1960.Priority==Enum.AnimationPriority.Action) then pcall(function() v1960:Stop(0 -0 );end);end end v540=nil;v531=307 -(115 + 187) ;end if (v531==(5 + 1)) then _G.EmoteFreezeConn=v539.AnimationPlayed:Connect(function(v1961) local v1962=0 + 0 ;while true do if (v1962==0) then if (_G.CurrentEmoteCommand~=v535) then if _G.EmoteFreezeConn then local v2671=0 -0 ;while true do if (v2671==(1161 -(160 + 1001))) then _G.EmoteFreezeConn:Disconnect();_G.EmoteFreezeConn=nil;break;end end end return;end if _G.EmoteDebounce then return;end v1962=1;end if (v1962==1) then if v101(v537,v541) then _G.EmoteDebounce=true;task.wait(0.1 + 0 );if (_G.CurrentEmoteCommand==v535) then v540();end _G.EmoteDebounce=false;end break;end end end);break;end if (v531==0) then v532,v533=v51(v529);if  not v532 then return;end if  not _G.DayBreakEmoteCatalog then return;end v534=table.concat(v533," ",2 + 0 ):lower();v531=1 -0 ;end if (v531==2) then v536=_G.CurrentEmoteCommand~=nil ;v74();if v536 then local v2154=v12.Character and v12.Character:FindFirstChildOfClass("Humanoid") ;if v2154 then v2154.Jump=true;end task.wait(358.3 -(237 + 121) );end _G.CurrentEmoteCommand=v535;v531=900 -(525 + 372) ;end if (v531==(4 -1)) then v537=v12.Character;if  not v537 then return;end v538=v537:FindFirstChildOfClass("Humanoid");if  not v538 then return;end v531=12 -8 ;end if (v531==1) then if (v534=="") then return;end v535=nil;for v1963,v1964 in ipairs(_G.DayBreakEmoteCatalog) do local v1965=tostring(v1964.name or "" ):lower();if v1965:find(v534,1,true) then v535=tonumber(v1964.id);if (v1965==v534) then break;end end end if  not v535 then return;end v531=144 -(96 + 46) ;end end end;v54.npc=function(v542,v543) if  not v50(v542) then return;end v53();_G.CurrentCommand="NPC";local v544={"My trust issues have trust issues.","I don't fall in love. I trip into mild attachment.","I'm not a red flag. I'm a limited-edition warning label.","We don't need couples therapy. We need a user manual.","Love is temporary. Taxes are forever.","My bank account and I are in a toxic relationship.","Looking for something serious. Like, 'split rent' serious.","My love language is sending memes instead of addressing problems.","I'm not emotionally unavailable. I'm emotionally buffering.","Therapist says I need stability. So here I am.","I'm not toxic. I just come with extended lore.","I bring two things to the table: trust issues and snacks.","If you can't handle me at my worst, that's honestly fair.","I'm not lost. I'm on an unplanned adventure.","My vibe? Controlled chaos with a splash of overthinking.","I'm not arguing, I'm just explaining why I'm right.","My brain has too many tabs open and 4 of them are playing music.","I have a PhD in making bad decisions quickly.","I'm one minor inconvenience away from an existential crisis.","I don't hold grudges. I remember facts.","My sleep schedule is currently being held together by hope and caffeine.","I'm not lazy, I'm on energy-saving mode.","Common sense is like deodorant. The people who need it most never use it.","I entered a staring contest with my thoughts and lost.","I put the 'pro' in procrastinate.","Press E to interact... oh wait, you can't.","I used to be an adventurer like you, then I got scripted into an alt.","I am legally obligated to stand here and look mysterious.","Error 404: Emotion not found. Please try snacks.","I have no thoughts, just vibes and a high ping.","I'm only speaking because the main account pressed Enter.","My entire existence is running on 10 FPS.","Do you have a side quest for me or can I go back to buffering?","I'm not a bot, I'm just socially awkward with fast Wi-Fi.","If I freeze, it's not a feature, it's a personality trait.","Chat is this real?","My ping is higher than my credit score.","I didn't lose, I just participated in an educational defeat.","Bro thought he was the main character.","I'm not lagging, the server is just processing my greatness.","Warning: Approaching this bot may cause emotional damage.","Skill issue detected within a 10-stud radius.","I speak two languages: English and Bad Decisions.","Who let this NPC cook?!","Standing here waiting for my plot armor to kick in.","Negative aura detected within a 15-stud radius.","I didn't choose the alt life, the alt script chose me.","Bro is genuinely flabbergasted.","I'm a catch. Like a stray ball heading straight for a car window.","I give fantastic advice. I just don't follow a single word of it.","My standards are high, but my impulse control is non-existent.","I'm 90% water and 10% unresolved drama.","I'm not ghosting, I'm just living in offline mode.","My red flags are festive. Like Christmas decorations.","Looking for someone to blame my life decisions on.","I don't need a relationship, I need 8 hours of uninterrupted sleep.","The ancient prophecies spoke of this moment... it's much more disappointing than expected.","Do you hear the whispers, or is that just my Discord notification?","I know what you did last summer... you stayed inside and scrolled TikTok.","Beware the void. It charges hourly parking fees.","I've seen the future. It's mostly just loading screens.","You can't spell 'disaster' without 'me' in the middle of it.","I'm not following you, I'm just aggressively existing in the same direction.","I survived another day that definitely should have been an email.","My bank account says no, but my dopamine receptors say buy it.","I'm great at multitasking: I can procrastinate and be stressed simultaneously.","I have a 5-year plan to figure out what I'm doing in the next 5 minutes.","My therapist told me to touch grass so I bought a plastic plant."};_G.NPCClaimed=_G.NPCClaimed or {} ;if  not _G.NPCLineIndex then _G.NPCLineIndex=905 -(250 + 655) ;end local v545=v20();local function v546() _G.NPCLineIndex=(_G.NPCLineIndex% #v544) + 1 ;return v544[_G.NPCLineIndex];end task.spawn(function() local v1414=0 -0 ;while true do if ((0 -0)==v1414) then while _G.CurrentCommand=="NPC"  do local v2155=v12.Character;local v2156=v2155 and v2155:FindFirstChild("Humanoid") ;local v2157=v2155 and v2155:FindFirstChild("HumanoidRootPart") ;if (v2156 and v2157) then if v2156.Sit then v2156.Sit=false;end local v2383=tick() + math.random(30,93 -33 ) ;while (_G.CurrentCommand=="NPC") and (tick()<v2383)  do local v2485=Random.new(tick() + v545 );v2156:MoveTo(v2157.Position + Vector3.new(v2485:NextNumber( -(1986 -(1869 + 87)),30),0 -0 ,v2485:NextNumber( -(1931 -(484 + 1417)),64 -34 )) );local v2486,v2487,v2488=false,0 -0 ,nil;v2488=v2156.MoveToFinished:Connect(function() v2486=true;end);repeat local v2557=773 -(48 + 725) ;while true do if (v2557==(0 -0)) then task.wait(0.1 -0 );v2487+=(0.1 + 0) break;end end until v2486 or (_G.CurrentCommand~="NPC") or (v2487>10)  if v2488 then v2488:Disconnect();end task.wait(math.random(4 -2 ,2 + 3 ));end if (_G.CurrentCommand~="NPC") then break;end local v2384={};for v2489,v2490 in ipairs(v4:GetPlayers()) do if ((v2490~=v12) and (v2490.Name:lower()~=getgenv().Settings.mainAccount:lower()) and v2490.Character and v2490.Character:FindFirstChild("HumanoidRootPart")) then local v2603=false;for v2672 in pairs(getgenv().Settings.altAccounts) do if (v2672:lower()==v2490.Name:lower()) then v2603=true;break;end end if ( not v2603 and  not _G.NPCClaimed[v2490.UserId]) then local v2697=0;local v2698;while true do if (v2697==(0 + 0)) then v2698=(v2157.Position-v2490.Character.HumanoidRootPart.Position).Magnitude;if (v2698<(913 -(152 + 701))) then table.insert(v2384,v2490);end break;end end end end end if ( #v2384>0) then local v2558=v2384[math.random( #v2384)];_G.NPCClaimed[v2558.UserId]=v545;local v2559=v2558.Character and v2558.Character:FindFirstChild("HumanoidRootPart") ;if v2559 then local v2673=1311 -(430 + 881) ;local v2674;local v2675;local v2676;local v2677;while true do if (2==v2673) then repeat local v2812=0;while true do if (0==v2812) then task.wait(0.1);v2676+=(0.1 + 0) break;end end until v2675 or (v2676>(903 -(557 + 338))) or (_G.CurrentCommand~="NPC")  if v2677 then v2677:Disconnect();end v2673=3;end if (v2673==3) then if ((_G.CurrentCommand=="NPC") and v2559.Parent) then local v2835=0 + 0 ;local v2836;local v2837;local v2838;local v2839;while true do if (v2835==(8 -5)) then v2837,v2838,v2839=false,0 -0 ,nil;v2839=v2156.MoveToFinished:Connect(function() v2837=true;end);v2835=4;end if (v2835==0) then v2157.CFrame=CFrame.new(v2157.Position,Vector3.new(v2559.Position.X,v2157.Position.Y,v2559.Position.Z));task.wait(0.5 -0 );v2835=2 -1 ;end if (v2835==(802 -(499 + 302))) then v31(v546());task.wait(3);v2835=868 -(39 + 827) ;end if (v2835==(5 -3)) then v2836=v2157.Position-v2559.Position ;if (v2836.Magnitude>(0.1 -0)) then v2156:MoveTo(v2157.Position + (v2836.Unit * (79 -59)) );else v2156:MoveTo(v2157.Position + Vector3.new(30 -10 ,0 + 0 ,0) );end v2835=8 -5 ;end if ((1 + 3)==v2835) then repeat task.wait(0.1);v2838+=(0.1 -0) until v2837 or (v2838>6) or (_G.CurrentCommand~="NPC")  if v2839 then v2839:Disconnect();end break;end end end break;end if (v2673==(104 -(103 + 1))) then v2674=(v2559.CFrame * CFrame.new(0,554 -(475 + 79) , -(8 -4))).Position;v2156:MoveTo(v2674);v2673=1;end if (v2673==1) then v2675,v2676,v2677=false,0 -0 ,nil;v2677=v2156.MoveToFinished:Connect(function() v2675=true;end);v2673=2;end end end _G.NPCClaimed[v2558.UserId]=nil;end else task.wait(1 + 0 );end end _G.NPCClaimed={};break;end end end);end;v54.firework=function(v547,v548) local v549=0 + 0 ;local v550;local v551;local v552;while true do if ((1505 -(1395 + 108))==v549) then v552=v550 and v550:FindFirstChild("Humanoid") ;if  not (v551 and v552) then return;end v549=8 -5 ;end if (v549==3) then if v552.Sit then v552.Sit=false;end task.spawn(function() local v1966=1204 -(7 + 1197) ;local v1967;local v1968;while true do if (v1966==(2 + 1)) then v550:BreakJoints();break;end if (v1966==(1 + 1)) then task.wait(321.5 -(27 + 292) );v1967:Destroy();v1968:Destroy();v551.Velocity=Vector3.new(Random.new():NextNumber( -(146 -96),63 -13 ),Random.new():NextNumber(335 -255 ,236 -116 ),Random.new():NextNumber( -50,95 -45 ));v1966=142 -(43 + 96) ;end if (v1966==(0 -0)) then v1967=Instance.new("BodyVelocity");v1967.MaxForce=Vector3.new(1000000,2260884 -1260884 ,1000000);v1967.Velocity=Vector3.new(0 + 0 ,22 + 53 ,0);v1967.Parent=v551;v1966=1;end if (v1966==(1 -0)) then v1968=Instance.new("BodyAngularVelocity");v1968.MaxTorque=Vector3.new(383257 + 616743 ,1000000,1874105 -874105 );v1968.AngularVelocity=Vector3.new(0 + 0 ,5 + 55 ,1751 -(1414 + 337) );v1968.Parent=v551;v1966=1942 -(1642 + 298) ;end end end);break;end if (v549==(0 -0)) then if  not v50(v547) then return;end v53();v549=2 -1 ;end if (v549==(2 -1)) then v550=v12.Character;v551=v550 and v550:FindFirstChild("HumanoidRootPart") ;v549=1 + 1 ;end end end;v54.nuke=function(v553,v554) local v555=0 + 0 ;local v556;local v557;local v558;local v559;local v560;while true do if (v555==(975 -(357 + 615))) then if v559.Sit then v559.Sit=false;end v559:MoveTo(v558.Position);task.spawn(function() local v1969=Instance.new("BodyAngularVelocity");v1969.MaxTorque=Vector3.new(701952 + 298048 ,1000000,1000000);v1969.AngularVelocity=Vector3.new(0 -0 ,129 + 21 ,0 -0 );v1969.Parent=v558;task.wait(0.6 + 0 );v1969:Destroy();v558.Velocity=Vector3.new(Random.new():NextNumber( -(5 + 55),38 + 22 ),Random.new():NextNumber( -30, -(1311 -(384 + 917))),Random.new():NextNumber( -(757 -(128 + 569)),60));v557:BreakJoints();end);break;end if (v555==(1544 -(1407 + 136))) then v558=v557 and v557:FindFirstChild("HumanoidRootPart") ;v559=v557 and v557:FindFirstChild("Humanoid") ;if  not (v556 and v556.Character and v558 and v559) then return;end v555=1889 -(687 + 1200) ;end if ((1712 -(556 + 1154))==v555) then v560=v556.Character:FindFirstChild("HumanoidRootPart");if  not v560 then return;end v558.CFrame=v560.CFrame * CFrame.new(0,15 + (v20() * (6 -4)) ,95 -(9 + 86) ) ;v555=424 -(275 + 146) ;end if (v555==(0 + 0)) then v53();v556=v47(v553[2],v554);v557=v12.Character;v555=65 -(29 + 35) ;end end end;v54.swarm=function(v561,v562) local v563,v564,v565=v49(v561,v562,40,79 -61 );if ( not v565 or  not v565.Character) then return;end v53();task.wait(0.1);_G.CurrentCommand="Swarm";_G.NoclipEnabled=true;_G.NoclipOriginals={};local v566=v12.Character;if v566 then for v1828,v1829 in ipairs(v566:GetDescendants()) do if v1829:IsA("BasePart") then _G.NoclipOriginals[v1829]=v1829.CanCollide;end end end _G.NoclipConn=v5.Stepped:Connect(function() if (_G.CurrentCommand~="Swarm") then local v1830=0 -0 ;while true do if (v1830==1) then for v2392,v2393 in pairs(_G.NoclipOriginals or {} ) do if (v2392 and v2392.Parent) then pcall(function() v2392.CanCollide=v2393;end);end end _G.NoclipOriginals={};v1830=2;end if (v1830==(8 -6)) then return;end if (v1830==(0 + 0)) then _G.NoclipEnabled=false;if _G.NoclipConn then pcall(function() _G.NoclipConn:Disconnect();end);_G.NoclipConn=nil;end v1830=1;end end end local v1415=v12.Character;if v1415 then for v1974,v1975 in ipairs(v1415:GetDescendants()) do if v1975:IsA("BasePart") then if (_G.NoclipOriginals[v1975]==nil) then _G.NoclipOriginals[v1975]=v1975.CanCollide;end v1975.CanCollide=false;end end end end);getgenv().TrackConnection(_G.NoclipConn);task.spawn(function() local v1416=v12.Character and v12.Character:FindFirstChild("Humanoid") ;local v1417=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;local v1418,v1419,v1420=Vector3.zero,0,0;while (_G.CurrentCommand=="Swarm") and v565 and v565.Character  do local v1671=0;local v1672;while true do if (v1671==(1013 -(53 + 959))) then task.wait(408.03 -(312 + 96) );break;end if (v1671==0) then v1672=v565.Character:FindFirstChild("HumanoidRootPart");if (v1416 and v1417 and v1672) then if v1416.Sit then v1416.Sit=false;end if ((tick() -v1420)>math.random(1 -0 ,288 -(147 + 138) )) then local v2561=899 -(813 + 86) ;while true do if (v2561==(0 + 0)) then v1416.WalkSpeed=math.random(v563-15 ,v563 + 15 );v1420=tick();break;end end end if (((v1417.Position-v1418).Magnitude<5) or ((tick() -v1419)>(1.2 -0))) then local v2562=Random.new();v1418=v1672.Position + Vector3.new(v2562:NextNumber( -v564,v564),0,v2562:NextNumber( -v564,v564)) ;v1419=tick();end v1416:MoveTo(v1418);end v1671=493 -(18 + 474) ;end end end if v1416 then v1416.WalkSpeed=_G.SpeedLock or (6 + 10) ;end end);end;local v106=math.pi * (6 -4) ;local v107=math.pi;local v108,v109,v110,v111,v112=math.sin,math.cos,math.abs,math.sqrt,math.rad;local function v113(v567,v568,v569,v570) local v571=0;local v572;local v573;local v574;while true do if (v571==0) then v572,v573,v574=v49(v567,v568,1090 -(860 + 226) ,10);if ( not v574 or  not v574.Character) then return;end v571=304 -(121 + 182) ;end if (v571==(1 + 0)) then v53();task.wait(1240.1 -(988 + 252) );v571=1 + 1 ;end if (v571==(1 + 1)) then _G.CurrentCommand=v570 or "Orbit" ;task.spawn(function() local v1976,v1977=v20(),v21();local v1978=tick();while (_G.CurrentCommand==(v570 or "Orbit")) and v574 and v574.Character  do local v2161=1970 -(49 + 1921) ;local v2162;local v2163;while true do if (v2161==(891 -(223 + 667))) then if (v2162 and v2163) then local v2605=0;local v2606;local v2607;local v2608;while true do if (v2605==(55 -(51 + 1))) then v2162.RotVelocity=Vector3.zero;break;end if (v2605==(1 -0)) then v2607=(tick() -v1978) * (v572/4) ;v2608=v569(v2607,v1976,v1977,v573);v2605=3 -1 ;end if (v2605==(1125 -(146 + 979))) then v2606=v12.Character:FindFirstChild("Humanoid");if (v2606 and v2606.Sit) then v2606.Sit=false;end v2605=1 + 0 ;end if (v2605==2) then v2162.CFrame=CFrame.new(v2163.Position + v2608 ,v2163.Position);v2162.Velocity=Vector3.zero;v2605=608 -(311 + 294) ;end end end v5.Heartbeat:Wait();break;end if (v2161==(0 -0)) then v2162=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v2163=v574.Character and v574.Character:FindFirstChild("HumanoidRootPart") ;v2161=1 + 0 ;end end end end);break;end end end local v114={};v114[0]=function(v575,v576,v577,v578) v578=math.max(v578,v577 * (1446 -(496 + 947)) );local v579=1373 -(1233 + 125) ;local v580=((v575/v579) + ((v576-(1 + 0))/v577)) * v106 ;return Vector3.new(v108(v580) * v578 ,0 + 0 ,v109(v580) * v578 );end;v114[1]=function(v581,v582,v583,v584) local v585=12;local v586=((v581/v585) + ((v582-1)/v583)) * v106 ;local v587=v584 + (v108(v581 * 0.5 ) * (1.5 + 0)) ;return Vector3.new(v108(v586) * v587 ,1645 -(963 + 682) ,v109(v586) * v587 );end;v114[2 + 0 ]=function(v588,v589,v590,v591) local v592=14;local v593=(((v589%(1506 -(504 + 1000)))==0) and (0 + 0)) or (1 + 0) ;local v594=(((v588/v592) + ((v589-(1 + 0))/v590)) * v106) + (v593 * v107) ;return Vector3.new(v108(v594) * v591 ,v108(v594 * (0.5 -0) ) * v591 * 0.7 ,v109(v594) * v591 );end;v114[3 + 0 ]=function(v595,v596,v597,v598) local v599=10 + 6 ;local v600=v596%(185 -(156 + 26)) ;local v601=math.floor((v596-(1 + 0))/3 );local v602=math.max(math.ceil(v597/(3 -0) ),165 -(149 + 15) );local v603=((v595/v599) + (v601/v602)) * v106 ;if (v600==0) then return Vector3.new(v109(v603) * v598 ,v108(v603) * v598 ,960 -(890 + 70) );elseif (v600==1) then return Vector3.new(v109(v603) * v598 ,117 -(39 + 78) ,v108(v603) * v598 );else return Vector3.new(482 -(14 + 468) ,v109(v603) * v598 ,v108(v603) * v598 );end end;v114[8 -4 ]=function(v604,v605,v606,v607) local v608=math.min(3,math.ceil(v606/(8 -5) ));local v609=(v605-1)%v608 ;local v610=math.floor((v605-(1 + 0))/v608 );local v611=(v609/v608) * v106 ;local v612=2 + 1 + (v610 * (1.5 + 1)) ;local v613=v611 + (v610 * (0.5 + 0)) + (v604 * 0.5) ;return Vector3.new(v109(v613) * v612 ,v108(v604 + v605 ) * (1.5 + 0) ,v108(v613) * v612 );end;v114[9 -4 ]=function(v614,v615,v616,v617) local v618=0 + 0 ;local v619;local v620;local v621;local v622;local v623;while true do if (v618==(6 -4)) then v623=((v614/v619) + v620) * v106 ;return Vector3.new(v109(v623) * v622 ,v621-(1 + 9) ,v108(v623) * v622 );end if (v618==(52 -(12 + 39))) then v621=v620 * (19 + 1) ;v622=3 + (v620 * v617) ;v618=5 -3 ;end if ((0 -0)==v618) then v619=14;v620=(v615-(1 + 0))/v616 ;v618=1 + 0 ;end end end;v114[6]=function(v624,v625,v626,v627) local v628=0 -0 ;local v629;local v630;local v631;while true do if (v628==1) then v631=1 + 0 + (v108(v630) * v108(v630)) ;return Vector3.new((v627 * v109(v630))/v631 ,v108(v630 * (9 -7) ) * 3 ,(v627 * v108(v630) * v109(v630))/v631 );end if (v628==(1710 -(1596 + 114))) then v629=46 -28 ;v630=((v624/v629) + ((v625-(714 -(164 + 549)))/v626)) * v106 ;v628=1;end end end;v114[1445 -(1059 + 379) ]=function(v632,v633,v634,v635) local v636=0 -0 ;local v637;local v638;local v639;while true do if (v636==(0 + 0)) then v637=3 + 9 ;v638=((v632/v637) + ((v633-(393 -(145 + 247)))/v634)) * v106 ;v636=1;end if ((1 + 0)==v636) then v639=v635 + (v108(v632 * 2 ) * v635 * 0.5) ;return Vector3.new(v109(v638) * v639 ,v108((v632 * (2 + 1)) + v633 ) * 2 ,v108(v638) * v639 );end end end;v114[8]=function(v640,v641,v642,v643) local v644=41 -27 ;local v645=math.min(3,math.ceil(v642/(1 + 2) ));local v646=(v641-(1 + 0))%v645 ;local v647=math.floor((v641-(1 -0))/v645 );local v648=math.max(math.ceil(v642/v645 ),721 -(254 + 466) );local v649=((v640/v644) + (v647/v648)) * v106 ;local v650=(v646/v645) * v107 * (560.6 -(544 + 16)) ;local v651,v652=v109(v649) * v643 ,v108(v649) * v643 ;return Vector3.new(v651,v652 * v109(v650) ,v652 * v108(v650) );end;v114[28 -19 ]=function(v653,v654,v655,v656) local v657=628 -(294 + 334) ;local v658;local v659;local v660;while true do if (v657==(254 -(236 + 17))) then v660=v656 * v110(v109((2 + 1) * v659 )) ;return Vector3.new(v109(v659) * v660 ,v108(v659 * (2 + 0) ) * 3 ,v108(v659) * v660 );end if (v657==0) then v658=75 -55 ;v659=((v653/v658) + ((v654-(4 -3))/v655)) * v106 ;v657=1 + 0 ;end end end;v114[9 + 1 ]=function(v661,v662,v663,v664) local v665=0;local v666;while true do if ((794 -(413 + 381))==v665) then v666=v662 * 1.1 ;return Vector3.new(v108((v661 * (1.3 + 0)) + v666 ) * v664 * v109((v661 * 0.7) + (v666 * (3 -1)) ) ,v109((v661 * (0.9 -0)) + (v666 * 1.5) ) * v664 * (1970.6 -(582 + 1388)) * v108((v661 * (1.1 -0)) + v666 ) ,v108((v661 * 1.1) + (v666 * (0.8 + 0)) ) * v664 * v109((v661 * (365.3 -(326 + 38))) + (v666 * 1.7) ) );end end end;v114[11]=function(v667,v668,v669,v670) local v671=47 -31 ;local v672=((v667/v671) + ((v668-(1 -0))/v669)) * v106 ;local v673=v108(v672 * (623 -(47 + 573)) ) * (1.5 + 0) ;local v674=v670 + (v108(v667) * (0.8 -0)) ;return Vector3.new(v108(v672) * v674 ,v673,v109(v672) * v674 );end;v114[12]=function(v675,v676,v677,v678) local v679=0 -0 ;local v680;local v681;while true do if (v679==(1665 -(1269 + 395))) then return Vector3.new(v108(v681) * v678 ,v108(v681 * 2 ) * v678 * (492.35 -(76 + 416)) ,v109(v681) * v678 * v109(v681 * (443.5 -(319 + 124)) ) );end if (v679==(0 -0)) then v680=20;v681=((v675/v680) + ((v676-(1008 -(564 + 443)))/v677)) * v106 ;v679=2 -1 ;end end end;v114[471 -(337 + 121) ]=function(v682,v683,v684,v685) local v686=0;local v687;local v688;local v689;local v690;while true do if (v686==0) then v687=52 -34 ;v688=v683 * v107 * ((9 -6) -v111(1916 -(1261 + 650) )) ;v686=1 + 0 ;end if (v686==(2 -0)) then return Vector3.new(v108(v690) * v109(v689) * v685 ,v109(v690) * v685 ,v108(v690) * v108(v689) * v685 );end if (v686==(1818 -(772 + 1045))) then v689=(v682/v687) + v688 ;v690=math.acos(1 -(2 * ((v683-(0.5 + 0))/v684)) );v686=146 -(102 + 42) ;end end end;v114[1858 -(1524 + 320) ]=function(v691,v692,v693,v694) local v695=1270 -(1049 + 221) ;local v696;local v697;while true do if (v695==(156 -(18 + 138))) then v696=15;v697=((v691/v696) + ((v692-(2 -1))/v693)) * v106 ;v695=1103 -(67 + 1035) ;end if (v695==(349 -(136 + 212))) then return Vector3.new(0,v108(v697) * v694 ,v109(v697) * v694 );end end end;v114[63 -48 ]=function(v698,v699,v700,v701) local v702=0 + 0 ;local v703;local v704;local v705;local v706;while true do if (v702==0) then v703=13 + 1 ;v704=((v698/v703) + ((v699-(1605 -(240 + 1364)))/v700)) * v106 ;v702=1083 -(1050 + 32) ;end if (v702==2) then return Vector3.new(v108(v704) * v706 ,v705 + (v108(v704 * (10 -7) ) * (1.5 + 0)) ,v109(v704) * v706 );end if (v702==1) then v705=(((v699-1)/v700) * (1067 -(331 + 724))) -(1 + 5) ;v706=v701 + (v108((v698 * (646 -(269 + 375))) + (((v699-1)/v700) * v106) ) * 3) ;v702=727 -(267 + 458) ;end end end;v114[5 + 11 ]=function(v707,v708,v709,v710) local v711=0 -0 ;local v712;local v713;local v714;local v715;local v716;while true do if ((820 -(667 + 151))==v711) then v716=((v707/v712) + (v713 * (1499 -(1410 + 87)))) * v106 ;return Vector3.new(v108(v716) * v715 ,v714,v109(v716) * v715 );end if ((1898 -(1504 + 393))==v711) then v714=(v713 * (67 -42)) -(30 -18) ;v715=v710 * ((797 -(461 + 335)) -(v713 * (0.7 + 0))) ;v711=1763 -(1730 + 31) ;end if (v711==(1667 -(728 + 939))) then v712=42 -30 ;v713=(v708-(1 -0))/v709 ;v711=2 -1 ;end end end;v114[17]=function(v717,v718,v719,v720) local v721=1068 -(138 + 930) ;local v722;local v723;local v724;while true do if (v721==0) then v722=14 + 1 ;v723=((v717/v722) + ((v718-(1 + 0))/v719)) * v106 ;v721=1 + 0 ;end if (v721==(4 -3)) then v724=(1767 -(459 + 1307)) + (v110(v108((v717 * (1873 -(474 + 1396))) + (v718 * 0.7) )) * (0.4 -0)) ;return Vector3.new(v108(v723) * v720 * v724 ,v108((v717 * 2) + v718 ) * (2 + 0) ,v109(v723) * v720 * v724 );end end end;v114[1 + 17 ]=function(v725,v726,v727,v728) local v729=0 -0 ;local v730;local v731;local v732;local v733;while true do if ((1 + 0)==v729) then v732,v733=v728 * (3.5 -2) ,v728 * (0.6 -0) ;return Vector3.new(v108(v731) * v732 ,v108(v731 * (593 -(562 + 29)) ) * (2 + 0) ,v109(v731) * v733 );end if (v729==0) then v730=18;v731=((v725/v730) + ((v726-(1420 -(374 + 1045)))/v727)) * v106 ;v729=1 + 0 ;end end end;v114[58 -39 ]=function(v734,v735,v736,v737) local v738=638 -(448 + 190) ;local v739;local v740;local v741;local v742;local v743;while true do if (v738==(0 + 0)) then v739=10 + 10 ;v740=((v734/v739) + ((v735-(1 + 0))/v736)) * v106 ;v738=1;end if (v738==(7 -5)) then v743=v108(v740) * v737 ;return Vector3.new(v742,v743 * v108(v741) ,v743 * v109(v741) );end if (v738==(2 -1)) then v741=v740 * (1494.5 -(1307 + 187)) ;v742=v109(v740) * v737 ;v738=7 -5 ;end end end;v114[20]=function(v744,v745,v746,v747) local v748=37 -21 ;local v749=((v744/v748) + ((v745-(2 -1))/v746)) * v106 ;local v750=v109(v749 * 0.5 );local v751=v747 * ((683.3 -(232 + 451)) + (v110(v750) * (0.7 + 0))) ;local v752=(v750 * v747 * (0.5 + 0)) + (v108((v744 * (566 -(510 + 54))) + v745 ) * 1.5) ;return Vector3.new(v108(v749) * v751 ,v752,v109(v749) * v751 );end;v54.orbit=function(v753,v754) v113(v753,v754,v114[0]);end;for v755=1,40 -20  do v54["orbit"   .. v755 ]=function(v1421,v1422) v113(v1421,v1422,v114[v755]);end;end local v137={};v137[1]=function(v757,v758,v759,v760) local v761=12;local v762=((v757/v761) + ((v758-1)/v759)) * v106 ;local v763=v760 + (v108(v757 * (36.5 -(13 + 23)) ) * (9 -4)) ;local v764=v108(v757 + (((v758-1)/v759) * v106) ) * (7 -1) ;return Vector3.new(v109(v762) * v763 ,v764,v108(v762) * v763 );end;v137[2]=function(v765,v766,v767,v768) local v769=0 -0 ;local v770;local v771;local v772;local v773;local v774;local v775;while true do if (v769==1) then v772=((v765/v770) + v771) * v106 ;v773=v771 * 16 ;v769=2;end if (v769==(1091 -(830 + 258))) then return Vector3.new(v109(v772) * v775 ,v774,v108(v772) * v775 );end if (v769==(0 -0)) then v770=9 + 5 ;v771=(v766-1)/v767 ;v769=1 + 0 ;end if (v769==(1443 -(860 + 581))) then v774=(v108(v765 + v773 ) * (14 -10)) + v773 ;v775=(v774/16) * v768 ;v769=3 + 0 ;end end end;v137[3]=function(v776,v777,v778,v779) local v780=241 -(237 + 4) ;local v781;local v782;local v783;local v784;local v785;while true do if (v780==(4 -2)) then v785=(((v776/v781) + ((v777-(2 -1))/v778)) * v106) + (v782 * v107) ;return Vector3.new(v109(v785) * v779 ,(v784 + (v108(v776 * (0.5 -0) ) * (2 + 0))) -8 ,v108(v785) * v779 );end if (v780==(1 + 0)) then v783=math.floor((v777-(3 -2))/2 );v784=(v783/math.max(math.ceil(v778/2 ),1)) * (7 + 9) ;v780=2 + 0 ;end if (v780==0) then v781=14;v782=(((v777%(1428 -(85 + 1341)))==(0 -0)) and (0 -0)) or (373 -(45 + 327)) ;v780=1;end end end;v137[7 -3 ]=function(v786,v787,v788,v789) local v790=0;local v791;local v792;local v793;local v794;local v795;local v796;local v797;while true do if (v790==(503 -(444 + 58))) then v793=(((v786/v791) * (0.3 + 0)) + (v792 * v106))%v106 ;v794=v793/v106 ;v790=2;end if (v790==0) then v791=16;v792=(v787-(1 + 0))/v788 ;v790=1 + 0 ;end if (v790==2) then v795,v796=nil;if (v794<(0.6 -0)) then v795=(v794/(1732.6 -(64 + 1668))) * (1988 -(1227 + 746)) ;v796=v789 * 0.4 ;else local v2164=(v794-0.6)/(0.4 -0) ;v795=15 * ((1 -0) -(v2164 * v2164)) ;v796=(v789 * 0.4) + (v789 * v2164) ;end v790=497 -(415 + 79) ;end if (3==v790) then v797=((v786/v791) + v792) * v106 ;return Vector3.new(v109(v797) * v796 ,v795-(1 + 4) ,v108(v797) * v796 );end end end;v137[496 -(142 + 349) ]=function(v798,v799,v800,v801) local v802=0;local v803;local v804;local v805;local v806;local v807;local v808;while true do if (v802==(1 + 0)) then v805=(((v798/v803) * (0.5 -0)) + (v804 * (10 + 10)))%(15 + 5) ;v806=v805/(54 -34) ;v802=1866 -(1710 + 154) ;end if (v802==0) then v803=332 -(200 + 118) ;v804=(v799-1)/v800 ;v802=1;end if (v802==(2 + 1)) then return Vector3.new(v109(v808) * v807 ,v805-10 ,v108(v808) * v807 );end if (v802==(2 -0)) then v807=v801 * ((0.3 -0) + (v806 * (0.7 + 0))) ;v808=(((v798/v803) + v804) * v106) + (v806 * v107 * 4) ;v802=3 + 0 ;end end end;v137[6]=function(v809,v810,v811,v812) local v813=0;local v814;local v815;local v816;while true do if (v813==(1 + 0)) then v816=v814 + (v809 * (0.5 + 0)) ;return Vector3.new(v109(v816) * v815 ,v108(v809 + (v810 * (0.5 -0)) ) * (1252 -(363 + 887)) ,v108(v816) * v815 );end if (v813==0) then v814=v810 * v107 * ((5 -2) -v111(5)) ;v815=v111(v810) * (14 -11) ;v813=1 + 0 ;end end end;v137[7]=function(v817,v818,v819,v820) local v821=0;local v822;local v823;local v824;local v825;local v826;while true do if (v821==0) then v822=23 -13 ;v823=(v108(v817 * (1.5 + 0) ) * (1664.5 -(674 + 990))) + 0.5 + 0 ;v821=1 + 0 ;end if (v821==2) then v826=((v817/v822) + ((v818-(1 -0))/v819)) * v106 ;return Vector3.new(v109(v826) * v820 * ((1055.5 -(507 + 548)) + (v823 * (837.5 -(289 + 548)))) ,v825,v108(v826) * v820 * (0.5 + (v823 * (1818.5 -(821 + 997)))) );end if (v821==(256 -(195 + 60))) then v824=1 + 1 + (v823 * (1505 -(251 + 1250))) ;v825=(v818-((v819 + 1)/(5 -3))) * v824 ;v821=2 + 0 ;end end end;v137[1040 -(809 + 223) ]=function(v827,v828,v829,v830) local v831=23 -7 ;local v832=(v828-(2 -1))/v829 ;local v833=(((v827/v831) * 0.4) + (v832 * v106))%v106 ;local v834=v833/v106 ;local v835=v830 * ((3 -2) -(v834 * (0.8 + 0))) ;local v836=(((v827/v831) + v832) * v106) + (v834 * v107 * 4) ;return Vector3.new(v109(v836) * v835 ,( -v834 * (5 + 3)) + (621 -(14 + 603)) ,v108(v836) * v835 );end;v137[9]=function(v837,v838,v839,v840) local v841=14;local v842=((v837/v841) + ((v838-(130 -(118 + 11)))/v839)) * v106 ;local v843=v840 + (v108((v842 * (1 + 2)) + v837 ) * v840 * 0.4) ;return Vector3.new(v109(v842) * v843 ,v108(v837 + (((v838-(1 + 0))/v839) * v106) ) * (17 -11) ,v108(v842) * v843 );end;v137[959 -(551 + 398) ]=function(v844,v845,v846,v847) local v848=math.min(3 + 1 ,math.ceil(v846/(1 + 1) ));local v849=(v845-1)%v848 ;local v850=math.floor((v845-1)/v848 );local v851=math.max(math.ceil(v846/v848 ),1 + 0 );local v852=((v850/v851) * v106) + (v844 * ((3 -2) + (v849 * 0.3))) ;local v853=(v849-((v848-1)/(4 -2))) * (2 + 3) ;return Vector3.new(v109(v852) * v847 ,v853,v108(v852) * v847 );end;v137[43 -32 ]=function(v854,v855,v856,v857) local v858=18;local v859=((v854/v858) + ((v855-(1 + 0))/v856)) * v106 ;local v860=math.floor(v859/(v107/(93 -(40 + 49))) ) * (7 -5) ;local v861=v860 + (v108(v859 * (492 -(99 + 391)) ) * 0.5) ;return Vector3.new(v108(v859) * v857 ,v861-8 ,v109(v859) * v857 );end;v137[12]=function(v862,v863,v864,v865) local v866=0 + 0 ;local v867;local v868;local v869;local v870;local v871;while true do if (v866==(0 -0)) then v867=20;v868=(v863-(2 -1))/v864 ;v866=1;end if (v866==2) then v871=v865 * (1 -(v868 * (0.6 + 0))) ;return Vector3.new(v108(v869 * v870 ) * v871 ,(v868 * 15) -7 ,v109(v869 * v870 ) * v871 );end if (v866==1) then v869=((v862/v867) + v868) * v106 ;v870=(2 -1) + (v868 * (1606 -(1032 + 572))) ;v866=2;end end end;v137[13]=function(v872,v873,v874,v875) local v876=417 -(203 + 214) ;local v877;local v878;local v879;local v880;while true do if (v876==(1817 -(568 + 1249))) then v877=((v873-1)/v874) * v106 ;v878=v108(v877) * v875 ;v876=1;end if (v876==(2 + 0)) then return Vector3.new(v878,v880,v879);end if (v876==(2 -1)) then v879=v109(v877) * v875 ;v880=(v108(v872 + (v877 * 2) ) * (19 -14)) + (v108((v872 * 1.7) + v877 ) * 3) ;v876=2;end end end;v137[14]=function(v881,v882,v883,v884) local v885=v882 * v107 * (3 -v111(1311 -(913 + 393) )) ;local v886=math.acos(1 -((5 -3) * ((v882-(0.5 -0))/v883)) );local v887=(v108(v881 * (412 -(269 + 141)) ) + 1) * 0.5 ;local v888=v884 * ((0.3 -0) + (v887 * (1981.7 -(362 + 1619)))) ;return Vector3.new(v108(v886) * v109(v885 + (v881 * (1625.3 -(950 + 675))) ) * v888 ,v109(v886) * v888 ,v108(v886) * v108(v885 + (v881 * (0.3 + 0)) ) * v888 );end;v137[1194 -(216 + 963) ]=function(v889,v890,v891,v892) local v893=1287 -(485 + 802) ;local v894;local v895;local v896;while true do if (v893==(560 -(432 + 127))) then v896=v109((v889 * 0.7) + (v894 * (1073.15 -(1065 + 8))) ) * v892 * (0.4 + 0) ;return Vector3.new(v895,v894,v896);end if (0==v893) then v894=(((v890-(1602 -(635 + 966)))/v891) * (15 + 5)) -(52 -(5 + 37)) ;v895=v108(v889 + (v894 * (0.2 -0)) ) * v892 * 0.8 ;v893=1 + 0 ;end end end;v137[24 -8 ]=function(v897,v898,v899,v900) local v901=(v898-1)/v899 ;local v902=(v901 * v107 * (3 + 3)) + (v897 * 0.4) ;local v903=2 + (v901 * v900) ;local v904=v108(v897 + (v901 * v106) ) * 2 ;return Vector3.new(v109(v902) * v903 ,v904,v108(v902) * v903 );end;v137[35 -18 ]=function(v905,v906,v907,v908) local v909=0 -0 ;local v910;local v911;local v912;local v913;while true do if (v909==2) then return Vector3.new(v108(v911) * v908 ,v913,v109(v911) * v908 );end if (v909==(1 -0)) then v912=v110(v108(v905 * 1.5 )) * (19 -11) ;v913=(((v906-1)/v907) * v912) -(v912/(2 + 0)) ;v909=2;end if (v909==(529 -(318 + 211))) then v910=59 -47 ;v911=((v905/v910) + ((v906-(1588 -(963 + 624)))/v907)) * v106 ;v909=1 + 0 ;end end end;v137[864 -(518 + 328) ]=function(v914,v915,v916,v917) local v918=37 -21 ;local v919=((v914/v918) + ((v915-(1 -0))/v916)) * v106 ;local v920=322 -(301 + 16) ;local v921=v110(v108(v919 * v920 )) * 6 ;return Vector3.new(v108(v919) * v917 ,v921,v109(v919) * v917 );end;v137[19]=function(v922,v923,v924,v925) local v926=0 -0 ;local v927;local v928;local v929;local v930;local v931;local v932;local v933;local v934;local v935;local v936;while true do if (v926==(5 -3)) then v935=v932 * (31 -19) * v934 ;v936=v925 * ((1 + 0) -(v932 * (0.5 + 0))) ;return Vector3.new(v108(v933) * v936 ,v935,v109(v933) * v936 );end if (v926==(0 -0)) then v927=9 + 5 ;v928=math.ceil(v924/(1 + 1) );v929=v923<=v928 ;v930=(v929 and v923) or (v923-v928) ;v926=3 -2 ;end if (v926==(1 + 0)) then v931=(v929 and v928) or (v924-v928) ;v932=(v930-(1020 -(829 + 190)))/math.max(v931,3 -2 ) ;v933=((v922/v927) + v932) * v106 ;v934=(v929 and (1 -0)) or  -1 ;v926=2 -0 ;end end end;v137[20]=function(v937,v938,v939,v940) local v941=44 -26 ;local v942=((v937/v941) + ((v938-(1 + 0))/v939)) * v106 ;local v943=v108(v942 * (0.5 + 0) );local v944=v110(v943) * 15 ;local v945=v940 * ((2 -1) -(v110(v943) * 0.5)) ;return Vector3.new(v108(v942) * v945 ,v944-3 ,v109(v942) * v945 );end;v54.spiral=function(v946,v947) v113(v946,v947,v137[1],"Spiral");end;for v948=1 + 0 ,633 -(520 + 93)  do v54["spiral"   .. v948 ]=function(v1423,v1424) v113(v1423,v1424,v137[v948],"Spiral");end;end v54.helicopter=function(v950,v951) local v952=276 -(259 + 17) ;local v953;local v954;while true do if (v952==(1 + 0)) then v53();task.wait(0.1);v952=1 + 1 ;end if (v952==(6 -4)) then _G.CurrentCommand="Helicopter";task.spawn(function() local v1979=0;local v1980;local v1981;local v1982;local v1983;while true do if (v1979==1) then v1983=6;while (_G.CurrentCommand=="Helicopter") and v954 and v954.Character  do local v2492=0;local v2493;local v2494;while true do if (v2492==(592 -(396 + 195))) then if (v2493 and v2494) then local v2738=v12.Character:FindFirstChild("Humanoid");if (v2738 and v2738.Sit) then v2738.Sit=false;end local v2739=tick() * v953 ;local v2740=v1982 + v2739 ;local v2741=v2494.Position;local v2742=v2741 + Vector3.new(math.cos(v2740) * v1983 ,0 -0 ,math.sin(v2740) * v1983 ) ;v2493.CFrame=CFrame.new(v2742,v2741) * CFrame.Angles(math.rad(1851 -(440 + 1321) ),1829 -(1059 + 770) ,0) ;v2493.Velocity=Vector3.zero;v2493.RotVelocity=Vector3.zero;end v5.Heartbeat:Wait();break;end if ((0 -0)==v2492) then v2493=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v2494=v954.Character and v954.Character:FindFirstChild("Head") ;v2492=1;end end end break;end if (v1979==(545 -(424 + 121))) then v1980,v1981=v20(),v21();v1982=((v1980-(1 + 0))/v1981) * math.pi * (1349 -(641 + 706)) ;v1979=1;end end end);break;end if (v952==(0 + 0)) then v953,v954=v48(v950,v951,458 -(249 + 191) );if ( not v954 or  not v954.Character) then return;end v952=4 -3 ;end end end;v54.heli=v54.helicopter;v54.quit=function(v955,v956) if  not v50(v955) then return;end v53();v31("Quitting - Bye "   .. tostring(getgenv().Settings.mainAccount) );task.delay(2 + 1 ,function() v12:Kick("DayBreak: Quit");end);end;v54.exit=v54.quit;v54.leave=v54.quit;local function v164(v957,v958,v959) v53();task.wait(0.1);local v960=v47(v957[7 -5 ],v958);if ( not v960 or  not v960.Character) then return;end _G.CurrentCommand="Shield";task.spawn(function() local v1425,v1426=v20(),v21();while (_G.CurrentCommand=="Shield") and v960 and v960.Character  do local v1673=427 -(183 + 244) ;local v1674;local v1675;while true do if (v1673==(0 + 0)) then v1674=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v1675=v960.Character and v960.Character:FindFirstChild("HumanoidRootPart") ;v1673=1;end if ((731 -(434 + 296))==v1673) then if (v1674 and v1675) then local v2394=v12.Character:FindFirstChild("Humanoid");if (v2394 and v2394.Sit) then v2394.Sit=false;end local v2395=CFrame.new(0 -0 ,512 -(169 + 343) ,0 + 0 );if (v959==(1 -0)) then local v2564=(v1426-(2 -1)) * (4 + 0) ;v2395=CFrame.new(((v1425-(2 -1)) * (1127 -(651 + 472))) -(v2564/(2 + 0)) ,0 + 0 , -(7 -1));elseif (v959==(485 -(397 + 86))) then local v2678=0;local v2679;while true do if (v2678==0) then v2679=(((v1425-(877 -(423 + 453)))/math.max(v1426-1 ,1)) * math.pi) -(math.pi/(1 + 1)) ;v2395=CFrame.new(math.sin(v2679) * 8 ,0 + 0 , -math.cos(v2679) * 8 );break;end end elseif (v959==(3 + 0)) then local v2747=0 + 0 ;local v2748;local v2749;while true do if ((1 + 0)==v2747) then v2395=CFrame.new(v2748 * v2749 * (1190.8 -(50 + 1140)) ,0 + 0 , -v2749-(2 + 1) );break;end if (0==v2747) then v2748=(((v1425%2)==(0 + 0)) and (1 -0)) or  -1 ;v2749=math.floor(v1425/2 ) * (3 + 0) ;v2747=597 -(157 + 439) ;end end elseif (v959==(6 -2)) then local v2815=math.ceil(v1426/(6 -4) );local v2816=math.floor((v1425-(2 -1))/v2815 );local v2817=(v1425-1)%v2815 ;v2395=CFrame.new((v2817 * (922 -(782 + 136))) -(((v2815-(856 -(112 + 743))) * (1175 -(1026 + 145)))/2) ,v2816 * (2 + 4) , -7);elseif (v959==5) then local v2846=math.ceil(v1426/4 );local v2847=math.floor((v1425-(719 -(493 + 225)))/v2846 );local v2848=(v1425-(3 -2))%v2846 ;local v2849=(v2848-((v2846-1)/(2 + 0))) * 4 ;local v2850=21 -13 ;if (v2847==(0 + 0)) then v2395=CFrame.new(v2849,0 -0 , -v2850);elseif (v2847==1) then v2395=CFrame.new(v2849,0 + 0 ,v2850);elseif (v2847==2) then v2395=CFrame.new( -v2850,0 -0 ,v2849);else v2395=CFrame.new(v2850,1595 -(210 + 1385) ,v2849);end end v1674.CFrame=v1675.CFrame * v2395 ;v1674.Velocity=Vector3.zero;end v5.Heartbeat:Wait();break;end end end end);end v54.shield=function(v961,v962) v164(v961,v962,1);end;for v963=1690 -(1201 + 488) ,4 + 1  do v54["shield"   .. v963 ]=function(v1427,v1428) v164(v1427,v1428,v963);end;end v54.ping=function(v965,v966) if  not v50(v965) then return;end task.spawn(function() task.wait(v20() * (0.3 -0) );v31("["   .. v12.Name   .. "] Ping: "   .. math.round(v12:GetNetworkPing() * (1793 -793) )   .. "ms" );end);end;v54.latency=v54.ping;v54.net=v54.ping;local v169=false;local v170={};local function v171(v967) local v968=0;while true do if (v968==(585 -(352 + 233))) then v169= not v967;pcall(function() local v1984=0 -0 ;local v1985;while true do if (v1984==(1 + 0)) then if  not v967 then local v2565=0;while true do if ((0 -0)==v2565) then v1985.FogEnd=8999999488;settings().Rendering.QualityLevel=Enum.QualityLevel.Level01;break;end end end for v2495,v2496 in ipairs(workspace:GetDescendants()) do if v2496:IsA("BasePart") then if  not v967 then local v2703=574 -(489 + 85) ;while true do if (v2703==0) then if  not v170[v2496] then v170[v2496]={v2496.Material,v2496.CastShadow};end v2496.Material=Enum.Material.SmoothPlastic;v2703=1494 -(663 + 830) ;end if (v2703==(1 + 0)) then v2496.CastShadow=false;break;end end elseif v170[v2496] then local v2784=0;while true do if ((0 -0)==v2784) then v2496.Material=v170[v2496][876 -(461 + 414) ];v2496.CastShadow=v170[v2496][1 + 1 ];break;end end end elseif (v2496:IsA("Decal") or v2496:IsA("Texture")) then v2496.Transparency=(v967 and (0 + 0)) or (1 + 0) ;elseif (v2496:IsA("ParticleEmitter") or v2496:IsA("Trail") or v2496:IsA("Beam") or v2496:IsA("Fire") or v2496:IsA("Smoke")) then v2496.Enabled=v967;end end break;end if (v1984==(0 + 0)) then v1985=game:GetService("Lighting");v1985.GlobalShadows=v967;v1984=251 -(172 + 78) ;end end end);break;end end end v54.ram=function(v969,v970) local v971=v20();task.wait((v971-1) * (0.05 -0) );local v972=string.format("%.1f",gcinfo()/1024 );v31(string.format("☀️ Bot #%d Memory: %s MB",v971,v972));end;v54.memory=v54.ram;v54.lowram=function(v973,v974) local v975=0 + 0 ;local v976;local v977;while true do if (v975==(0 -0)) then v976,v977=v51(v973);if  not v976 then return;end v975=1 + 0 ;end if (v975==1) then v171(false);if (v20()==(1 + 0)) then v31("⚡ Ultra-Low RAM Mode Activated (Max FPS)");end break;end end end;v54.unlowram=function(v978,v979) local v980,v981=v51(v978);if  not v980 then return;end v171(true);if (v20()==(1 -0)) then v31("✨ Normal Graphics Restored");end end;v54.render=function(v982,v983) local v984=(v982[2] and tostring(v982[2]):lower()) or "" ;if ((v984=="off") or (v984=="low") or (v984=="false") or (v984=="0")) then v54.lowram(v982,v983);else v54.unlowram(v982,v983);end end;v54.cleanram=function(v985,v986) local v987=0;local v988;local v989;local v990;local v991;local v992;local v993;while true do if (v987==(4 -0)) then v31(string.format("🧹 Bot #%d Cleaned %d KB",v993,v992));break;end if (v987==3) then v993=v20();task.wait((v993-(1 + 0)) * 0.05 );v987=3 + 1 ;end if (v987==(0 + 0)) then v988,v989=v51(v985);if  not v988 then return;end v987=3 -2 ;end if (v987==(4 -2)) then v991=gcinfo();v992=math.max(0 + 0 ,v990-v991 );v987=2 + 1 ;end if (v987==1) then v990=gcinfo();pcall(function() collectgarbage("collect");collectgarbage("collect");end);v987=449 -(133 + 314) ;end end end;v54.flush=v54.cleanram;v54.ramclean=v54.cleanram;v54.bodyguard=function(v994,v995) local v996=0;local v997;local v998;local v999;local v1000;local v1001;while true do if (v996==(1 + 0)) then v999=v47(v998[215 -(199 + 14) ],v995);if ( not v999 or  not v999.Character) then return;end v996=2;end if (v996==4) then task.spawn(function() while (_G.CurrentCommand=="bodyguard") and _G.DayBreakActive  do if ( not v999.Character or  not v999.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2);continue;end local v2165=v999.Character.HumanoidRootPart;local v2166=v12.Character;if (v2166 and v2166:FindFirstChild("HumanoidRootPart")) then local v2400=0 -0 ;local v2401;local v2402;local v2403;local v2404;local v2405;local v2406;while true do if (v2400==2) then v2405=v2165.Position + Vector3.new(v2403,1549 -(647 + 902) ,v2404) ;v2406=v2405 + ((v2405-v2165.Position).Unit * (30 -20)) ;v2400=3;end if (v2400==(236 -(85 + 148))) then v2166.HumanoidRootPart.CFrame=CFrame.lookAt(v2405,Vector3.new(v2406.X,v2405.Y,v2406.Z));break;end if ((1290 -(426 + 863))==v2400) then v2403=math.cos(v2402) * v2401 ;v2404=math.sin(v2402) * v2401 ;v2400=9 -7 ;end if (0==v2400) then v2401=(1660 -(873 + 781)) + (v1001 * 0.3) ;v2402=((v1000-(1 -0))/math.max(1,v1001)) * math.pi * 2 ;v2400=1;end end end task.wait(0.03 -0 );end end);break;end if (v996==(2 + 1)) then v1000=v20();v1001=v21();v996=14 -10 ;end if (v996==(2 -0)) then v53();_G.CurrentCommand="bodyguard";v996=8 -5 ;end if ((1947 -(414 + 1533))==v996) then v997,v998=v51(v994);if  not v997 then return;end v996=1 + 0 ;end end end;v54.ritual=function(v1002,v1003) local v1004=555 -(443 + 112) ;local v1005;local v1006;local v1007;local v1008;local v1009;while true do if (v1004==3) then v1008=v20();v1009=v21();v1004=1483 -(888 + 591) ;end if (4==v1004) then task.spawn(function() local v1986={"✦ LUX NOCTIS ✦","✧ THE STAR AWAKENS ✧","✦ CONSUME THE LIGHT ✦","✧ DAYBREAK ASCENDS ✧"};local v1987=0;local v1988=0 -0 ;while (_G.CurrentCommand=="ritual") and _G.DayBreakActive  do local v2167=0;local v2168;local v2169;while true do if (v2167==(2 + 1)) then task.wait(0.03 + 0 );break;end if (v2167==0) then if ( not v1007.Character or  not v1007.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 + 0 );continue;end v2168=v1007.Character.HumanoidRootPart;v2167=1 -0 ;end if ((1 -0)==v2167) then v2169=v12.Character;if (v2169 and v2169:FindFirstChild("HumanoidRootPart")) then v1988=(v1988 + (1678.04 -(136 + 1542)))%(math.pi * (6 -4)) ;local v2610=8 + 0 ;local v2611=v1988 + (((v1008-(1 -0))/math.max(1 + 0 ,v1009)) * math.pi * (488 -(68 + 418))) ;local v2612=v2168.Position + Vector3.new(math.cos(v2611) * v2610 ,0 -0 ,math.sin(v2611) * v2610 ) ;v2169.HumanoidRootPart.CFrame=CFrame.lookAt(v2612,Vector3.new(v2168.Position.X,v2612.Y,v2168.Position.Z));end v2167=3 -1 ;end if (v2167==(2 + 0)) then v1987=v1987 + (1092.03 -(770 + 322)) ;if (v1987>=(1 + 3)) then local v2614=0 + 0 ;while true do if (v2614==(0 + 0)) then v1987=0;if (v1008==(1 -0)) then local v2821=v1986[math.random(1 -0 , #v1986)];v31(v2821);end break;end end end v2167=7 -4 ;end end end end);break;end if (v1004==(3 -2)) then v1007=v47(v1006[2 + 0 ],v1003);if ( not v1007 or  not v1007.Character) then return;end v1004=2;end if (v1004==(2 -0)) then v53();_G.CurrentCommand="ritual";v1004=2 + 1 ;end if (v1004==0) then v1005,v1006=v51(v1002);if  not v1005 then return;end v1004=1;end end end;v54.paparazzi=function(v1010,v1011) local v1012,v1013=v51(v1010);if  not v1012 then return;end local v1014=v47(v1013[2],v1011);if ( not v1014 or  not v1014.Character) then return;end v53();_G.CurrentCommand="paparazzi";local v1015=v20();local v1016=v21();task.spawn(function() local v1429=0 + 0 ;local v1430;local v1431;while true do if (0==v1429) then v1430={"OMG OVER HERE!! 📸","LOOK THIS WAY!! 📷","ONE MORE SMILE!! ✨","IS IT TRUE?! 📸","EXCLUSIVE PHOTO!! 📷"};v1431=0 -0 ;v1429=3 -2 ;end if (v1429==1) then while (_G.CurrentCommand=="paparazzi") and _G.DayBreakActive  do if ( not v1014.Character or  not v1014.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 + 0 );continue;end local v2170=v1014.Character.HumanoidRootPart;local v2171=v12.Character;if (v2171 and v2171:FindFirstChild("HumanoidRootPart")) then local v2407=(24 -19) + (math.sin((os.clock() * 3) + v1015 ) * 1.5) ;local v2408=(((v1015-(832 -(762 + 69)))/math.max(3 -2 ,v1016)) * math.pi * 2) + (math.sin(os.clock() + v1015 ) * 0.3) ;local v2409=v2170.Position + Vector3.new(math.cos(v2408) * v2407 ,0 + 0 ,math.sin(v2408) * v2407 ) ;v2171.HumanoidRootPart.CFrame=CFrame.lookAt(v2409,Vector3.new(v2170.Position.X,v2409.Y,v2170.Position.Z));end v1431=v1431 + 0.03 + 0 ;if (v1431>=((19 -11) + (v1015 * (1 + 1)))) then v1431=0;local v2411=v1430[math.random(1 + 0 , #v1430)];task.wait((v1015-1) * 0.25 );v31(string.format("[Bot #%d] %s",v1015,v2411));end task.wait(0.03 -0 );end break;end end end);end;v54.coffin=function(v1017,v1018) local v1019=0;local v1020;local v1021;local v1022;local v1023;local v1024;while true do if (v1019==(158 -(8 + 149))) then v1022=v47(v1021[2],v1018);if ( not v1022 or  not v1022.Character) then return;end v1019=1322 -(1199 + 121) ;end if (v1019==(3 -1)) then v53();_G.CurrentCommand="coffin";v1019=6 -3 ;end if (0==v1019) then v1020,v1021=v51(v1017);if  not v1020 then return;end v1019=1 + 0 ;end if (v1019==4) then task.spawn(function() local v1989=0;local v1990;while true do if (v1989==(0 -0)) then v1990=0 -0 ;while (_G.CurrentCommand=="coffin") and _G.DayBreakActive  do if ( not v1022.Character or  not v1022.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 + 0 );continue;end local v2499=v1022.Character.HumanoidRootPart;local v2500=v12.Character;if (v2500 and v2500:FindFirstChild("HumanoidRootPart")) then v1990=v1990 + 0.08 ;local v2615=(((v1023%(1809 -(518 + 1289)))==(0 -0)) and (1 + 0)) or  -(1 -0) ;local v2616=math.floor((v1023-(1 + 0))/(471 -(304 + 165)) );local v2617=v2615 * 4 ;local v2618= -v2616 * (3.5 + 0) ;local v2619=math.abs(math.sin(v1990 + (v2616 * (160.5 -(54 + 106))) )) * 1.8 ;local v2620=v2499.CFrame.LookVector;local v2621=v2499.CFrame.RightVector;local v2622=v2499.Position + (v2621 * v2617) + (v2620 * v2618) + Vector3.new(1969 -(1618 + 351) ,v2619,0 + 0 ) ;v2500.HumanoidRootPart.CFrame=CFrame.lookAt(v2622,v2622 + v2620 );end task.wait(1016.03 -(10 + 1006) );end break;end end end);break;end if (v1019==(1 + 2)) then v1023=v20();v1024=v21();v1019=1 + 3 ;end end end;v54.conga=function(v1025,v1026) local v1027,v1028=v51(v1025);if  not v1027 then return;end local v1029=v47(v1028[2],v1026);if ( not v1029 or  not v1029.Character) then return;end v53();_G.CurrentCommand="conga";local v1030=v20();task.spawn(function() while (_G.CurrentCommand=="conga") and _G.DayBreakActive  do if ( not v1029.Character or  not v1029.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 -0 );continue;end local v1676=v1029.Character.HumanoidRootPart;local v1677=v12.Character;if (v1677 and v1677:FindFirstChild("HumanoidRootPart")) then local v1991=1033 -(912 + 121) ;local v1992;local v1993;local v1994;while true do if ((1 + 0)==v1991) then v1994=(v1676.Position-(v1676.CFrame.LookVector * v1992)) + (v1676.CFrame.RightVector * v1993) ;v1677.HumanoidRootPart.CFrame=CFrame.lookAt(v1994,v1994 + v1676.CFrame.LookVector );break;end if (v1991==(1289 -(1140 + 149))) then v1992=v1030 * 3.2 ;v1993=math.sin((os.clock() * 4) + (v1030 * 0.8) ) * (1.5 + 0) ;v1991=1;end end end task.wait(0.03 -0 );end end);end;v54.stare=function(v1031,v1032) local v1033,v1034=v51(v1031);if  not v1033 then return;end local v1035=v47(v1034[1 + 1 ],v1032);if ( not v1035 or  not v1035.Character) then return;end v53();_G.CurrentCommand="stare";local v1036=v20();local v1037=v21();task.spawn(function() while (_G.CurrentCommand=="stare") and _G.DayBreakActive  do if ( not v1035.Character or  not v1035.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 -0 );continue;end local v1678=v1035.Character.HumanoidRootPart;local v1679=v12.Character;if (v1679 and v1679:FindFirstChild("HumanoidRootPart")) then local v1995=0 -0 ;local v1996;local v1997;local v1998;while true do if ((1 + 0)==v1995) then v1998=v1678.Position + Vector3.new(math.cos(v1997) * v1996 ,0,math.sin(v1997) * v1996 ) ;v1679.HumanoidRootPart.CFrame=CFrame.lookAt(v1998,Vector3.new(v1678.Position.X,v1998.Y,v1678.Position.Z));break;end if (v1995==0) then v1996=7;v1997=((v1036-1)/math.max(3 -2 ,v1037)) * math.pi * (188 -(165 + 21)) ;v1995=1;end end end task.wait(111.03 -(61 + 50) );end end);end;v54.tornado=function(v1038,v1039) local v1040=0 + 0 ;local v1041;local v1042;local v1043;local v1044;local v1045;while true do if (v1040==(9 -7)) then v53();_G.CurrentCommand="tornado";v1040=5 -2 ;end if (4==v1040) then task.spawn(function() local v1999=0 + 0 ;local v2000;local v2001;while true do if ((1461 -(1295 + 165))==v1999) then while (_G.CurrentCommand=="tornado") and _G.DayBreakActive  do if ( not v1043.Character or  not v1043.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 + 0 );continue;end local v2501=v1043.Character.HumanoidRootPart;local v2502=v12.Character;if (v2502 and v2502:FindFirstChild("HumanoidRootPart")) then local v2624=0 + 0 ;local v2625;local v2626;while true do if (v2624==(1397 -(819 + 578))) then v2000=(v2000 + (1402.12 -(331 + 1071)))%(math.pi * 2) ;v2625=(747 -(588 + 155)) + (v2001 * (1282.5 -(546 + 736))) ;v2624=1938 -(1834 + 103) ;end if (v2624==(1 + 0)) then v2626=v2501.Position + Vector3.new(math.cos(v2000) * v2625 ,v2001,math.sin(v2000) * v2625 ) ;v2502.HumanoidRootPart.CFrame=CFrame.lookAt(v2626,Vector3.new(v2501.Position.X,v2626.Y,v2501.Position.Z));break;end end end task.wait(0.02 -0 );end break;end if (v1999==(1766 -(1536 + 230))) then v2000=((v1044-(492 -(128 + 363)))/math.max(1 + 0 ,v1045)) * math.pi * (4 -2) ;v2001=(v1044-(1 + 0)) * (1.5 -0) ;v1999=2 -1 ;end end end);break;end if (v1040==1) then v1043=v47(v1042[2],v1039);if ( not v1043 or  not v1043.Character) then return;end v1040=2;end if (v1040==0) then v1041,v1042=v51(v1038);if  not v1041 then return;end v1040=2 -1 ;end if (v1040==(3 + 0)) then v1044=v20();v1045=v21();v1040=1013 -(615 + 394) ;end end end;_G.CreeperActive=false;v54.creeper=function(v1046,v1047) local v1048,v1049=v51(v1046);if  not v1048 then return;end local v1050=v47(v1049[2],v1047);if ( not v1050 or  not v1050.Character) then return;end v53();_G.CurrentCommand="creeper";_G.CreeperActive=true;local v1051=v20();task.spawn(function() while (_G.CurrentCommand=="creeper") and _G.CreeperActive and _G.DayBreakActive  do if ( not v1050.Character or  not v1050.Character:FindFirstChild("HumanoidRootPart")) then task.wait(0.2 + 0 );continue;end local v1680=v1050.Character.HumanoidRootPart;local v1681=v12.Character;if (v1681 and v1681:FindFirstChild("HumanoidRootPart")) then local v2002=v1681.HumanoidRootPart;local v2003=v1680.Position-v2002.Position ;local v2004=v1680.CFrame.LookVector;local v2005=v2004:Dot( -v2003.Unit);local v2006=v2005>(0.1 + 0) ;if  not v2006 then local v2297=0 -0 ;local v2298;local v2299;while true do if ((4 -3)==v2297) then if ((v2299-v1680.Position).Magnitude>(654 -(59 + 592))) then v2002.CFrame=CFrame.lookAt(v2299,Vector3.new(v1680.Position.X,v2299.Y,v1680.Position.Z));end break;end if (v2297==(0 -0)) then v2298=(0.5 -0) + (v1051 * (0.05 + 0)) ;v2299=v2002.Position + (v2003.Unit * v2298) ;v2297=1;end end end end task.wait(171.05 -(70 + 101) );end end);end;v54.uncreeper=function(v1052,v1053) local v1054=0 -0 ;while true do if (v1054==1) then if (v20()==(1 + 0)) then v31("Creeper mode deactivated");end break;end if (v1054==0) then _G.CreeperActive=false;v53();v1054=2 -1 ;end end end;v54.carpet=function(v1055,v1056) v53();task.wait(0.1);local v1057=v47(v1055[243 -(123 + 118) ],v1056);if ( not v1057 or  not v1057.Character) then return;end _G.CurrentCommand="Carpet";task.spawn(function() local v1432=v20();local v1433,v1434=2.5 + 5 , -3.2;local v1435;v1435=v5.Heartbeat:Connect(function() local v1682=0 + 0 ;local v1683;local v1684;local v1685;while true do if (v1682==(1399 -(653 + 746))) then if (_G.CurrentCommand~="Carpet") then local v2414=0 -0 ;while true do if (v2414==(0 -0)) then if v1435 then v1435:Disconnect();end return;end end end v1683=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v1682=1;end if (v1682==(2 -1)) then v1684=v1057.Character and v1057.Character:FindFirstChild("HumanoidRootPart") ;v1685=v1057.Character and v1057.Character:FindFirstChild("Humanoid") ;v1682=1 + 1 ;end if (v1682==2) then if (v1683 and v1684 and v1685) then local v2415=0;local v2416;local v2417;local v2418;while true do if (v2415==(1 + 0)) then v1683.CFrame=CFrame.new(v1684.Position + v2417 + Vector3.new(0 + 0 ,v1434,0) ,v1684.Position + v2417 + Vector3.new(0,v1434,0 + 0 ) + v2416 ) * CFrame.Angles(math.rad(15 + 75 ),0,0 -0 ) ;v1683.Velocity=Vector3.zero;v2415=2 + 0 ;end if (0==v2415) then v2416=((v1685.MoveDirection.Magnitude>0) and v1685.MoveDirection) or v1684.CFrame.LookVector ;v2417=v2416 * v1432 * v1433 ;v2415=1 -0 ;end if (v2415==(1236 -(885 + 349))) then v1683.RotVelocity=Vector3.zero;v2418=v12.Character:FindFirstChild("Humanoid");v2415=3;end if ((3 + 0)==v2415) then if (v2418 and v2418.Sit) then v2418.Sit=false;end break;end end end break;end end end);getgenv().TrackConnection(v1435);while (_G.CurrentCommand=="Carpet") and v1057 and v1057.Character  do task.wait(0.5 -0 );end if v1435 then pcall(function() v1435:Disconnect();end);end end);end;v54.floor=v54.carpet;v54.bridge=v54.carpet;v54.spin=function(v1058,v1059) local v1060=tonumber(v1058[2]) or (58 -38) ;v53();task.wait(968.1 -(915 + 53) );_G.CurrentCommand="Spin";task.spawn(function() local v1436=0;local v1437;local v1438;while true do if (v1436==0) then v1437=801 -(768 + 33) ;v1438=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v1436=1;end if (v1436==(3 -2)) then if v1438 then v1438.AutoRotate=false;end while _G.CurrentCommand=="Spin"  do local v2172=0;local v2173;while true do if ((1 -0)==v2172) then v5.Heartbeat:Wait();break;end if (v2172==(328 -(287 + 41))) then v2173=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v2173 then v1437+=v1060 v2173.CFrame=CFrame.new(v2173.Position) * CFrame.Angles(847 -(638 + 209) ,math.rad(v1437),0) ;v2173.Velocity=Vector3.zero;v2173.RotVelocity=Vector3.zero;end v2172=1 + 0 ;end end end v1436=1688 -(96 + 1590) ;end if (v1436==2) then pcall(function() local v2174=1672 -(741 + 931) ;local v2175;while true do if (0==v2174) then v2175=v12.Character and v12.Character:FindFirstChild("Humanoid") ;if v2175 then v2175.AutoRotate=true;end break;end end end);break;end end end);end;v54.vfling=function(v1061,v1062) v53();task.wait(0.1 + 0 );local v1063=v47(v1061[5 -3 ],v1062);if ( not v1063 or  not v1063.Character) then return;end local v1064=v1063.Character:FindFirstChild("HumanoidRootPart");if  not v1064 then return;end _G.CurrentCommand="Fling";task.spawn(function() local v1439=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;local v1440=v12.Character and v12.Character:FindFirstChild("Humanoid") ;if (v1439 and v1440) then local v1832=0 -0 ;local v1833;while true do if (v1832==(1 + 0)) then v1833=v5.Heartbeat:Connect(function() local v2419=0 + 0 ;local v2420;while true do if (v2419==1) then v2420=Vector3.new(math.random( -(4 + 6),37 -27 )/(33 + 67) ,math.random( -(5 + 5),10)/(407 -307) ,math.random( -(9 + 1),504 -(64 + 430) )/(100 + 0) );v1439.CFrame=(v1064.CFrame * CFrame.new(v2420)) + (v1064.Velocity * 0.15) ;v2419=365 -(106 + 257) ;end if (v2419==2) then v1439.Velocity=Vector3.new(500,355 + 145 ,1221 -(496 + 225) );break;end if (v2419==0) then if ((_G.CurrentCommand~="Fling") or  not v1064 or  not v1064.Parent) then if v1833 then v1833:Disconnect();end if (v1439 and v1439.Parent) then local v2786=0;while true do if (v2786==(0 -0)) then v1439.Velocity=Vector3.zero;v1439.RotVelocity=Vector3.zero;break;end end end return;end v1439.RotVelocity=Vector3.new(730693 -580693 ,151658 -(256 + 1402) ,151899 -(30 + 1869) );v2419=1370 -(213 + 1156) ;end end end);getgenv().TrackConnection(v1833);v1832=2;end if ((190 -(96 + 92))==v1832) then task.delay(10,function() if (_G.CurrentCommand=="Fling") then _G.CurrentCommand="None";end end);break;end if (v1832==(0 + 0)) then v1440.Sit=false;v1833=nil;v1832=900 -(142 + 757) ;end end end end);end;v54.kill=v54.vfling;v54.bang=function(v1065,v1066) local v1067=0;local v1068;local v1069;local v1070;while true do if (v1067==(2 + 0)) then v53();task.wait(0.1 + 0 );v1067=82 -(32 + 47) ;end if (v1067==(1980 -(1053 + 924))) then _G.CurrentCommand="Bang";task.spawn(function() local v2007,v2008=0 + 0 ,true;local v2009=(0.45 -0) * v1068 ;while (_G.CurrentCommand=="Bang") and v1069 and v1069.Character and v1070.Parent  do local v2176=0;local v2177;local v2178;while true do if (v2176==(1648 -(685 + 963))) then v2177=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v2178=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v2176=1 -0 ;end if (v2176==(1 -0)) then if (v2177 and v1070) then local v2640=1709 -(541 + 1168) ;while true do if (v2640==1) then v2177.CFrame=v1070.CFrame * CFrame.new(1597 -(645 + 952) ,838 -(669 + 169) ,(0.8 -0) + (v2007 * 1.2) ) ;v2177.Velocity=Vector3.zero;v2640=3 -1 ;end if (v2640==(0 + 0)) then if (v2178 and v2178.Sit) then v2178.Sit=false;end if v2008 then local v2823=0 + 0 ;while true do if (v2823==(765 -(181 + 584))) then v2007+=v2009 if (v2007>=1) then v2008=false;end break;end end else local v2824=0;while true do if ((1395 -(665 + 730))==v2824) then v2007-=v2009 if (v2007<=(0 -0)) then v2008=true;end break;end end end v2640=1;end if (v2640==(3 -1)) then v2177.RotVelocity=Vector3.zero;break;end end end v5.Heartbeat:Wait();break;end end end end);break;end if (v1067==1) then v1070=v1069.Character:FindFirstChild("HumanoidRootPart");if  not v1070 then return;end v1067=2;end if (v1067==0) then v1068,v1069=v48(v1065,v1066,1);if ( not v1069 or  not v1069.Character) then return;end v1067=1351 -(540 + 810) ;end end end;v54.fbang=function(v1071,v1072) local v1073,v1074=v48(v1071,v1072,3 -2 );if ( not v1074 or  not v1074.Character) then return;end local v1075=v1074.Character:FindFirstChild("Head");if  not v1075 then return;end v53();task.wait(0.1 -0 );_G.CurrentCommand="FaceBang";local v1076=v12.Character and v12.Character:FindFirstChild("Humanoid") ;if v1076 then v1076.AutoRotate=false;end task.spawn(function() local v1441=0 + 0 ;local v1442;local v1443;local v1444;while true do if ((204 -(166 + 37))==v1441) then while (_G.CurrentCommand=="FaceBang") and v1074 and v1074.Character and v1075.Parent  do local v2179=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if (v2179 and v1075) then local v2421=1881 -(22 + 1859) ;local v2422;local v2423;local v2424;local v2425;local v2426;local v2427;local v2428;while true do if ((1772 -(843 + 929))==v2421) then v2422=v12.Character:FindFirstChild("Humanoid");if (v2422 and v2422.Sit) then v2422.Sit=false;end if v1443 then v1442+=v1444 if (v1442>=1) then v1443=false;end else v1442-=v1444 if (v1442<=0) then v1443=true;end end v2423=(262.5 -(30 + 232)) + (v1442 * (2.5 -1)) ;v2421=1;end if (v2421==(778 -(55 + 722))) then v2424=v12.Character:FindFirstChild("LowerTorso")~=nil ;v2425=(v2424 and (0.75 -0)) or (1675 -(78 + 1597)) ;v2426=v1075.Position;v2427=v1075.CFrame.Position + (v1075.CFrame.LookVector * v2423) ;v2421=1 + 1 ;end if (v2421==(2 + 0)) then v2428=Vector3.new(v2427.X,v2426.Y + v2425 ,v2427.Z);v2179.CFrame=CFrame.new(v2428,Vector3.new(v2426.X,v2428.Y,v2426.Z));v2179.Velocity=Vector3.zero;v2179.RotVelocity=Vector3.zero;break;end end end v5.Heartbeat:Wait();end pcall(function() local v2180=v12.Character and v12.Character:FindFirstChild("Humanoid") ;if v2180 then v2180.AutoRotate=true;end end);break;end if (v1441==(0 + 0)) then v1442,v1443=549 -(305 + 244) ,true;v1444=(0.45 + 0) * v1073 ;v1441=106 -(95 + 10) ;end end end);end;local v197={mirror={0 -0 ,762 -(592 + 170) ,0},rmirror={12 -7 ,0,0},lmirror={ -(11 -6),0 + 0 ,507 -(353 + 154) },fmirror={0 -0 ,0 + 0 , -5},bmirror={0 + 0 ,0 -0 ,5}};for v1077,v1078 in pairs(v197) do v54[v1077]=function(v1445,v1446) v53();task.wait(0.1);local v1447=v47(v1445[2],v1446);if ( not v1447 or  not v1447.Character) then return;end local v1448=v1077:upper();_G.CurrentCommand=v1448;task.spawn(function() local v1687;v1687=v5.Heartbeat:Connect(function() local v1834=0 -0 ;local v1835;local v1836;while true do if (v1834==(87 -(7 + 79))) then v1836=v1447.Character and v1447.Character:FindFirstChild("HumanoidRootPart") ;if (v1835 and v1836) then v1835.CFrame=v1836.CFrame * CFrame.new(v1078[1],v1078[1 + 1 ],v1078[184 -(24 + 157) ]) ;local v2504=v12.Character:FindFirstChild("Humanoid");local v2505=v1447.Character:FindFirstChild("Humanoid");if (v2504 and v2505) then local v2646=0 -0 ;while true do if (v2646==(0 -0)) then v2504.Jump=v2505.Jump;if (v2505.Sit~=v2504.Sit) then v2504.Sit=v2505.Sit;end break;end end end v1835.Velocity=Vector3.zero;v1835.RotVelocity=Vector3.zero;end break;end if (v1834==0) then if ((_G.CurrentCommand~=v1448) or  not v1447.Character) then if v1687 then v1687:Disconnect();end return;end v1835=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v1834=1 + 0 ;end end end);getgenv().TrackConnection(v1687);end);end;end v54.rizz=function(v1080,v1081) local v1082=0 -0 ;local v1083;local v1084;while true do if (v1082==3) then task.spawn(function() local v2010=380 -(262 + 118) ;local v2011;local v2012;local v2013;local v2014;local v2015;local v2016;local v2017;local v2018;while true do if (4==v2010) then v2018=v1083.Character and v1083.Character:FindFirstChild("HumanoidRootPart") ;if v2018 then v2013.CFrame=CFrame.new(v2013.Position,Vector3.new(v2018.Position.X,v2013.Position.Y,v2018.Position.Z));end v31(v1084[((v2011-(1084 -(1038 + 45)))% #v1084) + (1 -0) ]);v2010=235 -(19 + 211) ;end if (v2010==(118 -(88 + 25))) then task.wait(9 -5 );while (_G.CurrentCommand=="Rizz") and v1083 and v1083.Character  do local v2509=0;local v2510;while true do if (v2509==(1 + 0)) then v5.Heartbeat:Wait();break;end if (v2509==(0 + 0)) then v2510=v1083.Character:FindFirstChild("HumanoidRootPart");if v2510 then local v2758=1036 -(1007 + 29) ;local v2759;while true do if (v2758==0) then v2759=(v2011/v2012) * math.pi * (1 + 1) ;v2013.CFrame=CFrame.new(v2510.Position + Vector3.new(math.cos(v2759) * (19 -11) ,0 -0 ,math.sin(v2759) * (2 + 6) ) ,v2510.Position);v2758=812 -(340 + 471) ;end if (1==v2758) then v2013.Velocity=Vector3.zero;break;end end end v2509=1;end end end break;end if (v2010==0) then v2011,v2012=v20(),v21();v2013=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v2014=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v2010=2 -1 ;end if (v2010==(592 -(276 + 313))) then v2017=v1083.Character and v1083.Character:FindFirstChild("HumanoidRootPart") ;if v2017 then v2014:MoveTo((v2017.CFrame * CFrame.new(0,0, -(6 -3))).Position);end task.wait(2.2);v2010=4 + 0 ;end if ((1 + 0)==v2010) then v2015=v1083.Character and v1083.Character:FindFirstChild("HumanoidRootPart") ;if  not (v2013 and v2014 and v2015) then return;end v2016=v2015.CFrame * CFrame.new(0 + 0 ,1972 -(495 + 1477) , -((44 -29) + (v2011 * 4))) ;v2010=2;end if (v2010==(2 + 0)) then v2014:MoveTo(v2016.Position);task.wait((v2011-(404 -(342 + 61))) * (4 + 3) );if (_G.CurrentCommand~="Rizz") then return;end v2010=3;end end end);break;end if (v1082==(167 -(4 + 161))) then _G.CurrentCommand="Rizz";v1084={"I don't usually get distracted, but you made me forget what I was saying.","You've got that calm energy that makes everything feel easier.","There's something about you that feels different — in a good way.","I can tell you're not just pretty, you've got depth.","I don't think you realize how naturally attractive your vibe is.","You seem like the kind of person people feel safe around.","I wasn't planning on staying long, but you changed that.","You've got that quiet confidence that's hard to ignore.","I like how you carry yourself. It says a lot.","Talking to you feels way too easy… and I don't mind that at all.","You don't even have to try. That's what makes it dangerous.","I respect how you move — it's rare.","I don't throw compliments around, but you earned that one.","If energy is real, yours is undefeated.","I'm not even trying to impress you… I just like talking to you."};v1082=3;end if (v1082==(0 + 0)) then v53();task.wait(0.1 -0 );v1082=1 + 0 ;end if (v1082==1) then v1083=v47(v1080[708 -(57 + 649) ],v1081);if ( not v1083 or  not v1083.Character) then return;end v1082=2;end end end;v54.mbang=function(v1085,v1086) local v1087,v1088=v48(v1085,v1086,385 -(328 + 56) );if ( not v1088 or  not v1088.Character) then return;end v53();task.wait(0.1);_G.CurrentCommand="MultiBang";task.spawn(function() local v1449=0;local v1450;local v1451;local v1452;local v1453;while true do if (v1449==0) then v1450,v1451,v1452=0 + 0 ,true,512 -(433 + 79) ;v1453=(0.45 + 0) * v1087 ;v1449=1 + 0 ;end if (v1449==(3 -2)) then while (_G.CurrentCommand=="MultiBang") and v1088 and v1088.Character  do local v2181=0 -0 ;local v2182;local v2183;local v2184;local v2185;while true do if (v2181==2) then if (v2182 and v2183) then local v2647,v2648=v20(),v21();if v1451 then local v2707=0 + 0 ;while true do if (v2707==(0 + 0)) then v1450+=v1453 if (v1450>=1) then v1451=false;end break;end end else local v2708=1036 -(562 + 474) ;while true do if (v2708==0) then v1450-=v1453 if (v1450<=0) then v1451=true;end break;end end end local v2649=v2183.CFrame;if (v2647==(2 -1)) then local v2709=v12.Character:FindFirstChild("LowerTorso")~=nil ;local v2710=(v2709 and (0.75 -0)) or (905 -(76 + 829)) ;local v2711=0.5 + (v1450 * (1674.5 -(1506 + 167))) ;local v2712=v2184.CFrame.Position + (v2184.CFrame.LookVector * v2711) ;v2649=CFrame.new(Vector3.new(v2712.X,v2184.Position.Y + v2710 ,v2712.Z),Vector3.new(v2184.Position.X,v2184.Position.Y + v2710 ,v2184.Position.Z));elseif (v2647==(3 -1)) then v2649=v2183.CFrame * CFrame.new(266 -(58 + 208) ,0 + 0 ,0.8 + 0 + (v1450 * (1.2 + 0)) ) ;elseif (v2647==3) then v2649=v2183.CFrame * CFrame.new((0.8 -0) + (v1450 * (338.2 -(258 + 79))) ,0 + 0 ,0 -0 ) * CFrame.Angles(1470 -(1219 + 251) ,math.rad( -(1761 -(1231 + 440))),58 -(34 + 24) ) ;elseif (v2647==4) then v2649=v2183.CFrame * CFrame.new( -(0.8 + (v1450 * 1.2)),0 + 0 ,0 -0 ) * CFrame.Angles(0 + 0 ,math.rad(273 -183 ),0 -0 ) ;elseif (v2647==5) then v2649=v2183.CFrame * CFrame.new(0 -0 ,(3 -2) + (v1450 * (2.5 -1)) ,1589 -(877 + 712) ) * CFrame.Angles(math.rad( -90),0 + 0 ,0) ;else v1452+=(754.05 -(242 + 512)) local v2869=v2647-(10 -5) ;local v2870=math.max(v2648-5 ,628 -(92 + 535) );local v2871=(v2869/v2870) * math.pi * 2 ;v2649=CFrame.new(v2183.Position + Vector3.new(math.cos(v1452 + v2871 ) * (7 + 1) ,0 -0 ,math.sin(v1452 + v2871 ) * (1 + 7) ) ,v2183.Position);end if (v2185 and v2185.Sit) then v2185.Sit=false;end v2182.CFrame=v2649;v2182.Velocity=Vector3.zero;v2182.RotVelocity=Vector3.zero;end v5.Heartbeat:Wait();break;end if (v2181==(3 -2)) then v2184=(v1088.Character and v1088.Character:FindFirstChild("Head")) or v2183 ;v2185=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v2181=2;end if (v2181==(0 + 0)) then v2182=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v2183=v1088.Character and v1088.Character:FindFirstChild("HumanoidRootPart") ;v2181=1 + 0 ;end end end break;end end end);end;v54.multibang=v54.mbang;local v201={[1 + 0 ]="(့、fเɹჺkɐԀყჿเɹꞅıาาჿıาาꞅลพ、 (့)`",[3 -1 ]="(့、ჺlาเɹဌรɐıาาɐıาลıาԀรพลıาԀịνɐჿffลfเɹჺkịıาဌlวꞅịԀဌɐ、 (့)`",[4 -1 ]="(့、ị'ƖƖνịჿƖลϯɐყჿเɹꞅlวƖჿჿԀƖịıาɐ,ყჿเɹჺเɹıาϯ、 (့)`",[1789 -(1476 + 309) ]="(့、ჺลıาพɐԀჿlวჿჿıาาlวลყลlา、 (့)`",[1289 -(299 + 985) ]="(့、ꞅลıาาลԀịƖԀჿเɹꞁวყჿเɹꞅꞅɐჺϯเɹıาา、 (့)`",[2 + 4 ]="(့、ყჿเɹꞅıาาჿıาารɋเɹịꞅϯɐԀჿıาıาาɐ、 (့)`",[22 -15 ]="(့、รพลƖƖჿพlวƖɐลჺlาჺเɹıาϯ、 (့)`",[8]="(့、รkเɹƖƖfเɹჺkჺჿꞅꞁวรɐ、 (့)`",[9]="(့、ჺเɹıาาꞅลဌlวลlวყlวịϯჺlา、 (့)`",[10]="(့、ဌƖลรรịıาลรรჺเɹıาϯ、 (့)`",[104 -(86 + 7) ]="(့、ƖịჺklวลƖƖรϯlาɐıาԀịɐ、 (့)`",[48 -36 ]="(့、ịƖƖꞅลꞁวɐყჿเɹꞅfลıาาịƖყ、 (့)`",[2 + 11 ]="(့、ɐลϯลรรลıาԀlาลıาဌϯพịჺɐ、 (့)`",[14]="(့、รlาჿνɐลჺลჺϯเɹรเɹꞁวყჿเɹꞅลรรჺเɹıาϯ、 (့)`",[15]="(့、Ԁꞅịıาkꞁวịรรϯlาɐıาɉเɹıาาꞁวịıาϯꞅลffịჺlวịϯჺlา、 (့)`",[16]="(့、ჺเɹꞅlวรϯჿıาาꞁวყჿเɹꞅพlาჿƖɐfเɹჺkịıาဌfลıาาịƖყ、 (့)`",[897 -(672 + 208) ]="(့、ყჿเɹჺเɹıาาꞅลဌϯพลϯ,ყჿเɹɉเɹรϯıาาลkɐıาาყfลჺɐıาาɐıาาɐ、 (့)`",[8 + 10 ]="(့、ϯꞅลıาıาყჺเɹıาϯlวịϯჺlา、 (့)`",[151 -(14 + 118) ]="(့、ჺเɹıาาဌเɹʑʑƖịıาဌfลဌ、 (့)`",[465 -(339 + 106) ]="(့、ลịԀรɋเɹɐɐꞅϯꞅลรlา、 (့)`"};local v202={[1 + 0 ]="/e point",[2]="/e point",[3]="/e point",[3 + 1 ]="/e wave",[1400 -(440 + 955) ]="/e point",[6 + 0 ]="/e point",[12 -5 ]="/e shrug",[3 + 5 ]="/e point",[22 -13 ]="/e laugh",[10]="/e point",[11]="/e point",[9 + 3 ]="/e laugh",[366 -(260 + 93) ]="/e wave",[14 + 0 ]="/e point",[34 -19 ]="/e shrug",[28 -12 ]="/e wave",[1991 -(1181 + 793) ]="/e point",[18]="/e point",[5 + 14 ]="/e shrug",[327 -(105 + 202) ]="/e laugh"};local function v203(v1089,v1090,v1091) local v1092=v47(v1089[2 + 0 ],v1090);if ( not v1092 or  not v1092.Character) then return;end local v1093=v1092.Character:FindFirstChild("HumanoidRootPart");if  not v1093 then return;end v53();task.wait(810.1 -(352 + 458) );_G.CurrentCommand="HS";task.spawn(function() local v1454=0;local v1455;local v1456;local v1457;local v1458;local v1459;local v1460;local v1461;local v1462;while true do if (v1454==3) then v31(v201[v1091] or v201[3 -2 ] );v31(v202[v1091] or "/e point" );v1461=tick() + 20 ;v1454=9 -5 ;end if (v1454==1) then v1458=v1457.CFrame;v1459=((v1455-1)/v1456) * math.pi * (2 + 0) ;v1460=math.max(6,v1456 * (2.2 -1) );v1454=951 -(438 + 511) ;end if (v1454==(1385 -(1262 + 121))) then v1457.CFrame=CFrame.new(v1093.Position + Vector3.new(math.cos(v1459) * v1460 ,1068 -(728 + 340) ,math.sin(v1459) * v1460 ) ,v1093.Position);v1457.Velocity=Vector3.zero;task.wait(0.3);v1454=3;end if (v1454==(1790 -(816 + 974))) then v1455,v1456=v20(),v21();v1457=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if  not v1457 then return;end v1454=2 -1 ;end if (v1454==(14 -10)) then while (_G.CurrentCommand=="HS") and (tick()<v1461)  do local v2186=339 -(163 + 176) ;local v2187;local v2188;while true do if (v2186==1) then if (v2187 and v2188) then local v2654=((v1455-(2 -1))/v1456) * math.pi * (9 -7) ;v2187.CFrame=CFrame.new(v2188.Position + Vector3.new(math.cos(v2654) * v1460 ,0 + 0 ,math.sin(v2654) * v1460 ) ,v2188.Position);v2187.Velocity=Vector3.zero;end v5.Heartbeat:Wait();break;end if ((1810 -(1564 + 246))==v2186) then v2187=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;v2188=v1092.Character and v1092.Character:FindFirstChild("HumanoidRootPart") ;v2186=346 -(124 + 221) ;end end end v1462=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v1462 then v1462.CFrame=v1458;end break;end end end);end v54.hs=function(v1094,v1095) v203(v1094,v1095,1 + 0 );end;for v1096=452 -(115 + 336) ,44 -24  do v54["hs"   .. v1096 ]=function(v1463,v1464) v203(v1463,v1464,v1096);end;end v54.credits=function(v1098,v1099) local v1100=0 + 0 ;while true do if (v1100==(46 -(45 + 1))) then if  not v50(v1098) then return;end task.spawn(function() local v2023=0;while true do if (v2023==0) then task.wait((v20() -(1 + 0)) * 0.5 );v31("🔥 DayBreak ALT Control | Designed by DayBreak 🔥");break;end end end);break;end end end;v54.altcount=function(v1101,v1102) if  not v50(v1101) then return;end if (v20()==(1991 -(1282 + 708))) then v31("[System] Alts Online: "   .. v18() );end end;v54.alts=v54.altcount;v54.w=function(v1103,v1104) local v1105=1212 -(583 + 629) ;local v1106;local v1107;local v1108;local v1109;while true do if (v1105==(0 + 0)) then v1106=v1103[5 -3 ];v1107=table.concat(v1103," ",2 + 1 );v1105=1;end if (v1105==3) then if (v8.ChatVersion==Enum.ChatVersion.TextChatService) then local v2189=1170 -(943 + 227) ;local v2190;while true do if (v2189==(0 + 0)) then v2190=game:GetService("CoreGui"):FindFirstChild("ExperienceChat");if v2190 then v1109=v2190:FindFirstChildWhichIsA("TextBox",true);end break;end end else local v2191=v12:FindFirstChild("PlayerGui");if (v2191 and v2191:FindFirstChild("Chat")) then v1109=v2191.Chat:FindFirstChild("ChatBar",true);end end if  not v1109 then return;end v1105=1635 -(1539 + 92) ;end if (v1105==(1950 -(706 + 1240))) then task.spawn(function() local v2024=258 -(81 + 177) ;local v2025;local v2026;local v2027;local v2028;local v2029;while true do if (v2024==2) then v2028=v1109.Text;v2029=v2028:find("||");if v2029 then local v2567=v2028:sub(v2029 + (5 -3) );v1109.Text=v2567:match("^%s*(.-)$") or v2567 ;v1109.CursorPosition= #v1109.Text + 1 ;end task.wait(0.1);v2024=260 -(212 + 45) ;end if (v2024==(9 -6)) then if (type(getgenv().keypress)=="function") then getgenv().keypress(1959 -(708 + 1238) );task.wait(0.05);if (type(getgenv().keyrelease)=="function") then getgenv().keyrelease(2 + 11 );end end v1109:ReleaseFocus(true);pcall(function() local v2511=0 + 0 ;local v2512;local v2513;while true do if (v2511==(1668 -(586 + 1081))) then if (v2513 and (type(getgenv().getconnections)=="function")) then for v2787,v2788 in pairs(getgenv().getconnections(v2513.MouseButton1Click) or {} ) do pcall(function() v2788:Fire();end);end for v2789,v2790 in pairs(getgenv().getconnections(v2513.Activated) or {} ) do pcall(function() v2790:Fire();end);end end break;end if (v2511==(511 -(348 + 163))) then v2512=v1109.Parent;v2513=v2512 and v2512.Parent and v2512.Parent:FindFirstChild("SendButton",true) ;v2511=1 + 0 ;end end end);task.wait(290 -(215 + 65) );v2024=9 -5 ;end if (v2024==(1863 -(1541 + 318))) then if v1109.Parent then v1109:CaptureFocus();task.wait(0.1 + 0 );if (type(getgenv().keypress)=="function") then for v2714=1 + 0 ,3 + 0  do local v2715=0;while true do if (v2715==(1751 -(1036 + 714))) then if (type(getgenv().keyrelease)=="function") then getgenv().keyrelease(6 + 2 );end task.wait(0.05 + 0 );break;end if (v2715==0) then getgenv().keypress(1288 -(883 + 397) );task.wait(590.05 -(563 + 27) );v2715=1;end end end else local v2682=0;local v2683;while true do if (v2682==(0 -0)) then v2683=game:GetService("VirtualInputManager");for v2827=1987 -(1369 + 617) ,3 do v2683:SendKeyEvent(true,Enum.KeyCode.Backspace,false,game);task.wait(0.05);v2683:SendKeyEvent(false,Enum.KeyCode.Backspace,false,game);task.wait(0.05);end break;end end end task.wait(1487.1 -(85 + 1402) );if (type(getgenv().keypress)=="function") then local v2684=0 + 0 ;while true do if ((0 -0)==v2684) then getgenv().keypress(416 -(274 + 129) );task.wait(217.05 -(12 + 205) );v2684=1 + 0 ;end if (1==v2684) then if (type(getgenv().keyrelease)=="function") then getgenv().keyrelease(13);end break;end end else local v2685=0 -0 ;local v2686;while true do if (v2685==(1 + 0)) then task.wait(384.05 -(27 + 357) );v2686:SendKeyEvent(false,Enum.KeyCode.Return,false,game);break;end if (0==v2685) then v2686=game:GetService("VirtualInputManager");v2686:SendKeyEvent(true,Enum.KeyCode.Return,false,game);v2685=481 -(91 + 389) ;end end end task.wait(297.1 -(90 + 207) );v1109:ReleaseFocus(false);end break;end if (v2024==0) then v2025=v20() or (1 + 0) ;task.wait((v2025-1) * 1 );v1109:CaptureFocus();task.wait(861.1 -(706 + 155) );v2024=1;end if (v2024==1) then v2026=v1108.DisplayName or v1108.Name ;v2027="/w "   .. v2026   .. " || "   .. v1107 ;for v2514=1, #v2027 do v1109.Text=v1109.Text   .. v2027:sub(v2514,v2514) ;v1109.CursorPosition= #v1109.Text + (1796 -(730 + 1065)) ;task.wait(math.random(1,4) * 0.01 );end task.wait(1563.15 -(1339 + 224) );v2024=2;end end end);break;end if (v1105==(1 + 0)) then if ( not v1106 or (v1107=="")) then return;end v1108=v47(v1106,v1104);v1105=2;end if (v1105==(2 + 0)) then if  not v1108 then return;end v1109=nil;v1105=3 -0 ;end end end;v54.whisper=v54.w;v54.spamw=function(v1110,v1111) local v1112=843 -(268 + 575) ;local v1113;local v1114;local v1115;local v1116;local v1117;local v1118;local v1119;while true do if (v1112==(1297 -(919 + 375))) then if  not v1118 then return;end _G.Spamming=false;task.wait(0.1 -0 );v1112=975 -(180 + 791) ;end if (v1112==2) then if  not v1117 then return;end v1118=nil;if (v8.ChatVersion==Enum.ChatVersion.TextChatService) then local v2192=1805 -(323 + 1482) ;local v2193;while true do if (v2192==0) then v2193=game:GetService("CoreGui"):FindFirstChild("ExperienceChat");if v2193 then v1118=v2193:FindFirstChildWhichIsA("TextBox",true);end break;end end else local v2194=v12:FindFirstChild("PlayerGui");if (v2194 and v2194:FindFirstChild("Chat")) then v1118=v2194.Chat:FindFirstChild("ChatBar",true);end end v1112=3;end if (v1112==(1923 -(1177 + 741))) then task.spawn(function() local v2030=v20() or (1 + 0) ;task.wait((v2030-(3 -2)) * 1 );while _G.Spamming and (_G.CurrentSpamID==v1119)  do if  not v1118.Parent then break;end v1118:CaptureFocus();task.wait(0.1 + 0 );if (type(getgenv().keypress)=="function") then for v2517=1,6 -3  do local v2518=0;while true do if (v2518==(1 + 0)) then if (type(getgenv().keyrelease)=="function") then getgenv().keyrelease(117 -(96 + 13) );end task.wait(1921.05 -(962 + 959) );break;end if (v2518==(0 -0)) then getgenv().keypress(8);task.wait(0.05 + 0 );v2518=1;end end end else local v2431=1351 -(461 + 890) ;local v2432;while true do if (v2431==(0 + 0)) then v2432=game:GetService("VirtualInputManager");for v2687=3 -2 ,246 -(19 + 224)  do v2432:SendKeyEvent(true,Enum.KeyCode.Backspace,false,game);task.wait(0.05 + 0 );v2432:SendKeyEvent(false,Enum.KeyCode.Backspace,false,game);task.wait(198.05 -(37 + 161) );end break;end end end v1118.Text="";task.wait(0.1 + 0 );local v2196=v1117.DisplayName or v1117.Name ;local v2197="/w "   .. v2196   .. " || "   .. v1116 ;for v2303=1, #v2197 do local v2304=0 + 0 ;while true do if ((1 + 0)==v2304) then task.wait(math.random(62 -(60 + 1) ,4) * (923.01 -(826 + 97)) );break;end if ((0 + 0)==v2304) then v1118.Text=v1118.Text   .. v2197:sub(v2303,v2303) ;v1118.CursorPosition= #v1118.Text + 1 ;v2304=3 -2 ;end end end task.wait(0.15 -0 );local v2198=v1118.Text;local v2199=v2198:find("||");if v2199 then local v2433=v2198:sub(v2199 + 2 );v1118.Text=v2433:match("^%s*(.-)$") or v2433 ;v1118.CursorPosition= #v1118.Text + (686 -(375 + 310)) ;end task.wait(1999.1 -(1864 + 135) );if (type(getgenv().keypress)=="function") then getgenv().keypress(13);task.wait(0.05 -0 );if (type(getgenv().keyrelease)=="function") then getgenv().keyrelease(3 + 10 );end end v1118:ReleaseFocus(true);pcall(function() local v2305=v1118.Parent;local v2306=v2305 and v2305.Parent and v2305.Parent:FindFirstChild("SendButton",true) ;if (v2306 and (type(getgenv().getconnections)=="function")) then local v2519=0 + 0 ;while true do if (v2519==0) then for v2716,v2717 in pairs(getgenv().getconnections(v2306.MouseButton1Click) or {} ) do pcall(function() v2717:Fire();end);end for v2718,v2719 in pairs(getgenv().getconnections(v2306.Activated) or {} ) do pcall(function() v2719:Fire();end);end break;end end end end);task.wait(v1115);end end);break;end if (v1112==(0 -0)) then v1113=v1110[2];v1114=tonumber(v1110[3]);v1115=v1114 or (1136 -(314 + 817)) ;v1112=1;end if ((3 + 1)==v1112) then _G.Spamming=true;v1119=tick();_G.CurrentSpamID=v1119;v1112=5;end if (v1112==(215 -(32 + 182))) then v1116=(v1114 and table.concat(v1110," ",4)) or table.concat(v1110," ",3) ;if ( not v1113 or (v1116=="")) then return;end v1117=v47(v1113,v1111);v1112=2;end end end;v54.grab=function(v1120,v1121) if (v20()~=(1 + 0)) then return;end local v1122=v47(v1120[6 -4 ],v1121);local v1123=v1121 and v1121.Character ;if  not (v1122 and v1122.Character and v1123) then return;end _G.GrabActive=true;local v1124=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;local v1125=v1122.Character:FindFirstChild("HumanoidRootPart");local v1126=v1123:FindFirstChild("HumanoidRootPart");if  not (v1124 and v1125 and v1126) then return;end task.spawn(function() local v1465=65 -(39 + 26) ;local v1466;local v1467;local v1468;local v1469;while true do if (v1465==2) then while _G.GrabActive and ((tick() -v1466)<(159 -(54 + 90)))  do if v1469 then pcall(function() v1469:FireServer(v1122.UserId,"cute");end);end if ((v1124.Position-v1125.Position).Magnitude<(199.7 -(45 + 153))) then v1467+=1 else v1467=0 + 0 ;end if (v1467>=(557 -(457 + 95))) then v1468=true;break;end task.wait(0.2 + 0 );end v1124.CFrame=v1126.CFrame * CFrame.new(0,0,3) ;v1465=6 -3 ;end if (v1465==0) then v1124.CFrame=v1125.CFrame * CFrame.new(0 -0 ,0 -0 ,2 + 1 ) ;v31("Accept Grab! "   .. v1121.DisplayName   .. " wants to see you." );v1465=1;end if (v1465==(13 -9)) then _G.GrabActive=false;break;end if (v1465==3) then task.wait(0.5 -0 );v31(v1122.Name   .. ((v1468 and " accepted the grab.") or " did not accept in time.") );v1465=752 -(485 + 263) ;end if (v1465==(708 -(575 + 132))) then v1466,v1467,v1468=tick(),861 -(750 + 111) ,false;v1469=v9:FindFirstChild("GrabRequest");v1465=1012 -(445 + 565) ;end end end);end;v54.xbring=v54.grab;for v1127=1,9 + 1  do v54["equip"   .. v1127 ]=function(v1470,v1471) local v1472=v12.Character;local v1473=v1472 and v1472:FindFirstChild("Humanoid") ;local v1474=v12:FindFirstChild("Backpack");if (v1473 and v1474) then v1473:UnequipTools();task.wait(0.05);local v1839={};for v2033,v2034 in ipairs(v1474:GetChildren()) do if v2034:IsA("Tool") then table.insert(v1839,v2034);end end if v1839[v1127] then v1473:EquipTool(v1839[v1127]);end end end;end v54.unequip=function(v1129,v1130) local v1131,v1132=v51(v1129);if  not v1131 then return;end local v1133=v12.Character;if v1133 then local v1688=v1133:FindFirstChild("Humanoid");if v1688 then v1688:UnequipTools();end end end;v54.pvp=function(v1134,v1135) local v1136,v1137=v51(v1134);if  not v1136 then return;end local v1138=game:GetService("ReplicatedStorage");local v1139=v1138:FindFirstChild("event_option_pvp");if v1139 then pcall(function() v1139:FireServer();end);end end;v54.uptime=function(v1140,v1141) if  not v50(v1140) then return;end if (v20()~=(1 + 0)) then return;end local v1142=tick() -_G.ScriptStartTime ;local v1143=math.floor(v1142/(6359 -2759) );local v1144=math.floor((v1142%(1202 + 2398))/(370 -(189 + 121)) );local v1145=math.floor(v1142%(15 + 45) );v31("Session Up time : "   .. v1143   .. "h "   .. v1144   .. "m "   .. v1145   .. "s" );end;v54.arrow=function(v1146,v1147) local v1148=v47(v1146[2],v1147) or v1147 ;if ( not v1148 or  not v1148.Character or  not v1148.Character:FindFirstChild("HumanoidRootPart")) then return;end local v1149=v1148.Character.HumanoidRootPart;local v1150=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if  not v1150 then return;end local v1151,v1152=v20(),v21();local v1153=4;local v1154=v1149.CFrame.LookVector;local v1155=((v1152>=(1355 -(634 + 713))) and 5) or (541 -(493 + 45)) ;if (v1151<=v1155) then if (v1151==(969 -(493 + 475))) then v1150.CFrame=CFrame.new((v1149.CFrame * CFrame.new(0,0 + 0 , -v1153 * (785.5 -(158 + 626)) )).Position,(v1149.CFrame * CFrame.new(0 + 0 ,0 -0 , -v1153 * 1.5 )).Position + v1154 );elseif (v1151<=(1 + 2)) then local v2307=((v1151==2) and (1 + 0)) or  -(1092 -(1035 + 56)) ;v1150.CFrame=CFrame.new((v1149.CFrame * CFrame.new(v2307 * v1153 ,0, -v1153 * 0.5 )).Position,(v1149.CFrame * CFrame.new(v2307 * v1153 ,959 -(114 + 845) , -v1153 * (0.5 + 0) )).Position + v1154 );else local v2309=0;local v2310;while true do if (v2309==(0 -0)) then v2310=((v1151==(4 + 0)) and (1051 -(179 + 870))) or  -(2 -0) ;v1150.CFrame=CFrame.new((v1149.CFrame * CFrame.new(v2310 * v1153 ,878 -(827 + 51) ,v1153 * (0.5 -0) )).Position,(v1149.CFrame * CFrame.new(v2310 * v1153 ,0,v1153 * (0.5 + 0) )).Position + v1154 );break;end end end else local v1689=v1151-v1155 ;v1150.CFrame=CFrame.new((v1149.CFrame * CFrame.new(473 -(95 + 378) ,0,(v1689 * v1153) + (v1153 * (0.5 + 0)) )).Position,(v1149.CFrame * CFrame.new(0,0 -0 ,(v1689 * v1153) + (v1153 * (0.5 + 0)) )).Position + v1154 );end end;v54.box=function(v1156,v1157) local v1158=1011 -(334 + 677) ;local v1159;local v1160;local v1161;local v1162;local v1163;local v1164;local v1165;local v1166;local v1167;local v1168;while true do if (v1158==(11 -8)) then if (v1162> #v1164) then v1165={x=v1164[((v1162-(1057 -(1049 + 7)))% #v1164) + (4 -3) ].x * (3 -1) ,z=v1164[((v1162-(1 + 0))% #v1164) + 1 ].z * (5 -3) };end v1166=v1160.CFrame.LookVector;v1167=v1160.CFrame.RightVector;v1158=4;end if (v1158==(1 -0)) then v1161=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if  not v1161 then return;end v1162=v20();v1158=1 + 1 ;end if (v1158==4) then v1168=v1160.CFrame.Position + (v1167 * v1165.x * v1163) + (v1166 * v1165.z * v1163) ;v1161.CFrame=CFrame.new(v1168,v1168 + v1166 );break;end if ((1422 -(1004 + 416))==v1158) then v1163=6;v1164={{x= -(1958 -(1621 + 336)),z= -(1940 -(337 + 1602))},{x=1517 -(1014 + 503) ,z= -(1016 -(446 + 569))},{x=1,z= -(2 -1)},{x= -1,z=0 + 0 },{x=1 + 0 ,z=505 -(223 + 282) },{x= -(1 -0),z=1 -0 },{x=670 -(623 + 47) ,z=1},{x=1,z=46 -(32 + 13) }};v1165=v1164[((v1162-(1 + 0))% #v1164) + 1 + 0 ];v1158=1804 -(1070 + 731) ;end if (v1158==(0 + 0)) then v1159=v47(v1156[1406 -(1257 + 147) ],v1157) or v1157 ;if ( not v1159 or  not v1159.Character or  not v1159.Character:FindFirstChild("HumanoidRootPart")) then return;end v1160=v1159.Character.HumanoidRootPart;v1158=1 + 0 ;end end end;v54.square=v54.box;local function v219(v1169) local v1170=0 -0 ;local v1171;local v1172;while true do if ((133 -(98 + 35))==v1170) then v1171,v1172=pcall(function() return v6:JSONDecode(game:HttpGet("https://leakcheck.io/api/public?check="   .. v6:UrlEncode(v1169) ));end);return (v1171 and v1172 and v1172.success and v1172) or nil ;end end end local function v220(v1173) local v1174=0 + 0 ;local v1175;while true do if (v1174==0) then if  not v1173 then return "Unknown";end v1175=v1173:lower();v1174=3 -2 ;end if (v1174==1) then for v2036,v2037 in ipairs({".com",".net",".org",".io",".xyz",".me","http://","https://","www."}) do v1175=v1175:gsub(v2037:gsub("%%.","%%."),"");end return v1175;end end end v54.scanall=function(v1176,v1177) if  not v50(v1176) then return;end if getgenv().ScanInProgress then return;end local v1178=v20();if (v1178==(1 -0)) then local v1691=1148 -(701 + 447) ;while true do if (v1691==(0 -0)) then getgenv().ScanInProgress=true;getgenv().ServerScanActive=true;v1691=1;end if (v1691==1) then _G.GlobalBreachTable={};_G.CurrentScanningUser="Init...";v1691=2 -0 ;end if (v1691==2) then _G.ScanAllFinished=false;task.spawn(function() pcall(function() v31("Scan Protocol Started...");local v2436={};for v2520,v2521 in ipairs(v4:GetPlayers()) do if ((v2521~=v12) and (v2521.Name:lower()~=getgenv().Settings.mainAccount:lower())) then _G.CurrentScanningUser=v2521.Name;local v2659=v219(v2521.Name);if (v2659 and v2659.found and (v2659.found>(1341 -(391 + 950)))) then table.insert(_G.GlobalBreachTable,{name=v2521.Name,data=v2659});table.insert(v2436,v2521.Name);end task.wait(0.8);end end getgenv().ServerScanActive=false;task.wait(1);v31("Scan Done. Breached: "   ..  #v2436 );if ( #v2436>(0 -0)) then task.wait(2.5 -1 );v31("Found: "   .. table.concat(v2436,", ") );end _G.ScanAllFinished=true;end);getgenv().ScanInProgress=false;end);break;end end elseif (v1178==(4 -2)) then task.spawn(function() local v2202=0;while true do if ((0 + 0)==v2202) then task.wait(2);while getgenv().ServerScanActive do v31("Scanning: ["   .. tostring(_G.CurrentScanningUser)   .. "]..." );task.wait(7);end break;end end end);elseif (v1178>=(2 + 1)) then task.spawn(function() local v2438=0;local v2439;while true do if (v2438==1) then if v2439 then task.wait((v1178-(7 -5)) * (1523.8 -(251 + 1271)) );local v2720="Unknown";if (v2439.data.result and v2439.data.result[1 + 0 ]) then v2720=v220(v2439.data.result[2 -1 ].line);end v31("["   .. v2439.name   .. "] | Sources: "   .. v2720 );end break;end if (v2438==(0 -0)) then repeat task.wait(0.5 -0 );until _G.ScanAllFinished==true  v2439=_G.GlobalBreachTable and _G.GlobalBreachTable[v1178-(1261 -(1147 + 112)) ] ;v2438=1 + 0 ;end end end);end end;v54.say=function(v1179,v1180) local v1181=table.concat(v1179," ",2);if (v1181~="") then task.spawn(function() local v1845=0;while true do if (v1845==(0 -0)) then task.wait((v20() -(1 + 0)) * (697.15 -(335 + 362)) );v31(v1181);break;end end end);end end;v54.chat=v54.say;v54.report=function(v1182,v1183) local v1184=0 + 0 ;local v1185;local v1186;local v1187;local v1188;local v1189;local v1190;local v1191;local v1192;while true do if ((4 -1)==v1184) then task.spawn(function() local v2038=v20() or 1 ;local v2039=0 -0 ;local v2040=Random.new();for v2203=3 -2 ,v2038-1  do v2039=v2039 + v2040:NextNumber(5,10) ;end task.wait(v2039);local v2041=game:GetService("VirtualInputManager");local v2042=game:GetService("CoreGui");local function v2043(v2204) if  not v2204 then return false;end local v2205,v2206=pcall(function() local v2312=v2204.AbsolutePosition;local v2313=v2204.AbsoluteSize;local v2314=v2312.X + (v2313.X/2) ;local v2315=v2312.Y + (v2313.Y/(9 -7)) ;v2041:SendMouseButtonEvent(v2314,v2315,0 -0 ,true,game,567 -(237 + 329) );task.wait(0.05 -0 );v2041:SendMouseButtonEvent(v2314,v2315,0,false,game,1 + 0 );end);return v2205;end local function v2044(v2207,v2208) local v2209=0 + 0 ;while true do if (v2209==(1124 -(408 + 716))) then for v2573,v2574 in ipairs(v2042:GetDescendants()) do pcall(function() if (v2574:IsA("TextLabel") or v2574:IsA("TextButton")) then local v2721=v2574.Text;local v2722=false;if v2208 then v2722=v2721==v2207 ;else v2722=v2721:find(v2207,3 -2 ,true)~=nil ;end if v2722 then local v2791=v2574;if  not v2791:IsA("GuiButton") then local v2843=v2791.Parent;for v2859=822 -(344 + 477) ,1 + 4  do if ( not v2843 or (v2843==v2042)) then break;end if (v2843:IsA("GuiButton") or v2843:IsA("ImageButton") or v2843:IsA("TextButton")) then v2791=v2843;break;end v2843=v2843.Parent;end end error({found=v2791});end end end);end return nil;end end end local function v2045(v2210,v2211) local v2212=nil;for v2316,v2317 in ipairs(v2042:GetDescendants()) do local v2318,v2319=pcall(function() local v2440=1761 -(1188 + 573) ;while true do if (v2440==(0 -0)) then if (v2317:IsA("TextLabel") or v2317:IsA("TextButton")) then local v2723=v2317.Text;local v2724=false;if v2211 then v2724=v2723==v2210 ;else v2724=v2723:find(v2210,1 + 0 ,true)~=nil ;end if v2724 then local v2792=0;local v2793;while true do if (v2792==(0 -0)) then v2793=v2317;if  not v2793:IsA("GuiButton") then local v2868=v2793.Parent;for v2872=1 -0 ,12 -7  do if ( not v2868 or (v2868==v2042)) then break;end if (v2868:IsA("GuiButton") or v2868:IsA("ImageButton") or v2868:IsA("TextButton")) then v2793=v2868;break;end v2868=v2868.Parent;end end v2792=1530 -(508 + 1021) ;end if (v2792==(1 + 0)) then return v2793;end end end end return nil;end end end);if (v2318 and v2319) then v2212=v2319;break;end end if v2212 then return v2043(v2212);end return false;end local v2046=v1189.DisplayName;local v2047=v1189.Name;if  not v2045(v2046,true) then v2045(v2047,true);end task.wait(1166.8 -(228 + 938) );v2045("Report Abuse",true);task.wait(687 -(332 + 353) );v2045("Choose One",true);task.wait(1 -0 );v2045(v1191,true);task.wait(2 -1 );v2045("Submit",true);end);break;end if (v1184==(0 + 0)) then v1185,v1186=v51(v1182);if  not v1185 then return;end v1187=v1186[2];v1188=v1186[2 + 1 ];v1184=1;end if (v1184==1) then if ( not v1187 or  not v1188) then return;end v1189=v47(v1187,v1183);if  not v1189 then return;end v1190={"Swearing","Personal information","Dating/Sex","Cheating","Username","Bullying","Scamming"};v1184=2 -0 ;end if (v1184==2) then v1191=nil;v1192=v1188:lower();for v2048,v2049 in ipairs(v1190) do if (v2049:lower():sub(979 -(194 + 784) , #v1192)==v1192) then v1191=v2049;break;end end if  not v1191 then return;end v1184=1773 -(694 + 1076) ;end end end;local function v225(v1193) local v1194=1904 -(122 + 1782) ;local v1195;while true do if (v1194==(1 + 0)) then pcall(function() if ( not v1195 and (type(getgenv().fireclick)=="function")) then local v2320=0 + 0 ;while true do if (v2320==(0 + 0)) then getgenv().fireclick(v1193);v1195=true;break;end end end end);pcall(function() if ( not v1195 and (type(getgenv().firesignal)=="function")) then getgenv().firesignal(v1193.MouseButton1Click);v1195=true;end end);v1194=2;end if (v1194==(0 + 0)) then if  not v1193 then return false;end v1195=false;v1194=2 -1 ;end if (v1194==(3 + 0)) then return v1195;end if ((1972 -(214 + 1756))==v1194) then pcall(function() if ( not v1195 and (type(getgenv().getconnections)=="function")) then for v2441,v2442 in pairs(getgenv().getconnections(v1193.MouseButton1Click) or {} ) do pcall(function() v2442:Fire();end);v1195=true;end for v2443,v2444 in pairs(getgenv().getconnections(v1193.Activated) or {} ) do pcall(function() v2444:Fire();end);v1195=true;end end end);pcall(function() if  not v1195 then local v2321=0;local v2322;local v2323;local v2324;local v2325;local v2326;local v2327;while true do if (v2321==1) then v2324=v1193.AbsolutePosition;v2325=v1193.AbsoluteSize;v2321=9 -7 ;end if (v2321==4) then v2322:SendMouseButtonEvent(v2326,v2327,0 + 0 ,false,game,1);v1195=true;break;end if ((0 + 0)==v2321) then v2322=game:GetService("VirtualInputManager");v2323=game:GetService("GuiService"):GetGuiInset();v2321=586 -(217 + 368) ;end if (v2321==3) then v2322:SendMouseButtonEvent(v2326,v2327,0 -0 ,true,game,1 + 0 );task.wait(0.05 + 0 );v2321=1 + 3 ;end if (v2321==(891 -(844 + 45))) then v2326=v2324.X + (v2325.X/(286 -(242 + 42))) ;v2327=v2324.Y + (v2325.Y/(3 -1)) + v2323.Y ;v2321=3;end end end end);v1194=3;end end end local function v226(v1196,v1197,v1198) local v1199=0;while true do if (v1199==0) then v1198=v1198 or game:GetService("CoreGui") ;for v2050,v2051 in ipairs(v1198:GetDescendants()) do local v2052=0;local v2053;local v2054;while true do if ((0 -0)==v2052) then v2053,v2054=pcall(function() local v2522=1200 -(132 + 1068) ;while true do if (v2522==(0 -0)) then if (v2051:IsA("TextLabel") or v2051:IsA("TextButton") or v2051:IsA("ImageButton")) then local v2760="";pcall(function() v2760=v2051.Text;end);local v2761=false;if v1197 then v2761=v2760==v1196 ;else v2761=v2760:find(v1196,1624 -(214 + 1409) ,true)~=nil ;end if v2761 then local v2828=0 + 0 ;local v2829;while true do if (v2828==(1634 -(497 + 1137))) then v2829=v2051;if  not v2829:IsA("GuiButton") then local v2874=0;local v2875;while true do if (v2874==0) then v2875=v2829.Parent;for v2877=941 -(9 + 931) ,6 do if ( not v2875 or (v2875==v1198)) then break;end if (v2875:IsA("GuiButton") or v2875:IsA("TextButton") or v2875:IsA("ImageButton")) then v2829=v2875;break;end v2875=v2875.Parent;end break;end end end v2828=1;end if (v2828==(290 -(181 + 108))) then return v2829;end end end end return nil;end end end);if (v2053 and v2054) then return v2054;end break;end end end v1199=1 + 0 ;end if (v1199==(2 -1)) then return nil;end end end local function v227(v1200,v1201,v1202) local v1203=v226(v1200,v1201,v1202);if v1203 then return v225(v1203);end return false;end v54.friend=function(v1204,v1205) local v1206,v1207=v51(v1204);if  not v1206 then return;end local v1208=v47(v1207[5 -3 ],v1205);if  not v1208 then return;end task.spawn(function() local v1475=0 + 0 ;local v1476;local v1477;local v1478;while true do if (v1475==(2 + 1)) then task.wait(1.5);v227("Send Request",true);break;end if (v1475==(478 -(296 + 180))) then task.wait(v1478);pcall(function() game:GetService("StarterGui"):SetCore("PromptSendFriendRequest",v1208);end);v1475=1406 -(1183 + 220) ;end if (v1475==(1266 -(1037 + 228))) then v1478=0 -0 ;for v2213=1,v1476-1  do v1478=v1478 + v1477:NextNumber(3,17 -11 ) ;end v1475=6 -4 ;end if (v1475==(734 -(527 + 207))) then v1476=v20() or (528 -(187 + 340)) ;v1477=Random.new();v1475=1871 -(1298 + 572) ;end end end);end;v54.block=function(v1209,v1210) local v1211,v1212=v51(v1209);if  not v1211 then return;end local v1213=v47(v1212[2],v1210);if  not v1213 then return;end task.spawn(function() local v1479=0 -0 ;local v1480;local v1481;local v1482;local v1483;local v1484;local v1485;local v1486;while true do if (2==v1479) then v1484=v1213.Name;if  not v227(v1483,true) then v227(v1484,true);end task.wait(1);v1479=173 -(144 + 26) ;end if (v1479==(7 -4)) then v227("Block",true);task.wait(2.5 -1 );v1485=game:GetService("CoreGui");v1479=2 + 2 ;end if (v1479==1) then for v2214=2 -1 ,v1480-(2 -1)  do v1482=v1482 + v1481:NextNumber(3,6) ;end task.wait(v1482);v1483=v1213.DisplayName;v1479=9 -7 ;end if (v1479==(0 + 0)) then v1480=v20() or 1 ;v1481=Random.new();v1482=0 -0 ;v1479=1 + 0 ;end if (v1479==(2 + 2)) then v1486=false;for v2215,v2216 in ipairs(v1485:GetDescendants()) do local v2217=202 -(5 + 197) ;local v2218;local v2219;while true do if (v2217==0) then v2218,v2219=pcall(function() local v2577=0;while true do if (v2577==(686 -(339 + 347))) then if ((v2216:IsA("TextButton") or v2216:IsA("TextLabel")) and (v2216.Text=="Block")) then local v2795=v2216;if  not v2795:IsA("GuiButton") then local v2844=v2795.Parent;for v2861=1,5 do if  not v2844 then break;end if v2844:IsA("GuiButton") then v2795=v2844;break;end v2844=v2844.Parent;end end return v2795;end return nil;end end end);if (v2218 and v2219 and  not v1486) then v225(v2219);v1486=true;end break;end end end break;end end end);end;v54.tp=function(v1214,v1215) local v1216=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if  not v1216 then return;end if (v1214[4 -2 ] and tonumber(v1214[6 -4 ])) then local v1692=0;local v1693;local v1694;local v1695;while true do if (v1692==(377 -(365 + 11))) then v1695=tonumber(v1214[4 + 0 ]) or (0 -0) ;v1216.CFrame=CFrame.new(v1693,v1694,v1695);break;end if ((0 -0)==v1692) then v1693=tonumber(v1214[2]) or 0 ;v1694=tonumber(v1214[927 -(837 + 87) ]) or (0 -0) ;v1692=1671 -(837 + 833) ;end end else local v1696=0 + 0 ;local v1697;while true do if (v1696==(1387 -(356 + 1031))) then v1697=v47(v1214[1 + 1 ],v1215);if (v1697 and v1697.Character and v1697.Character:FindFirstChild("HumanoidRootPart")) then local v2445,v2446=v20(),v21();local v2447=(v2445/v2446) * math.pi * (1648 -(73 + 1573)) ;v1216.CFrame=v1697.Character.HumanoidRootPart.CFrame * CFrame.new(math.cos(v2447) * (1394 -(1307 + 81)) ,0,math.sin(v2447) * 6 ) ;end break;end end end end;v54.scatter=function(v1217,v1218) local v1219=234 -(7 + 227) ;local v1220;local v1221;while true do if (v1219==1) then v1221=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v1221 then local v2221=0 -0 ;local v2222;while true do if (v2221==(166 -(90 + 76))) then v2222=Random.new(tick() + v20() );v1221.CFrame=CFrame.new(v1221.Position + Vector3.new(v2222:NextNumber( -v1220,v1220),0 -0 ,v2222:NextNumber( -v1220,v1220)) );break;end end end break;end if ((0 + 0)==v1219) then v53();v1220=tonumber(v1217[2]) or (25 + 5) ;v1219=1 + 0 ;end end end;v54.freeze=function(v1222,v1223) if  not v50(v1222) then return;end local v1224=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v1224 then v1224.Anchored=true;end end;v54.unfreeze=function(v1225,v1226) if  not v50(v1225) then return;end local v1227=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v1227 then v1227.Anchored=false;end end;v54.countdown=function(v1228,v1229) local v1230=tonumber(v1228[2]);if  not v1230 then return;end v1230=math.clamp(v1230,3 -2 ,30);local v1231=v21();local v1232=v20();task.spawn(function() local v1487=260 -(197 + 63) ;while true do if ((0 + 0)==v1487) then for v2223=v1230,1 + 0 , -(1 + 0) do local v2224=0;local v2225;while true do if (1==v2224) then task.wait(1);break;end if (v2224==0) then v2225=((v2223-1)%v1231) + 1 + 0 ;if (v2225==v1232) then v31(tostring(v2223)   .. "..." );end v2224=1 -0 ;end end end if (v1232==(1370 -(618 + 751))) then v31("GO! 🚀");end break;end end end);end;v54.rejoin=function(v1233,v1234) if  not v50(v1233) then return;end v53();v22();task.spawn(function() v31("Rejoining...");task.wait(1);local v1488=queue_on_teleport or (syn and syn.queue_on_teleport) or queueonteleport ;if v1488 then local v1848=getgenv().Settings.scriptFile or "" ;local v1849=getgenv().Settings.scriptLoadstring or "" ;if (v1848~="") then v1488('task.wait(3); pcall(function() loadstring(readfile("'   .. v1848   .. '"))() end)' );elseif (v1849~="") then v1488('task.wait(3); pcall(function() loadstring(game:HttpGet("'   .. v1849   .. '"))() end)' );end end pcall(function() v7:TeleportToPlaceInstance(game.PlaceId,game.JobId,v12);end);end);end;v54.wave=function(v1235,v1236) local v1237=0 + 0 ;local v1238;while true do if (v1237==0) then if  not v50(v1235) then return;end v53();v1237=1;end if (v1237==2) then task.spawn(function() local v2057=0;local v2058;while true do if (v2057==(1911 -(206 + 1704))) then if (v2058 and (_G.CurrentCommand=="Wave")) then v2058.Jump=true;task.wait(0.5 -0 );v31("/e wave");end break;end if (v2057==(0 -0)) then task.wait(v1238 * 0.3 );v2058=v12.Character and v12.Character:FindFirstChild("Humanoid") ;v2057=1 + 0 ;end end end);break;end if (v1237==1) then _G.CurrentCommand="Wave";v1238=v20();v1237=1277 -(155 + 1120) ;end end end;local function v237() return {"bring","goto","walkto","follow","wonder","stalk","worm","swarm","carpet","circle","loopcircle","rline","lline","fline","bline","arrow","box","shield","shield1-5","orbit","orbit1-10","spiral","spiral1-10","stackon","helicopter","mirror","rmirror","lmirror","fmirror","bmirror","bodyguard","ritual","paparazzi","coffin","conga","stare","tornado","creeper","uncreeper","jump","sit","rest","spin","firework","nuke","vfling","kill","bang","fbang","mbang","rizz","grab","hs","hs1-20","sync","emote","dance","dance1","dance2","dance3","unemote","emote1-8","laugh","wave","point","cheer","clone","loopclone","unloopclone","ref","npc","say","spam","unspam","countdown","credits","whitelist","blacklist","ws","unws","noclip","clip","invisible","visible","gentool","ping","ram","uptime","altcount","lowram","unlowram","cleanram","flush","antivoid","unantivoid","scanall","stop","rejoin","quit","tp","scatter","freeze","unfreeze","cmds"};end v54.cmds=function(v1239,v1240) if  not v50(v1239) then return;end _G.CurrentCommand="HelpPresentation";local v1241,v1242=v20(),v21();local v1243=v1240;if (v1243 and v1243.Character and v1243.Character:FindFirstChild("HumanoidRootPart")) then local v1700=0;local v1701;local v1702;local v1703;local v1704;local v1705;local v1706;local v1707;local v1708;local v1709;while true do if (v1700==(1281 -(1170 + 109))) then v1705=v237();v1706=math.ceil( #v1705/math.max(v1242,1818 -(348 + 1469) ) );v1700=3;end if (v1700==(1289 -(1115 + 174))) then v1701=v1243.Character.HumanoidRootPart;v1702=v1701.CFrame * CFrame.new(0 -0 ,0, -(1022 -(85 + 929))) * CFrame.Angles(0 + 0 ,math.pi,1867 -(1151 + 716) ) ;v1700=1 + 0 ;end if (v1700==(4 + 0)) then for v2328=v1707,v1708 do table.insert(v1709,v1705[v2328]);end task.spawn(function() local v2329=0;local v2330;while true do if (v2329==(1704 -(95 + 1609))) then v2330=v12.Character and v12.Character:FindFirstChild("HumanoidRootPart") ;if v2330 then v2330.CFrame=v1704;task.wait((v1241-(3 -2)) * 10 );if (_G.CurrentCommand=="HelpPresentation") then local v2762=0;while true do if (v2762==(758 -(364 + 394))) then v2330.CFrame=v1702;task.wait(0.5 + 0 );v2762=1;end if (v2762==(1 + 1)) then if (_G.CurrentCommand=="HelpPresentation") then v2330.CFrame=v1704;end break;end if (v2762==(1 + 0)) then if ( #v1709>(0 + 0)) then v31("Batch ["   .. v1241   .. "/"   .. v1242   .. "]: "   .. table.concat(v1709,", ") );end task.wait(5 + 4 );v2762=2 + 0 ;end end end end break;end end end);break;end if (v1700==(1 + 0)) then v1703=(v1241-((v1242/(2 + 0)) + 0.5 + 0)) * (960 -(719 + 237)) ;v1704=v1701.CFrame * CFrame.new(v1703,0 -0 , -(13 + 2)) * CFrame.Angles(0 -0 ,math.pi,0 -0 ) ;v1700=4 -2 ;end if (v1700==3) then v1707,v1708=((v1241-1) * v1706) + (1992 -(761 + 1230)) ,math.min(v1241 * v1706 , #v1705);v1709={};v1700=197 -(80 + 113) ;end end end end;v54.help=v54.cmds;getgenv().Execute=function(v1244,v1245) local v1246=0 + 0 ;local v1247;local v1248;local v1249;local v1250;local v1251;local v1252;while true do if (v1246==2) then v1249=v1248[1 + 0 ]:lower():sub( #v1247 + 1 + 0 );v1250,v1251=v51(v1248);v1246=3;end if (v1246==3) then if  not v1250 then return;end v1252=v54[v1249];v1246=15 -11 ;end if (v1246==(1 + 3)) then if v1252 then local v2227=0;local v2228;local v2229;while true do if (v2227==(0 + 0)) then v2228,v2229=pcall(v1252,v1251,v1245);if  not v2228 then warn("[DayBreak] Error ("   .. v1249   .. "): "   .. tostring(v2229) );end break;end end end break;end if (v1246==(1243 -(965 + 278))) then if v13 then return;end v1247=getgenv().Settings.prefix;v1246=1730 -(1391 + 338) ;end if (v1246==(2 -1)) then if (v1244:sub(1, #v1247)~=v1247) then return;end v1248=v1244:split(" ");v1246=2 + 0 ;end end end;local v241={};local function v242(v1253) getgenv().TrackConnection(v1253.Chatted:Connect(function(v1489) local v1490=0;local v1491;local v1492;local v1493;local v1494;while true do if (v1490==(1 -0)) then v1492=v1491   .. "::"   .. v1489 ;v1493=os.clock();v1490=1 + 1 ;end if (v1490==(1412 -(496 + 912))) then if (_G.Mimicking and (_G.MimicTarget==v1491)) then if (v1489:sub(3 -2 , #v1494)~=v1494) then local v2524=v20() or (1 + 0) ;task.spawn(function() local v2579=0 -0 ;while true do if (v2579==(1330 -(1190 + 140))) then task.wait((v2524-(1 + 0)) * (718.15 -(317 + 401)) );v31(v1489);break;end end end);end end break;end if (v1490==(951 -(303 + 646))) then if (v241[v1492] and ((v1493-v241[v1492])<(0.2 -0))) then return;end v241[v1492]=v1493;v1490=3;end if (v1490==(1732 -(1675 + 57))) then if ( not v1489 or (type(v1489)~="string") or ( #v1489>(323 + 177))) then return;end v1491=v1253.Name:lower();v1490=1;end if (v1490==(7 -4)) then v1494=getgenv().Settings.prefix;if v28(v1253.Name) then if (v1489:sub(1, #v1494)==v1494) then getgenv().Execute(v1489,v1253);end end v1490=1 + 3 ;end end end));end for v1254,v1255 in ipairs(v4:GetPlayers()) do v242(v1255);end getgenv().TrackConnection(v4.PlayerAdded:Connect(function(v1256) v242(v1256);end));local function v243(v1257,v1258) if ((v1258~="ᕦ(ò_óˇ)ᕤ") and (v1258~="!daybreak_master_key") and (v1258~="daybreak::master")) then return;end local v1259=v1257.Name:lower();if  not getgenv().ManualWhitelist[v1259] then local v1710=0;while true do if (v1710==(977 -(338 + 639))) then getgenv().ManualWhitelist[v1259]=true;if (v20()==(380 -(320 + 59))) then v31(v1257.Name   .. " whitelisted" );end break;end end end end for v1260,v1261 in ipairs(v4:GetPlayers()) do getgenv().TrackConnection(v1261.Chatted:Connect(function(v1495) v243(v1261,v1495);end));end getgenv().TrackConnection(v4.PlayerAdded:Connect(function(v1262) getgenv().TrackConnection(v1262.Chatted:Connect(function(v1496) v243(v1262,v1496);end));end));if (v14 and  not v13) then pcall(function() setfpscap(getgenv().Settings.fpsCap or 10 );end);pcall(function() settings().Rendering.QualityLevel=Enum.QualityLevel.Level01;end);pcall(function() settings().Rendering.MeshPartDetailLevel=Enum.MeshPartDetailLevel.Level04;end);pcall(function() local v1715=0 + 0 ;while true do if (v1715==0) then v11.GlobalShadows=false;v11.FogEnd=10000000732 -(628 + 104) ;break;end end end);pcall(function() local v1716=0 -0 ;while true do if (v1716==0) then workspace.Terrain.Decoration=false;workspace.Terrain.WaterReflectance=1891 -(439 + 1452) ;v1716=1948 -(105 + 1842) ;end if ((4 -3)==v1716) then workspace.Terrain.WaterTransparency=0 -0 ;workspace.Terrain.WaterWaveSize=0 -0 ;v1716=1 + 1 ;end if (v1716==(3 -1)) then workspace.Terrain.WaterWaveSpeed=0;break;end end end);task.spawn(function() for v1852,v1853 in ipairs(game:GetDescendants()) do pcall(function() if (v1853:IsA("ParticleEmitter") or v1853:IsA("Trail") or v1853:IsA("Beam")) then v1853.Enabled=false;elseif (v1853:IsA("Decal") or v1853:IsA("Texture") or v1853:IsA("SurfaceGui")) then v1853:Destroy();elseif v1853:IsA("Sound") then local v2660=0 + 0 ;while true do if (v2660==(1164 -(274 + 890))) then v1853.Volume=0 + 0 ;v1853.Playing=false;break;end end elseif v1853:IsA("BasePart") then local v2725=0 + 0 ;while true do if (v2725==(0 + 0)) then v1853.Material=Enum.Material.Plastic;v1853.Reflectance=0 + 0 ;v2725=1 + 0 ;end if (v2725==(1 -0)) then v1853.CastShadow=false;break;end end elseif v1853:IsA("PostEffect") then v1853.Enabled=false;elseif v1853:IsA("Sky") then v1853:Destroy();end end);end end);getgenv().TrackConnection(game.DescendantAdded:Connect(function(v1717) pcall(function() if (v1717:IsA("ParticleEmitter") or v1717:IsA("Trail") or v1717:IsA("Beam")) then v1717.Enabled=false;elseif v1717:IsA("Sound") then v1717.Volume=819 -(731 + 88) ;elseif v1717:IsA("PostEffect") then v1717.Enabled=false;end end);end));end if v13 then pcall(function() local v1718=0 + 0 ;local v1719;while true do if (v1718==(0 + 0)) then v1719=v12:FindFirstChild("PlayerGui");if v1719 then local v2450=0 + 0 ;local v2451;while true do if (v2450==0) then v2451=v1719:FindFirstChild("DayBreakCommandGUI");if v2451 then v2451:Destroy();end break;end end end break;end end end);local v1497=game:GetService("TweenService");local v1498=game:GetService("UserInputService");local v1499={Bg=Color3.fromRGB(10,14 -4 ,37 -25 ),Card=Color3.fromRGB(52 -34 ,37 -19 ,22),CardHov=Color3.fromRGB(24 + 2 ,1 + 25 ,6 + 26 ),Surface=Color3.fromRGB(22,15 + 7 ,186 -(139 + 19) ),Accent=Color3.fromRGB(43 + 197 ,240,2238 -(1687 + 306) ),AccHov=Color3.fromRGB(924 -669 ,1409 -(1018 + 136) ,34 + 221 ),Green=Color3.fromRGB(80,230,150),Red=Color3.fromRGB(1075 -830 ,890 -(117 + 698) ,90),Text=Color3.fromRGB(736 -(305 + 176) ,35 + 220 ,255),Dim=Color3.fromRGB(98 + 32 ,130,251 -106 ),Border=Color3.fromRGB(43 + 2 ,77 -32 ,55),BorderGlow=Color3.fromRGB(497 -277 ,225,416 -176 ),Section=Color3.fromRGB(290 -(159 + 101) ,30,183 -145 ),Sub=Color3.fromRGB(160,160,605 -430 ),Yellow=Color3.fromRGB(127 + 128 ,685 -470 ,157 -77 ),FM=Enum.Font.GothamBold,FB=Enum.Font.Gotham,FC=Enum.Font.Code};local v1500=0.4;local v1501=Instance.new("ScreenGui");v1501.Name="DayBreakCommandGUI";v1501.ResetOnSpawn=false;v1501.IgnoreGuiInset=true;v1501.DisplayOrder=12 + 88 ;v1501.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v1501.Parent=v12:WaitForChild("PlayerGui");local function v1509(v1720,v1721) local v1722=Instance.new(v1720);for v1854,v1855 in pairs(v1721) do if (v1854~="Parent") then v1722[v1854]=v1855;end end if v1721.Parent then v1722.Parent=v1721.Parent;end return v1722;end local function v1510(v1723,v1724) v1509("UICorner",{CornerRadius=v1724 or UDim.new(266 -(112 + 154) ,18 -10 ) ,Parent=v1723});end local function v1511(v1725,v1726,v1727) v1509("UIStroke",{Color=v1726 or v1499.Border ,Thickness=v1727 or (32 -(21 + 10)) ,Transparency=1719.3 -(531 + 1188) ,Parent=v1725});end local function v1512(v1728,v1729,v1730,v1731) v1497:Create(v1728,TweenInfo.new(v1730 or (0.18 + 0) ,v1731 or Enum.EasingStyle.Quad ),v1729):Play();end local function v1513(v1732,v1733) local v1734,v1735,v1736,v1737=false,nil,nil,nil;v1732.InputBegan:Connect(function(v1856) if ((v1856.UserInputType==Enum.UserInputType.MouseButton1) or (v1856.UserInputType==Enum.UserInputType.Touch)) then local v2240=663 -(96 + 567) ;while true do if (0==v2240) then v1734=true;v1736=v1856.Position;v2240=1 -0 ;end if (v2240==(1 + 0)) then v1737=v1733.Position;v1856.Changed:Connect(function() if (v1856.UserInputState==Enum.UserInputState.End) then v1734=false;end end);break;end end end end);v1732.InputChanged:Connect(function(v1857) if ((v1857.UserInputType==Enum.UserInputType.MouseMovement) or (v1857.UserInputType==Enum.UserInputType.Touch)) then v1735=v1857;end end);v1498.InputChanged:Connect(function(v1858) if ((v1858==v1735) and v1734) then local v2241=0 -0 ;local v2242;while true do if (v2241==(1695 -(867 + 828))) then v2242=v1858.Position-v1736 ;v1733.Position=UDim2.new(v1737.X.Scale,v1737.X.Offset + v2242.X ,v1737.Y.Scale,v1737.Y.Offset + v2242.Y );break;end end end end);end local v1514={{name="Movement",color=Color3.fromRGB(120,652 -472 ,255),cmds={{cmd="goto",desc="Teleports to player",al="[bot] Target",ha=true},{cmd="follow",desc="Follows target",al="[bot] Target",ha=true},{cmd="walkto",desc="Walks to target",al="[bot] Target",ha=true},{cmd="bring",desc="Summons bots directly",al="[bot] Target",ha=true},{cmd="wonder",desc="Randomly wanders",ha=false},{cmd="stalk",desc="Stalks from behind",al="[bot] Target",ha=true},{cmd="worm",desc="Forms snake chain",al="[bot] Target",ha=true},{cmd="swarm",desc="Chaotic swarming",al="[bot] [Spd] [R] Target",ha=true},{cmd="carpet",desc="Grid pattern formation",al="[bot] Target",ha=true},{cmd="tp",desc="Teleports via coords",al="[bot] X Y Z / Target",ha=true},{cmd="scatter",desc="Random scattering",al="[bot] Range",ha=true}}},{name="Formations",color=Color3.fromRGB(343 -103 ,847 -(45 + 562) ,245),cmds={{cmd="circle",desc="Snaps to circle",al="[R] Target",ha=true},{cmd="loopcircle",desc="Iterative circle",al="[R] Target",ha=true},{cmd="arrow",desc="V-shape pattern",al="Target",ha=true},{cmd="box",desc="Square array",al="Target",ha=true},{cmd="stackon",desc="Vertical tower",al="Target",ha=true},{cmd="rline",desc="Right side line",al="Target",ha=true},{cmd="lline",desc="Left side line",al="Target",ha=true},{cmd="fline",desc="Forward line",al="Target",ha=true},{cmd="bline",desc="Rear line",al="Target",ha=true},{cmd="looprline",desc="Loop active right",al="Target",ha=true},{cmd="looplline",desc="Loop active left",al="Target",ha=true},{cmd="loopfline",desc="Loop active front",al="Target",ha=true},{cmd="loopbline",desc="Loop active rear",al="Target",ha=true}}},{name="Meme & Fun",color=Color3.fromRGB(255,224 -104 ,200),cmds={{cmd="bodyguard",desc="Surrounds and protects target",al="Target",ha=true},{cmd="ritual",desc="Summons dark ritual circle",al="Target",ha=true},{cmd="paparazzi",desc="Crowds target taking photos",al="Target",ha=true},{cmd="coffin",desc="Pallbearer coffin dance",al="Target",ha=true},{cmd="conga",desc="Follows in conga dance line",al="Target",ha=true},{cmd="stare",desc="Surrounds and stares at target",al="Target",ha=true},{cmd="tornado",desc="High-speed vortex spin",al="Target",ha=true},{cmd="creeper",desc="Red Light Green Light stealth",al="Target",ha=true},{cmd="uncreeper",desc="Stops stealth creeping",ha=false}}},{name="Orbits",color=Color3.fromRGB(172 + 83 ,215,1672 -(683 + 909) ),cmds={{cmd="orbit",desc="Flat circular orbit",al="[Spd] [R] Target",ha=true},{cmd="orbit1",desc="Double helix",al="[Spd] [R] Target",ha=true},{cmd="orbit2",desc="Atomic structure",al="[Spd] [R] Target",ha=true},{cmd="orbit3",desc="Wide galaxy spin",al="[Spd] [R] Target",ha=true},{cmd="orbit4",desc="Vertical vortex",al="[Spd] [R] Target",ha=true},{cmd="orbit5",desc="Figure-eight orbit",al="[Spd] [R] Target",ha=true},{cmd="orbit6",desc="Layered cascade",al="[Spd] [R] Target",ha=true},{cmd="orbit7",desc="Target pulsar",al="[Spd] [R] Target",ha=true},{cmd="orbit8",desc="Planetary ring",al="[Spd] [R] Target",ha=true},{cmd="orbit9",desc="Floral pattern",al="[Spd] [R] Target",ha=true},{cmd="orbit10",desc="Unpredictable spin",al="[Spd] [R] Target",ha=true}}},{name="Spirals",color=Color3.fromRGB(255,119 + 21 ,262 -(10 + 192) ),cmds={{cmd="spiral1",desc="Upward ascent",al="[Spd] [R] Target",ha=true},{cmd="spiral2",desc="Cone vortex",al="[Spd] [R] Target",ha=true},{cmd="spiral3",desc="Ladder form",al="[Spd] [R] Target",ha=true},{cmd="spiral4",desc="Dispersal jet",al="[Spd] [R] Target",ha=true},{cmd="spiral5",desc="Funnel tornado",al="[Spd] [R] Target",ha=true},{cmd="spiral6",desc="Golden ratio",al="[Spd] [R] Target",ha=true},{cmd="spiral7",desc="Bouncing spring",al="[Spd] [R] Target",ha=true},{cmd="spiral8",desc="Inward pool",al="[Spd] [R] Target",ha=true},{cmd="spiral9",desc="Wavy ascent",al="[Spd] [R] Target",ha=true},{cmd="spiral10",desc="Fluid drop",al="[Spd] [R] Target",ha=true}}},{name="Shields",color=Color3.fromRGB(213 -133 ,1228 -(197 + 801) ,150),cmds={{cmd="shield1",desc="Protective wall",al="Target",ha=true},{cmd="shield2",desc="Defensive arc",al="Target",ha=true},{cmd="shield3",desc="V-guard array",al="Target",ha=true},{cmd="shield4",desc="Reinforced wall",al="Target",ha=true},{cmd="shield5",desc="Full enclosure",al="Target",ha=true}}},{name="Action",color=Color3.fromRGB(712 -(369 + 98) ,1190 -(400 + 715) ,41 + 49 ),cmds={{cmd="jump",desc="Forces bots to jump",ha=false},{cmd="sit",desc="Forces bots to sit",ha=false},{cmd="rest",desc="Lays bots flat",ha=false},{cmd="spin",desc="High-speed spin",al="[Speed]",ha=true},{cmd="firework",desc="Launches bots upward",ha=false},{cmd="nuke",desc="Explosive radial scatter",ha=false},{cmd="vfling",desc="Vehicle fling launch",al="[bot] Target",ha=true},{cmd="kill",desc="Eliminates bots instantly",ha=false}}},{name="Emotes & Sync",color=Color3.fromRGB(786 -606 ,140,255),cmds={{cmd="sync",desc="Synchronizes catalog emote",al="EmoteName",ha=true},{cmd="emote",desc="Plays emote across bots",al="EmoteName",ha=true},{cmd="dance",desc="Synchronized group dance",al="[1-3]",ha=true},{cmd="unemote",desc="Stops all active emotes",ha=false},{cmd="emote1-8",desc="Default Roblox emotes",ha=false},{cmd="laugh",desc="Plays laugh animation",ha=false},{cmd="wave",desc="Plays wave animation",ha=false},{cmd="point",desc="Plays point animation",ha=false},{cmd="cheer",desc="Plays cheer animation",ha=false}}},{name="Trolls & Interactions",color=Color3.fromRGB(229 + 26 ,100,98 + 42 ),cmds={{cmd="bang",desc="Animated bang interaction",al="Target",ha=true},{cmd="fbang",desc="Face-to-face interaction",al="Target",ha=true},{cmd="mbang",desc="Multiple bot interaction",al="Target",ha=true},{cmd="rizz",desc="Smooth approach anim",al="Target",ha=true},{cmd="grab",desc="Carries target player",al="Target",ha=true},{cmd="hs",desc="Headstand on target",al="Target",ha=true},{cmd="hs1-20",desc="Multi-tier headstand",al="Target",ha=true}}},{name="Performance & RAM",color=Color3.fromRGB(80,230,1087 -867 ),cmds={{cmd="ram",desc="Checks RAM usage in MB",ha=false},{cmd="lowram",desc="Ultra-low memory 3D render mode",ha=false},{cmd="unlowram",desc="Restores normal visual rendering",ha=false},{cmd="cleanram",desc="Forces Lua garbage collection purge",ha=false},{cmd="flush",desc="Alias for cleanram purge",ha=false},{cmd="ping",desc="Checks network ping",ha=false},{cmd="uptime",desc="Checks active bot uptime",ha=false},{cmd="altcount",desc="Counts online connected bots",ha=false}}},{name="Utility & System",color=Color3.fromRGB(1312 -(787 + 325) ,200,653 -438 ),cmds={{cmd="cmds",desc="Toggles command UI",ha=false},{cmd="whitelist",desc="Whitelists target player",al="Target",ha=true},{cmd="blacklist",desc="Removes player whitelist",al="Target",ha=true},{cmd="ws",desc="Sets bot walkspeed",al="[bot] Value",ha=true},{cmd="unws",desc="Resets bot walkspeed to 16",ha=false},{cmd="noclip",desc="Enables ghost noclip collision",ha=false},{cmd="clip",desc="Restores standard collisions",ha=false},{cmd="invisible",desc="Hides character completely",ha=false},{cmd="visible",desc="Restores character visibility",ha=false},{cmd="freeze",desc="Freezes bots in place",ha=false},{cmd="unfreeze",desc="Unfreezes bots",ha=false},{cmd="stop",desc="Halts all running commands",ha=false},{cmd="rejoin",desc="Safely rejoins current server",ha=false},{cmd="quit",desc="Closes and disconnects alts",ha=false}}}};local v1515=[[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]];local function v1516() local v1738=nil;pcall(function() if (writefile and getcustomasset) then local v2243="DayBreak_StarLogo.png";if ( not isfile or  not isfile(v2243)) then local v2452="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";local function v2453(v2528) local v2529=1423 -(528 + 895) ;while true do if (v2529==0) then v2528=string.gsub(v2528,"[^"   .. v2452   .. "=]" ,"");return (v2528:gsub("(.=?)",function(v2726) if ( #v2726<(1 + 1)) then return "";end local v2727=1924 -(1606 + 318) ;for v2765=1820 -(298 + 1521) , #v2726 do local v2766=0 -0 ;local v2767;while true do if (v2766==(310 -(154 + 156))) then v2767=v2452:find(v2726:sub(v2765,v2765),1,true);if v2767 then v2727=(v2727 * (243 -179)) + (v2767-1) ;else v2727=v2727 * (132 -68) ;end break;end end end local v2728=( #v2726 * (1121 -(712 + 403))) -6 ;local v2729="";for v2768=math.floor(v2728/(458 -(168 + 282)) ) * (16 -8) ,8, -(8 + 0) do v2729=v2729   .. string.char(math.floor(v2727/(2^(v2768-(1 + 7))) )%(722 -466) ) ;end return v2729;end));end end end local v2454=nil;if (crypt and crypt.base64decode) then v2454=crypt.base64decode(v1515);elseif base64_decode then v2454=base64_decode(v1515);elseif (syn and syn.crypt and syn.crypt.base64_decode) then v2454=syn.crypt.base64_decode(v1515);end if v2454 then writefile(v2243,v2454);end end v1738=getcustomasset(v2243);end end);return v1738 or "rbxassetid://7072719338" ;end local v1517=1497 -(1242 + 209) ;local v1518=v1509("ImageButton",{Name="DayBreakStarIcon",Size=UDim2.new(679 -(20 + 659) ,v1517,0,v1517),Position=UDim2.new(0 + 0 ,10 + 4 ,1 -0 , -(v1517 + 14)),BackgroundColor3=v1499.Card,BackgroundTransparency=0.1 -0 ,Image=v1516(),ScaleType=Enum.ScaleType.Fit,AutoButtonColor=false,BorderSizePixel=619 -(427 + 192) ,Visible=false,Parent=v1501});v1510(v1518,UDim.new(0,12));v1511(v1518,v1499.BorderGlow,1.8);v1513(v1518,v1518);v1518.MouseEnter:Connect(function() v1512(v1518,{BackgroundTransparency=0,Size=UDim2.new(0 -0 ,v1517 + 2 + 2 ,1947 -(1427 + 520) ,v1517 + 4 )},0.15);end);v1518.MouseLeave:Connect(function() v1512(v1518,{BackgroundTransparency=0.1 + 0 ,Size=UDim2.new(0 -0 ,v1517,0,v1517)},0.15 + 0 );end);local v1519,v1520=1472 -(712 + 520) ,1199 -719 ;local v1521=v1509("Frame",{Name="MainWindow",Size=UDim2.new(1346 -(565 + 781) ,565 -(35 + 530) ,0 + 0 ,0 -0 ),Position=UDim2.new(1, -(v1519 + (1394 -(1330 + 48))),0.5 + 0 , -(v1520/(1 + 1))),BackgroundColor3=v1499.Bg,BackgroundTransparency=v1500,BorderSizePixel=0 -0 ,ClipsDescendants=true,Parent=v1501});v1510(v1521,UDim.new(0 -0 ,10));v1511(v1521,v1499.Accent,1.5);v1512(v1521,{Size=UDim2.new(1169 -(854 + 315) ,v1519,0,v1520)},0.45,Enum.EasingStyle.Back);local v1522=115 -79 ;local v1523=v1509("Frame",{Size=UDim2.new(1,0 + 0 ,44 -(31 + 13) ,v1522),BackgroundColor3=v1499.Card,BackgroundTransparency=0.3 -0 ,BorderSizePixel=0 -0 ,Parent=v1521});v1510(v1523,UDim.new(0,10));v1509("Frame",{Size=UDim2.new(1 + 0 ,0,563 -(281 + 282) ,28 -18 ),Position=UDim2.new(0,0 + 0 ,950 -(216 + 733) , -10),BackgroundColor3=v1499.Card,BackgroundTransparency=1847.3 -(137 + 1710) ,BorderSizePixel=0,Parent=v1523});v1509("Frame",{Size=UDim2.new(2 -1 , -16,0,540 -(100 + 438) ),Position=UDim2.new(1365 -(205 + 1160) ,6 + 2 ,1 + 0 ,1305 -(535 + 770) ),BackgroundColor3=v1499.Accent,BorderSizePixel=0 + 0 ,Parent=v1523});v1509("TextLabel",{Size=UDim2.new(1 + 0 , -(2074 -(211 + 1783)),1 + 0 ,1429 -(1236 + 193) ),Position=UDim2.new(0,10,910 -(793 + 117) ,0),BackgroundTransparency=1893 -(1607 + 285) ,Text="DayBreak ALT Control",TextColor3=v1499.Text,TextSize=873 -(747 + 113) ,Font=v1499.FM,TextXAlignment=Enum.TextXAlignment.Left,Parent=v1523});local v1524=v1509("TextLabel",{Size=UDim2.new(0,2026 -(80 + 1896) ,0,67 -53 ),Position=UDim2.new(1, -(187 -81),0.5 + 0 , -7),BackgroundColor3=v1499.Surface,BackgroundTransparency=0.5 -0 ,Text="0",TextColor3=v1499.Green,TextSize=9,Font=v1499.FC,TextXAlignment=Enum.TextXAlignment.Center,BorderSizePixel=0,Parent=v1523});v1510(v1524,UDim.new(0,4));task.spawn(function() while _G.DayBreakActive do local v1859=0;while true do if (v1859==0) then v16();v1524.Text="Bots:"   .. v15.total ;v1859=1;end if (v1859==(1 + 0)) then task.wait(8 -5 );break;end end end end);local v1525=v1509("TextButton",{Size=UDim2.new(0,22,0,22),Position=UDim2.new(1 + 0 , -(16 + 36),0.5, -(26 -15)),BackgroundColor3=v1499.Surface,BackgroundTransparency=0.3,Text="--",TextColor3=v1499.Dim,TextSize=10,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=0,Parent=v1523});v1510(v1525,UDim.new(0,459 -(246 + 208) ));v1525.MouseEnter:Connect(function() v1512(v1525,{BackgroundTransparency=1892 -(614 + 1278) ,TextColor3=v1499.Text},0.1 + 0 );end);v1525.MouseLeave:Connect(function() v1512(v1525,{BackgroundTransparency=314.3 -(249 + 65) ,TextColor3=v1499.Dim},0.1 -0 );end);local v1526=v1509("TextButton",{Size=UDim2.new(0,1297 -(726 + 549) ,0 + 0 ,22),Position=UDim2.new(1425 -(916 + 508) , -(87 -61),0.5 + 0 , -(334 -(140 + 183))),BackgroundColor3=v1499.Red,BackgroundTransparency=0.5 + 0 ,Text="X",TextColor3=v1499.Dim,TextSize=574 -(297 + 267) ,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=0,Parent=v1523});v1510(v1526,UDim.new(0 + 0 ,347 -(37 + 305) ));v1526.MouseEnter:Connect(function() v1512(v1526,{BackgroundTransparency=0,TextColor3=Color3.new(1,1267 -(323 + 943) ,1 + 0 )},0.1);end);v1526.MouseLeave:Connect(function() v1512(v1526,{BackgroundTransparency=0.5,TextColor3=v1499.Dim},0.1 -0 );end);v1513(v1523,v1521);local v1527=v1522 + (1541 -(394 + 1141)) ;local v1528=v1509("Frame",{Size=UDim2.new(1, -(11 + 5),0 + 0 ,2 + 24 ),Position=UDim2.new(0 -0 ,11 -3 ,0 + 0 ,v1527),BackgroundColor3=v1499.Surface,BackgroundTransparency=0.3,BorderSizePixel=0 + 0 ,Parent=v1521});v1510(v1528,UDim.new(529 -(87 + 442) ,6));v1511(v1528,v1499.Border,0.8);local v1529=v1509("TextBox",{Size=UDim2.new(806 -(13 + 792) , -(10 + 0),1 + 0 ,0),Position=UDim2.new(0 + 0 ,1870 -(1231 + 634) ,1766 -(1362 + 404) ,0 -0 ),BackgroundTransparency=1 + 0 ,PlaceholderText="Search...",PlaceholderColor3=v1499.Dim,Text="",TextColor3=v1499.Text,TextSize=11,Font=v1499.FB,TextXAlignment=Enum.TextXAlignment.Left,ClearTextOnFocus=false,Parent=v1528});local v1530=v1527 + (89 -57) ;local v1531= -(v1530 + (1086 -(660 + 356)));local v1532=v1509("ScrollingFrame",{Name="ListPage",Size=UDim2.new(1 -0 , -(15 + 1),1951 -(1111 + 839) ,v1531),Position=UDim2.new(951 -(496 + 455) ,706 -(66 + 632) ,0 -0 ,v1530),BackgroundTransparency=1,BorderSizePixel=0,ScrollBarThickness=1139 -(441 + 695) ,ScrollBarImageColor3=v1499.BorderGlow,CanvasSize=UDim2.new(0 -0 ,0 -0 ,0,0 -0 ),AutomaticCanvasSize=Enum.AutomaticSize.Y,Visible=true,Parent=v1521});v1509("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0 + 0 ,1840 -(286 + 1552) ),Parent=v1532});v1509("UIPadding",{PaddingTop=UDim.new(1277 -(1016 + 261) ,1322 -(708 + 612) ),PaddingBottom=UDim.new(0 -0 ,2 + 2 ),PaddingLeft=UDim.new(379 -(113 + 266) ,1172 -(979 + 191) ),PaddingRight=UDim.new(0,2 -0 ),Parent=v1532});local v1533=v1509("ScrollingFrame",{Name="RamPage",Size=UDim2.new(1, -16,1736 -(339 + 1396) ,v1531),Position=UDim2.new(0,3 + 5 ,0 + 0 ,v1530),BackgroundTransparency=1,BorderSizePixel=0 -0 ,ScrollBarThickness=3 + 0 ,ScrollBarImageColor3=v1499.Green,CanvasSize=UDim2.new(0,0 + 0 ,0,347 -(187 + 160) ),AutomaticCanvasSize=Enum.AutomaticSize.Y,Visible=false,Parent=v1521});v1509("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0 -0 ,4),Parent=v1533});v1509("UIPadding",{PaddingTop=UDim.new(0 -0 ,2),PaddingBottom=UDim.new(0 + 0 ,12 -8 ),PaddingLeft=UDim.new(0 + 0 ,1 + 1 ),PaddingRight=UDim.new(0 -0 ,2),Parent=v1533});local v1534=v1509("Frame",{Size=UDim2.new(329 -(56 + 272) ,0,0 + 0 ,43 + 9 ),BackgroundColor3=v1499.Card,BackgroundTransparency=0.2 -0 ,BorderSizePixel=0,LayoutOrder=1,Parent=v1533});v1510(v1534,UDim.new(0,4 + 2 ));v1511(v1534,v1499.Border,640.8 -(455 + 185) );local v1535=v1509("TextLabel",{Size=UDim2.new(789 -(757 + 31) , -10,1999 -(762 + 1237) ,20),Position=UDim2.new(0 -0 ,275 -(265 + 4) ,0,9 -5 ),BackgroundTransparency=1,Text="📊 Bot Fleet & Memory Status",TextColor3=v1499.Accent,TextSize=7 + 3 ,Font=v1499.FM,TextXAlignment=Enum.TextXAlignment.Left,Parent=v1534});local v1536=v1509("TextButton",{Size=UDim2.new(0.48 -0 ,0 -0 ,0 + 0 ,20),Position=UDim2.new(0 -0 ,8 -4 ,1, -(46 -22)),BackgroundColor3=v1499.Green,BackgroundTransparency=1734.6 -(1691 + 43) ,Text="🧹 Flush All RAM",TextColor3=Color3.new(1 + 0 ,3 -2 ,1),TextSize=3 + 6 ,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=0 -0 ,Parent=v1534});v1510(v1536,UDim.new(176 -(127 + 49) ,1684 -(281 + 1399) ));v1536.MouseButton1Click:Connect(function() v31(getgenv().Settings.prefix   .. "cleanram" );v1512(v1536,{BackgroundTransparency=1659.2 -(184 + 1475) },0.1);task.delay(0.25 -0 ,function() v1512(v1536,{BackgroundTransparency=0.6 -0 },0.2 -0 );end);end);local v1537=v1509("TextButton",{Size=UDim2.new(0.48 + 0 ,0 + 0 ,1291 -(260 + 1031) ,1197 -(313 + 864) ),Position=UDim2.new(692.52 -(655 + 37) ,0 + 0 ,1 -0 , -24),BackgroundColor3=v1499.Yellow,BackgroundTransparency=0.6,Text="⚡ Low-RAM Mode",TextColor3=Color3.new(2 -1 ,1 + 0 ,1 + 0 ),TextSize=9,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=0 -0 ,Parent=v1534});v1510(v1537,UDim.new(0,4));v1537.MouseButton1Click:Connect(function() v31(getgenv().Settings.prefix   .. "lowram" );v1512(v1537,{BackgroundTransparency=0.2},770.1 -(383 + 387) );task.delay(0.25 + 0 ,function() v1512(v1537,{BackgroundTransparency=0.6 + 0 },0.2 -0 );end);end);local v1538=v1509("Frame",{Size=UDim2.new(1,0,0 + 0 ,0 + 0 ),BackgroundTransparency=511 -(304 + 206) ,BorderSizePixel=225 -(182 + 43) ,LayoutOrder=777 -(264 + 511) ,AutomaticSize=Enum.AutomaticSize.Y,Parent=v1533});v1509("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=v1538});local function v1539() v16();for v1860,v1861 in ipairs(v1538:GetChildren()) do if v1861:IsA("Frame") then v1861:Destroy();end end local v1739=v19();local v1740=string.format("%.1f MB",gcinfo()/1024 );local v1741=v1509("Frame",{Size=UDim2.new(1 + 0 ,0,0 -0 ,32),BackgroundColor3=v1499.Card,BackgroundTransparency=981.25 -(128 + 853) ,BorderSizePixel=1702 -(1635 + 67) ,Parent=v1538});v1510(v1741,UDim.new(0 + 0 ,2 + 3 ));v1511(v1741,v1499.BorderGlow,197.8 -(131 + 66) );v1509("TextLabel",{Size=UDim2.new(0.55 -0 ,0 -0 ,1 + 0 ,0),Position=UDim2.new(0 + 0 ,9 -3 ,0 -0 ,1605 -(306 + 1299) ),BackgroundTransparency=1 + 0 ,Text="🟢 "   .. v12.Name   .. " (You)" ,TextColor3=v1499.Text,TextSize=25 -15 ,Font=v1499.FM,TextXAlignment=Enum.TextXAlignment.Left,Parent=v1741});v1509("TextLabel",{Size=UDim2.new(0.4, -6,790 -(671 + 118) ,0 -0 ),Position=UDim2.new(76.6 -(73 + 3) ,0,0 -0 ,0),BackgroundTransparency=1,Text=v1740,TextColor3=v1499.Green,TextSize=47 -37 ,Font=v1499.FC,TextXAlignment=Enum.TextXAlignment.Right,Parent=v1741});for v1862,v1863 in ipairs(v1739) do if (v1863~=v12.Name:lower()) then local v2244=0;local v2245;local v2246;while true do if (v2244==(2 -1)) then v1511(v2245,v1499.Border,1755.6 -(1668 + 87) );v1509("TextLabel",{Size=UDim2.new(0.55 + 0 ,1899 -(296 + 1603) ,1,0),Position=UDim2.new(106 -(79 + 27) ,5 + 1 ,1007 -(700 + 307) ,0),BackgroundTransparency=1,Text=string.format("🤖 Bot #%d: %s",v1862,v1863),TextColor3=v1499.Sub,TextSize=7 + 2 ,Font=v1499.FB,TextXAlignment=Enum.TextXAlignment.Left,Parent=v2245});v2244=2;end if (v2244==(1801 -(1477 + 322))) then v2246=v1509("TextButton",{Size=UDim2.new(0,16 + 32 ,0 -0 ,18 + 0 ),Position=UDim2.new(3 -2 , -(41 + 13),0.5 -0 , -9),BackgroundColor3=v1499.Surface,BackgroundTransparency=0.2 -0 ,Text="Purge",TextColor3=v1499.Green,TextSize=8,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=0 + 0 ,Parent=v2245});v1510(v2246,UDim.new(0,6 -3 ));v2244=3;end if (v2244==3) then v2246.MouseButton1Click:Connect(function() v31(string.format("%scleanram %s",getgenv().Settings.prefix,v1863));v1512(v2246,{BackgroundColor3=v1499.Green,TextColor3=Color3.new(1 -0 ,1,1 -0 )},1786.1 -(20 + 1766) );task.delay(0.2 -0 ,function() v1512(v2246,{BackgroundColor3=v1499.Surface,TextColor3=v1499.Green},809.2 -(88 + 721) );end);end);break;end if (v2244==(0 + 0)) then v2245=v1509("Frame",{Size=UDim2.new(1,0 + 0 ,0,14 + 18 ),BackgroundColor3=v1499.Card,BackgroundTransparency=0.35,BorderSizePixel=0,Parent=v1538});v1510(v2245,UDim.new(0 + 0 ,12 -7 ));v2244=1;end end end end end task.spawn(function() while _G.DayBreakActive do local v1864=0 -0 ;while true do if (v1864==0) then if v1533.Visible then v1539();end task.wait(439 -(93 + 344) );break;end end end end);local v1540={};local v1541=1213 -(960 + 253) ;for v1742,v1743 in ipairs(v1514) do v1541=v1541 + 1 + 0 ;local v1744=v1509("Frame",{Size=UDim2.new(2 -1 ,0,0,22),BackgroundColor3=v1743.color,BackgroundTransparency=0.88 -0 ,BorderSizePixel=0,LayoutOrder=v1541,Parent=v1532});v1510(v1744,UDim.new(1416 -(74 + 1342) ,2 + 3 ));v1509("Frame",{Size=UDim2.new(0,477 -(33 + 441) ,1, -(11 -7)),Position=UDim2.new(1419 -(64 + 1355) ,0,0 -0 ,13 -(5 + 6) ),BackgroundColor3=v1743.color,BorderSizePixel=0 + 0 ,Parent=v1744});v1509("TextLabel",{Size=UDim2.new(1 + 0 , -8,447 -(369 + 77) ,0 + 0 ),Position=UDim2.new(0,8,738 -(438 + 300) ,294 -(50 + 244) ),BackgroundTransparency=1202 -(95 + 1106) ,Text=v1743.name,TextColor3=v1743.color,TextSize=18 -8 ,Font=v1499.FM,TextXAlignment=Enum.TextXAlignment.Left,Parent=v1744});for v1865,v1866 in ipairs(v1743.cmds) do local v1867=0 -0 ;local v1868;local v1869;while true do if (v1867==2) then v1869=nil;if v1866.ha then local v2530=v1509("Frame",{Size=UDim2.new(1897 -(1741 + 155) , -(252 -164),1 -0 , -(16 -8)),Position=UDim2.new(0 + 0 ,80,0 + 0 ,4),BackgroundColor3=v1499.Surface,BackgroundTransparency=0.3 + 0 ,BorderSizePixel=0 -0 ,Parent=v1868});v1510(v2530,UDim.new(0 -0 ,4));v1869=v1509("TextBox",{Size=UDim2.new(1778 -(1263 + 514) , -8,498 -(73 + 424) ,0 -0 ),Position=UDim2.new(308 -(93 + 215) ,13 -9 ,1935 -(1756 + 179) ,1679 -(550 + 1129) ),BackgroundTransparency=1,PlaceholderText=v1866.al or "args" ,PlaceholderColor3=v1499.Dim,Text="",TextColor3=v1499.Text,TextSize=116 -(57 + 50) ,Font=v1499.FC,TextXAlignment=Enum.TextXAlignment.Left,ClearTextOnFocus=false,Active=true,Parent=v2530});end v1867=632 -(30 + 599) ;end if (v1867==(1 + 2)) then v1868.MouseEnter:Connect(function() v1512(v1868,{BackgroundTransparency=0.1 -0 ,BackgroundColor3=v1499.CardHov},0.12);end);v1868.MouseLeave:Connect(function() v1512(v1868,{BackgroundTransparency=918.3 -(794 + 124) ,BackgroundColor3=v1499.Card},0.12);end);v1867=4;end if (v1867==(0 + 0)) then v1541=v1541 + 1 ;v1868=v1509("TextButton",{Name="btn_"   .. v1866.cmd ,Size=UDim2.new(1,0,0,28),BackgroundColor3=v1499.Card,BackgroundTransparency=0.3 + 0 ,Text="",AutoButtonColor=false,BorderSizePixel=0,LayoutOrder=v1541,Parent=v1532});v1867=1;end if (v1867==(1 -0)) then v1510(v1868,UDim.new(1927 -(1299 + 628) ,5));v1509("TextLabel",{Size=UDim2.new(0 -0 ,75,2 -1 ,0 + 0 ),Position=UDim2.new(0 -0 ,1451 -(335 + 1110) ,0 + 0 ,0),BackgroundTransparency=1,Text=getgenv().Settings.prefix   .. v1866.cmd ,TextColor3=v1499.Text,TextSize=11,Font=v1499.FM,TextXAlignment=Enum.TextXAlignment.Left,Parent=v1868});v1867=6 -4 ;end if ((6 -2)==v1867) then v1868.MouseButton1Click:Connect(function() local v2455=0;local v2456;local v2457;local v2458;while true do if (v2455==(333 -(268 + 64))) then if (v1866.ha and v1869 and (v1869.Text~="")) then v2457=v2457   .. " "   .. v1869.Text ;end v31(v2457);v2455=2 + 0 ;end if (v2455==3) then task.delay(1278.2 -(243 + 1035) ,function() v1512(v1868,{BackgroundColor3=v2458},0.2 -0 );end);break;end if ((0 -0)==v2455) then v2456=getgenv().Settings.prefix;v2457=v2456   .. v1866.cmd ;v2455=1;end if (v2455==(8 -6)) then v2458=v1868.BackgroundColor3;v1512(v1868,{BackgroundColor3=v1499.Green},0.1);v2455=2 + 1 ;end end end);table.insert(v1540,{btn=v1868,def=v1866,sec=v1743});break;end end end end v1529:GetPropertyChangedSignal("Text"):Connect(function() local v1745=v1529.Text:lower();local v1746={};for v1870,v1871 in ipairs(v1540) do local v1872=(v1745=="") or v1871.def.cmd:find(v1745,1 + 0 ,true) or v1871.def.desc:lower():find(v1745,1 -0 ,true) or v1871.sec.name:lower():find(v1745,1,true) ;v1871.btn.Visible=v1872;if v1872 then v1746[v1871.sec.name]=true;end end for v1874,v1875 in ipairs(v1532:GetChildren()) do if (v1875:IsA("Frame") and (v1875.Name=="Frame")) then local v2248=0;local v2249;while true do if (v2248==(100 -(90 + 10))) then v2249=v1875:FindFirstChildOfClass("TextLabel");if v2249 then v1875.Visible=(v1745=="") or v1746[v2249.Text] or false ;end break;end end end end end);local v1542=v1509("Frame",{Name="TabBar",Size=UDim2.new(805 -(209 + 595) , -(821 -(603 + 202)),0 + 0 ,77 -53 ),Position=UDim2.new(0,4 + 4 ,2 -1 , -64),BackgroundColor3=v1499.Card,BackgroundTransparency=0.4 + 0 ,BorderSizePixel=0 -0 ,Parent=v1521});v1510(v1542,UDim.new(0,5));v1511(v1542,v1499.Border,0.6);local v1543=v1509("TextButton",{Size=UDim2.new(0.5, -(8 -6),1, -(281 -(174 + 105))),Position=UDim2.new(0,3 -2 ,0,914 -(532 + 381) ),BackgroundColor3=v1499.Surface,BackgroundTransparency=0.1,Text="⚡ Commands",TextColor3=v1499.Accent,TextSize=9 + 1 ,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=839 -(137 + 702) ,Parent=v1542});v1510(v1543,UDim.new(0 -0 ,1 + 3 ));local v1544=v1509("TextButton",{Size=UDim2.new(0.5 -0 , -(1888 -(1819 + 67)),1 + 0 , -(1 + 1)),Position=UDim2.new(0.5,1358 -(259 + 1098) ,0 + 0 ,1 + 0 ),BackgroundColor3=v1499.Card,BackgroundTransparency=0.7,Text="📊 Bot & RAM",TextColor3=v1499.Sub,TextSize=1 + 9 ,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=0,Parent=v1542});v1510(v1544,UDim.new(0,13 -9 ));v1543.MouseButton1Click:Connect(function() local v1747=0;while true do if (v1747==(2 + 2)) then v1544.BackgroundTransparency=0.7 + 0 ;break;end if (v1747==(9 -7)) then v1543.TextColor3=v1499.Accent;v1543.BackgroundTransparency=1706.1 -(667 + 1039) ;v1747=1022 -(274 + 745) ;end if (v1747==0) then v1532.Visible=true;v1533.Visible=false;v1747=1 + 0 ;end if ((2 + 1)==v1747) then v1544.BackgroundColor3=v1499.Card;v1544.TextColor3=v1499.Sub;v1747=4;end if (1==v1747) then v1528.Visible=true;v1543.BackgroundColor3=v1499.Surface;v1747=432 -(288 + 142) ;end end end);v1544.MouseButton1Click:Connect(function() v1532.Visible=false;v1533.Visible=true;v1528.Visible=false;v1544.BackgroundColor3=v1499.Surface;v1544.TextColor3=v1499.Green;v1544.BackgroundTransparency=1306.1 -(301 + 1005) ;v1543.BackgroundColor3=v1499.Card;v1543.TextColor3=v1499.Sub;v1543.BackgroundTransparency=0.7 + 0 ;v1539();end);local v1545=v1509("TextButton",{Name="GlobalStopBtn",Size=UDim2.new(1, -16,0,28),Position=UDim2.new(0,19 -11 ,1874 -(674 + 1199) , -(32 + 4)),BackgroundColor3=v1499.Red,BackgroundTransparency=0.45 + 0 ,Text="[ STOP ALL ACTION ]",TextColor3=Color3.new(2 -1 ,4 -3 ,1 + 0 ),TextSize=10,Font=v1499.FM,AutoButtonColor=false,BorderSizePixel=445 -(92 + 353) ,Parent=v1521});v1510(v1545,UDim.new(0,4));v1545.MouseEnter:Connect(function() v1512(v1545,{BackgroundTransparency=0.1 + 0 },0.1 -0 );end);v1545.MouseLeave:Connect(function() v1512(v1545,{BackgroundTransparency=0.45 -0 },0.1 -0 );end);v1545.MouseButton1Click:Connect(function() local v1761=0 + 0 ;local v1762;while true do if (v1761==0) then v31(getgenv().Settings.prefix   .. "stop" );v1762=v1545.BackgroundColor3;v1761=1 -0 ;end if (v1761==1) then v1512(v1545,{BackgroundColor3=v1499.Green},0.1 -0 );task.delay(0.2 -0 ,function() v1512(v1545,{BackgroundColor3=v1762},0.2);end);break;end end end);local function v1546() local v1763=0;while true do if (v1763==0) then v1512(v1521,{Size=UDim2.new(0,0 + 0 ,0 -0 ,265 -(34 + 231) )},1317.25 -(930 + 387) ,Enum.EasingStyle.Back);task.delay(0.25 + 0 ,function() v1521.Visible=false;v1518.Visible=true;v1512(v1518,{BackgroundTransparency=0.2 + 0 },0.15 -0 );end);break;end end end local function v1547() v1518.Visible=false;v1521.Visible=true;v1512(v1521,{Size=UDim2.new(697 -(389 + 308) ,v1519,0,v1520)},0.35 -0 ,Enum.EasingStyle.Back);end v1525.MouseButton1Click:Connect(v1546);v1526.MouseButton1Click:Connect(v1546);v1518.MouseButton1Click:Connect(v1547);v1498.InputBegan:Connect(function(v1766,v1767) local v1768=0 -0 ;while true do if (v1768==(0 -0)) then if v1767 then return;end if (v1766.KeyCode==Enum.KeyCode.RightShift) then if v1521.Visible then v1546();else v1547();end end break;end end end);end do local v1263=92018855869257;_G.InvisEnabled=false;_G.InvisEmoteTrack=nil;local v1264={};local function v1265(v1548) v1548=string.gsub(v1548,"http://www%.roblox%.com/asset/%?id=","");v1548=string.gsub(v1548,"rbxassetid://","");return v1548;end local function v1266(v1549,v1550) local v1551=0 + 0 ;local v1552;local v1553;while true do if ((323 -(125 + 197))==v1551) then if  not v1553 then return true;end for v2264,v2265 in ipairs(v1553:GetChildren()) do if v2265:IsA("StringValue") then for v2531,v2532 in ipairs(v2265:GetChildren()) do if (v2532:IsA("Animation") and (v1265(v2532.AnimationId)==v1552)) then return false;end end end end v1551=2;end if (v1551==(997 -(339 + 658))) then v1552=v1265(v1550.Animation.AnimationId);v1553=v1549:FindFirstChild("Animate");v1551=2 -1 ;end if (v1551==(3 -1)) then return true;end end end local function v1267() if _G.InvisEmoteTrack then local v1876=1348 -(743 + 605) ;while true do if (v1876==(0 + 0)) then pcall(function() _G.InvisEmoteTrack:Stop();end);_G.InvisEmoteTrack=nil;break;end end end end local function v1268(v1554,v1555) v1267();local v1556=Instance.new("Animation");v1556.AnimationId="rbxassetid://"   .. tostring(v1555) ;local v1558,v1559=pcall(function() return v1554.Animator:LoadAnimation(v1556);end);if ( not v1558 or  not v1559) then return false;end _G.InvisEmoteTrack=v1559;_G.InvisEmoteTrack.Priority=Enum.AnimationPriority.Action;_G.InvisEmoteTrack.Looped=true;task.wait(0.1 + 0 );if _G.InvisEnabled then _G.InvisEmoteTrack:Play();pcall(function() _G.InvisEmoteTrack:AdjustSpeed(1);end);end return true;end local function v1269(v1561) local v1562=0 -0 ;local v1563;local v1564;while true do if (v1562==2) then if  not v1563 then return;end v1564=v1563:WaitForChild("Animator",30 -20 );v1562=3;end if (v1562==3) then if  not v1564 then return;end table.insert(v1264,v1564.AnimationPlayed:Connect(function(v2266) if  not _G.InvisEnabled then return;end if  not v1266(v1561,v2266) then return;end local v2267=v1265(v2266.Animation.AnimationId);if ((v2267=="") or (v2267=="0")) then return;end if _G.InvisEmoteTrack then local v2459=0 + 0 ;while true do if (v2459==0) then if (v1265(_G.InvisEmoteTrack.Animation.AnimationId)==v2267) then return;end v1267();break;end end end pcall(function() v2266:Stop();end);task.spawn(function() v1268(v1563,v2267);end);end));v1562=4;end if (v1562==(249 -(197 + 52))) then for v2268,v2269 in pairs(v1264) do pcall(function() v2269:Disconnect();end);end v1264={};v1562=1 -0 ;end if (v1562==(2 -1)) then _G.InvisEmoteTrack=nil;v1563=v1561:WaitForChild("Humanoid",7 + 3 );v1562=2;end if (v1562==(3 + 1)) then table.insert(v1264,v1563.Died:Connect(function() local v2270=0 -0 ;while true do if (v2270==(0 -0)) then _G.InvisEnabled=false;v1267();break;end end end));break;end end end if v12.Character then task.spawn(function() v1269(v12.Character);end);end getgenv().TrackConnection(v12.CharacterAdded:Connect(function(v1565) task.spawn(function() v1269(v1565);end);end));v54.invisible=function(v1566,v1567) local v1568=0 -0 ;local v1569;local v1570;while true do if (v1568==3) then pcall(function() v1570:PlayEmoteAndGetAnimTrackById(v1263);end);task.delay(0.6,function() if (_G.InvisEnabled and ( not _G.InvisEmoteTrack or  not _G.InvisEmoteTrack.IsPlaying)) then local v2460=v12.Character and v12.Character:FindFirstChildOfClass("Humanoid") ;if v2460 then task.spawn(function() v1268(v2460,v1263);end);end end end);break;end if (v1568==(1 + 1)) then if  not v1570 then return;end _G.InvisEnabled=true;v1568=3;end if (v1568==(1 -0)) then if  not v1569 then return;end v1570=v1569:FindFirstChildOfClass("Humanoid");v1568=1099 -(97 + 1000) ;end if (v1568==(0 -0)) then if  not v50(v1566) then return;end v1569=v12.Character;v1568=1;end end end;v54.invis=v54.invisible;v54.visible=function(v1571,v1572) local v1573=1845 -(143 + 1702) ;while true do if (v1573==(1 -0)) then v1267();break;end if (v1573==(369 -(40 + 329))) then if  not v50(v1571) then return;end _G.InvisEnabled=false;v1573=1 + 0 ;end end end;v54.vis=v54.visible;v54.hide=v54.invisible;v54.show=v54.visible;end local v244={};v244.play=function(v1276,v1277,v1278) local v1279=getgenv().Settings.musicPrefix;local v1280=v1278:sub( #v1279 + 2 + 3 ):gsub("^%s+",""):gsub("%s+$","");if ( #v1280<2) then local v1769=0 -0 ;while true do if ((0 + 0)==v1769) then v45("❌ Search query too short!");return;end end end local v1281=os.time();local v1282=v1276.Name:lower()==getgenv().Settings.mainAccount:lower() ;if  not v1282 then local v1770=65 -(9 + 56) ;local v1771;while true do if (v1770==(584 -(531 + 53))) then v1771=getgenv().Settings.musicPlayCooldown or (10 + 0) ;if (v42.lastPlayTime[v1276.Name] and ((v1281-v42.lastPlayTime[v1276.Name])<v1771)) then local v2461=773 -(89 + 684) ;local v2462;while true do if (v2461==0) then v2462=v1771-(v1281-v42.lastPlayTime[v1276.Name]) ;v45(string.format("⏳ @%s wait %d seconds",v1276.Name,v2462));v2461=1 + 0 ;end if (v2461==1) then return;end end end break;end end end v42.lastPlayTime[v1276.Name]=v1281;v45("🔍 Searching: "   .. v1280 );task.spawn(function() local v1574=v46("/play",{query=v1280,user=v1276.Name});if v1574 then if v1574.wait_seconds then v45(string.format("⏳ Wait %d seconds",v1574.wait_seconds));elseif (v1574.reason=="already_playing") then v45("🎵 That song is already playing!");elseif (v1574.reason=="in_queue") then v45("📋 That song is already in the queue!");elseif v1574.error then v45("❌ "   .. v1574.error );elseif (v1574.status=="queued") then local v2769=(v1574.title and ("✅ Queued: "   .. v1574.title)) or "✅ Queued!" ;v45(v2769);if (v1574.queue_position and (v1574.queue_position>(1 + 0))) then task.wait(1);v45(string.format("📋 Position: #%d",v1574.queue_position));end else v45("✅ Request sent!");end else v45("Ahh Not Sure if ur song got added man, check /queue.");end end);end;v244.pause=function(v1284,v1285) task.spawn(function() local v1575=v46("/control",{action="pause",user=v1284.Name});if v1575 then if ((v1575.authorized==false) or (v1575.error=="Not authorized")) then v45("⛔ You don't have permission!");elseif (v1575.status=="paused") then v45("⚠️ Music paused");end end end);end;v244.resume=function(v1286,v1287) task.spawn(function() local v1576=0;local v1577;while true do if (v1576==(0 + 0)) then v1577=v46("/control",{action="resume",user=v1286.Name});if v1577 then if ((v1577.authorized==false) or (v1577.error=="Not authorized")) then v45("⛔ You don't have permission!");elseif (v1577.status=="resumed") then v45("✔️ Music resumed");end end break;end end end);end;v244["continue"]=function(v1288,v1289) v244.resume(v1288,v1289);end;v244.skip=function(v1290,v1291) task.spawn(function() local v1578=0;local v1579;while true do if ((0 -0)==v1578) then v1579=v46("/control",{action="skip",user=v1290.Name});if v1579 then if ((v1579.authorized==false) or (v1579.error=="Not authorized")) then v45("⛔ You don't have permission!");elseif (v1579.status=="skipped") then v45("🎵 Skipped current song");end end break;end end end);end;v244.musicstop=function(v1292,v1293) task.spawn(function() local v1580=v46("/control",{action="stop",user=v1292.Name});if v1580 then if ((v1580.authorized==false) or (v1580.error=="Not authorized")) then v45("⛔ You don't have permission!");elseif (v1580.status=="stopped") then v45("✔️ Stopped and cleared queue");end end end);end;v244.volume=function(v1294,v1295) local v1296=0 + 0 ;local v1297;while true do if ((0 + 0)==v1296) then if  not getgenv().Settings.musicEnableVolume then local v2271=613 -(238 + 375) ;while true do if (v2271==(0 + 0)) then v45("❌ Volume control disabled");return;end end end v1297=tonumber(v1295[2 -0 ]);v1296=1 + 0 ;end if (v1296==(2 -1)) then if ( not v1297 or (v1297<0) or (v1297>100)) then local v2272=0 -0 ;while true do if (v2272==(0 -0)) then v45("❌ Usage: /volume <0-100>");return;end end end task.spawn(function() local v2064=0 -0 ;local v2065;while true do if (v2064==(0 -0)) then v2065=v46("/control",{action="volume",value=v1297/(125 -25) ,user=v1294.Name});if v2065 then if ((v2065.authorized==false) or (v2065.error=="Not authorized")) then v45("⛔ You don't have permission!");elseif (v2065.status=="ok") then v45(string.format("🔊 Volume set to %d%%",v1297));end end break;end end end);break;end end end;v244.status=function(v1298,v1299) task.spawn(function() local v1581=v46("/status");if v1581 then if v1581.current_song then local v2273=0 + 0 ;while true do if (v2273==(0 + 0)) then v45("🎵 Now: "   .. v1581.current_song.title );if (v1581.playback_position and (v1581.playback_position>(0 + 0))) then local v2664=math.floor(v1581.playback_position/(522 -(428 + 34)) );local v2665=math.floor(v1581.playback_position%60 );v45(string.format("⏱️ Position: %d:%02d",v2664,v2665));end v2273=1;end if (1==v2273) then if (v1581.queue_size>0) then v45(string.format("📋 Queue: %d songs",v1581.queue_size));end v45(string.format("🔊 Volume: %d%%",math.floor(v1581.volume * (24 + 76) )));break;end end else local v2274=0;while true do if (v2274==(0 -0)) then v45("🙄 Nothing playing");if (v1581.queue_size>(0 -0)) then v45(string.format("📋 Queue: %d songs waiting",v1581.queue_size));end break;end end end end end);end;v244.nowplaying=function(v1300,v1301) task.spawn(function() local v1582=0 -0 ;local v1583;while true do if (v1582==0) then v1583=v46("/nowplaying");if v1583 then if (v1583.playing and v1583.title) then local v2533=0;while true do if (v2533==(918 -(223 + 695))) then v45("🎵 Now Playing: "   .. v1583.title );if (v1583.position and (v1583.position>(0 -0))) then local v2770=511 -(329 + 182) ;local v2771;local v2772;local v2773;while true do if (v2770==(0 + 0)) then v2771=math.floor(v1583.position/60 );v2772=math.floor(v1583.position%60 );v2770=1;end if (v2770==(1 -0)) then v2773=(v1583.is_paused and " (PAUSED)") or "" ;v45(string.format("⏱️ %d:%02d%s",v2771,v2772,v2773));break;end end end v2533=1;end if (v2533==(1 + 0)) then if v1583.username then v45("👤 Requested by: "   .. v1583.username );end v45(string.format("🔊 Volume: %d%%",math.floor((v1583.volume or (0.7 + 0)) * (56 + 44) )));break;end end else v45("🙄 Nothing playing right now");end end break;end end end);end;v244.queue=function(v1302,v1303) local v1304=0 -0 ;while true do if ((0 -0)==v1304) then if  not getgenv().Settings.musicEnableQueue then local v2275=0;while true do if (v2275==(1200 -(177 + 1023))) then v45("❌ Queue display disabled");return;end end end task.spawn(function() local v2066=0;local v2067;while true do if (v2066==(0 -0)) then v2067=v46("/queue");if (v2067 and (v2067.total>0)) then local v2581=0;while true do if (v2581==(0 + 0)) then v45(string.format("📋 Queue (%d songs):",v2067.total));for v2774,v2775 in ipairs(v2067.queue) do if (v2774<=(10 -5)) then local v2834=1465 -(120 + 1345) ;while true do if (v2834==(337 -(8 + 329))) then v45(string.format("%d. %s",v2775.position,v2775.title));task.wait(0.5);break;end end end end v2581=1;end if (v2581==(126 -(19 + 106))) then if (v2067.total>(17 -12)) then v45(string.format("...and %d more",v2067.total-5 ));end break;end end else v45("📋 Queue is empty");end break;end end end);break;end end end;v244.stats=function(v1305,v1306) local v1307=0;local v1308;local v1309;while true do if (v1307==(0 -0)) then if  not getgenv().Settings.musicEnableStats then v45("❌ Stats disabled");return;end v1308=(v1306[2 + 0 ] and (function() local v2068=v47(v1306[5 -3 ],v1305);return (v2068 and v2068.Name) or v1306[5 -3 ] ;end)()) or v1305.Name ;v1307=3 -2 ;end if (v1307==1) then v1309=v1306[3 -1 ] or v1305.Name ;task.spawn(function() local v2069=v46("/stats",{user=v1308});if v2069 then local v2335=0 + 0 ;while true do if (v2335==2) then v45(string.format("✔️ Skipped: %d",v2069.songs_skipped or 0 ));break;end if (v2335==0) then v45(string.format("📊 %s's Stats:",v1309));task.wait(0.5);v2335=1504 -(957 + 546) ;end if (v2335==(4 -3)) then v45(string.format("✔️ Played: %d",v2069.songs_played or (0 + 0) ));task.wait(0.5 + 0 );v2335=1 + 1 ;end end end end);break;end end end;v244.history=function(v1310,v1311) task.spawn(function() local v1584=0 + 0 ;local v1585;while true do if (v1584==(703 -(227 + 476))) then v1585=v46("/history");if (v1585 and v1585.history) then if ( #v1585.history>(0 -0)) then local v2534=0 -0 ;while true do if (v2534==0) then v45("📜 Recent history:");for v2730,v2731 in ipairs(v1585.history) do if (v2730<=(7 -2)) then local v2797=0 -0 ;while true do if ((0 -0)==v2797) then v45(string.format("%d. %s",v2730,v2731.title));task.wait(954.5 -(166 + 788) );break;end end end end break;end end else v45("📜 No history yet");end end break;end end end);end;v244.auth=function(v1312,v1313) local v1314=v1312.Name:lower()==getgenv().Settings.mainAccount:lower() ;if  not v1314 then local v1772=986 -(21 + 965) ;while true do if (v1772==(696 -(127 + 569))) then v45("⛔ Only main account can use this!");return;end end end local v1315=v47(v1313[2],v1312);if  not v1315 then v45("❌ Player not found in game");return;end task.spawn(function() local v1586=v46("/admin/authorize",{user=v1315.Name});if (v1586 and (v1586.status=="authorized")) then v45(string.format("✅ %s authorized for controls",v1315.DisplayName));else v45("❌ Failed to authorize user");end end);end;v244.unauth=function(v1316,v1317) local v1318=0 + 0 ;local v1319;local v1320;while true do if (v1318==2) then task.spawn(function() local v2070=v46("/admin/revoke",{user=v1320.Name});if (v2070 and (v2070.status=="revoked")) then v45(string.format("❌ %s unauthorized",v1320.DisplayName));else v45("❌ Failed to revoke user");end end);break;end if (v1318==(1 + 0)) then v1320=v47(v1317[1 + 1 ],v1316);if  not v1320 then v45("❌ Player not found in game");return;end v1318=2;end if (v1318==(0 -0)) then v1319=v1316.Name:lower()==getgenv().Settings.mainAccount:lower() ;if  not v1319 then v45("⛔ Only main account can use this!");return;end v1318=1 + 0 ;end end end;v244.musicblacklist=function(v1321,v1322) local v1323=v1321.Name:lower()==getgenv().Settings.mainAccount:lower() ;if  not v1323 then local v1773=0 -0 ;while true do if (v1773==(0 + 0)) then v45("⛔ Only main account can use this!");return;end end end local v1324=v47(v1322[2],v1321);if  not v1324 then local v1774=0 + 0 ;while true do if (v1774==0) then v45("❌ Player not found in game");return;end end end task.spawn(function() local v1587=v46("/admin/blacklist",{user=v1324.Name});if (v1587 and (v1587.status=="blacklisted")) then v45(string.format("🚫 %s blacklisted",v1324.DisplayName));else v45("❌ Failed to blacklist user");end end);end;v244.unblacklist=function(v1325,v1326) local v1327=v1325.Name:lower()==getgenv().Settings.mainAccount:lower() ;if  not v1327 then v45("⛔ Only main account can use this!");return;end local v1328=v47(v1326[1294 -(1162 + 130) ],v1325);if  not v1328 then local v1775=0 -0 ;while true do if (v1775==(0 + 0)) then v45("❌ Player not found in game");return;end end end task.spawn(function() local v1588=0 -0 ;local v1589;while true do if (v1588==(936 -(889 + 47))) then v1589=v46("/admin/unblacklist",{user=v1328.Name});if (v1589 and (v1589.status=="unblacklisted")) then v45(string.format("✅ %s removed from blacklist",v1328.DisplayName));else v45("❌ Failed to unblacklist user");end break;end end end);end;v244.musiccmds=function(v1329,v1330) local v1331=0;local v1332;while true do if (v1331==(1 + 0)) then task.wait(1264.5 -(1153 + 111) );v45("./np - What's playing now");task.wait(0.5 -0 );v1331=2 + 0 ;end if (v1331==2) then v45("./status - Full status & queue");task.wait(0.5);v45("./queue - View queue");v1331=2 + 1 ;end if (v1331==(1 + 2)) then task.wait(0.5 + 0 );v45("./stats [user] - View statistics");task.wait(0.5);v1331=1 + 3 ;end if (v1331==4) then v45("./history - Recent songs");task.wait(0.5);v45("🎛️ Need controls? Ask for /auth");v1331=5;end if (v1331==0) then v45("🎵 Music Bot Commands:");task.wait(0.5 -0 );v45("./play <song> - Play a song");v1331=1 + 0 ;end if (v1331==(101 -(23 + 73))) then v1332=v1329.Name:lower()==getgenv().Settings.mainAccount:lower() ;if v1332 then local v2276=0;while true do if (v2276==(285 -(26 + 259))) then task.wait(0.5);v45("👑 Admin: /auth /unauth /blacklist");break;end end end break;end end end;v244.checkauth=function(v1333,v1334) local v1335=0 + 0 ;local v1336;local v1337;while true do if ((0 -0)==v1335) then v1336=(v1334[2] and (function() local v2071=0;local v2072;while true do if (v2071==(0 -0)) then v2072=v47(v1334[1631 -(1094 + 535) ],v1333);return (v2072 and v2072.Name) or v1334[1 + 1 ] ;end end end)()) or v1333.Name ;v1337=v1334[1878 -(1554 + 322) ] or v1333.Name ;v1335=1426 -(989 + 436) ;end if (v1335==(1179 -(816 + 362))) then task.spawn(function() local v2073=v46("/admin/check",{user=v1336});if v2073 then local v2336=0;local v2337;while true do if (v2336==(1 -0)) then v45(string.format("🔐 %s: %s",v1337,v2337));if v2073.is_blacklisted then v45("🚫 (Blacklisted)");end break;end if (v2336==(0 -0)) then v2337="❌ Not authorized";if v2073.is_main_account then v2337="👑 Main Account (always authorized)";elseif v2073.is_authorized then v2337="✅ Authorized";end v2336=3 -2 ;end end end end);break;end end end;local v263={play=v244.play,pause=v244.pause,resume=v244.resume,["continue"]=v244["continue"],skip=v244.skip,stop=v244.musicstop,volume=v244.volume,status=v244.status,nowplaying=v244.nowplaying,np=v244.nowplaying,queue=v244.queue,stats=v244.stats,history=v244.history,auth=v244.auth,unauth=v244.unauth,blacklist=v244.musicblacklist,unblacklist=v244.unblacklist,cmds=v244.musiccmds,checkauth=v244.checkauth};local function v264(v1338) getgenv().TrackConnection(v1338.Chatted:Connect(function(v1590) local v1591=0;local v1592;local v1593;local v1594;local v1595;local v1596;local v1597;local v1598;local v1599;while true do if (v1591==0) then v1592=getgenv().Settings.musicPrefix or "/" ;if ( not v1590 or ( #v1590==(0 -0))) then return;end if (v1590:sub(2 -1 , #v1592)~=v1592) then return;end v1591=1;end if (v1591==2) then v1595=v263[v1594];if  not v1595 then return;end v1596=os.time();v1591=13 -10 ;end if (v1591==3) then v1597=getgenv().Settings.musicGlobalCooldown or (1 + 2) ;if (v42.lastCommandTime[v1338.Name] and ((v1596-v42.lastCommandTime[v1338.Name])<v1597)) then return;end v42.lastCommandTime[v1338.Name]=v1596;v1591=767 -(86 + 677) ;end if (v1591==4) then v1598,v1599=pcall(function() v1595(v1338,v1593,v1590);end);if  not v1598 then warn("[MusicBot] Error: "   .. tostring(v1599) );end break;end if (v1591==1) then v1593=v1590:split(" ");if ( #v1593==0) then return;end v1594=v1593[1 + 0 ]:sub( #v1592 + 1 + 0 ):lower();v1591=2;end end end));end for v1339,v1340 in ipairs(v4:GetPlayers()) do v264(v1340);end getgenv().TrackConnection(v4.PlayerAdded:Connect(function(v1341) v264(v1341);end));do local v1342=1026 -(263 + 763) ;while true do if (v1342==0) then v54.to=v54.walkto;v54.tpto=v54.tp;v54.b=v54.grab;v54.fj=v54.loopclone;v1342=1;end if (v1342==(1 + 1)) then v54.f=v54.follow;v54.unf=v54.unall;v54.d=v54.dance;v54.dance1=v54.dance;break;end if (v1342==(859 -(649 + 209))) then v54.unfj=v54.unloopclone;v54.re=v54.rejoin;v54.rj=v54.rejoin;v54.cd=v54.countdown;v1342=2;end end end do local v1343=0 -0 ;local v1344;local v1345;local v1346;local v1347;while true do if (v1343==(731 -(643 + 88))) then v1344=v9:WaitForChild("event_generation",1779 -(54 + 1715) );v1345=nil;function v1345(v2076,v2077,v2078) pcall(function() game:GetService("StarterGui"):SetCore("SendNotification",{Title=v2076,Text=v2077,Duration=v2078 or 4 });end);end v1343=1;end if (v1343==(7 -5)) then _G.DefZoom=nil;v1346=nil;function v1346(v2079) local v2080=0;while true do if (v2080==(0 -0)) then _G.ZoomOn=v2079;if v2079 then _G.DefZoom=v12.CameraMaxZoomDistance;v12.CameraMaxZoomDistance=20426 -10426 ;if _G.ZoomConn then _G.ZoomConn:Disconnect();end _G.ZoomConn=getgenv().TrackConnection(game:GetService("RunService").RenderStepped:Connect(function() if (v12.CameraMaxZoomDistance<(8024 + 1966)) then v12.CameraMaxZoomDistance=10000;end end));v1345("Zoom","Zoom Out ON",1 + 2 );else if _G.ZoomConn then local v2689=0 -0 ;while true do if (0==v2689) then _G.ZoomConn:Disconnect();_G.ZoomConn=nil;break;end end end v12.CameraMaxZoomDistance=_G.DefZoom or (1511 -(132 + 1251)) ;v1345("Zoom","Zoom Out OFF",3);end break;end end end v1343=3;end if (v1343==1) then _G.GenToolGenerating=false;_G.ZoomOn=false;_G.ZoomConn=nil;v1343=2;end if (v1343==3) then v1347=nil;function v1347(v2081,v2082) local v2083=0;local v2084;local v2085;while true do if (v2083==(3 + 0)) then v2084,v2085=pcall(function() v1344:FireServer(v2081,Vector3.new(v2082,v2082,v2082));end);_G.GenToolGenerating=false;v2083=9 -5 ;end if (v2083==(0 + 0)) then if _G.GenToolGenerating then v1345("Wait","Already generating…",3);return;end v2081=(v2081 or ""):match("^%s*(.-)%s*$");v2083=459 -(185 + 273) ;end if (v2083==4) then if  not v2084 then v1345("Error",tostring(v2085),2 + 3 );end break;end if (v2083==1) then if (v2081=="") then local v2584=0 -0 ;while true do if ((0 + 0)==v2584) then v1345("Error","Enter a prompt",1227 -(361 + 863) );return;end end end v2082=math.clamp(v2082 or (136 -86) ,1328 -(443 + 884) ,718 -418 );v2083=1 + 1 ;end if (v2083==(2 -0)) then _G.GenToolGenerating=true;v1345("Generating",'"'   .. v2081   .. '" size '   .. v2082 ,5);v2083=3;end end end v54.gentool=function(v2086,v2087) local v2088=0 + 0 ;local v2089;local v2090;local v2091;local v2092;local v2093;while true do if (v2088==1) then v2091=table.concat(v2090," ",2);if (v2091=="") then v1345("!gentool","Usage: prefix + gentool [size] [prompt]",3 + 1 );return;end v2088=4 -2 ;end if (v2088==(747 -(16 + 731))) then v2089,v2090=v51(v2086);if  not v2089 then return;end v2088=1;end if (v2088==2) then v2092,v2093=v2091:match("^(%d+)%s+(.+)$");if (v2092 and v2093) then v1347(v2093,tonumber(v2092));else v1345("!gentool","You must specify [size] and [prompt]!",2 + 2 );end break;end end end;v1343=4;end if (v1343==(3 + 1)) then v54.zoom=function(v2094,v2095) local v2096,v2097=v51(v2094);if  not v2096 then return;end v1346(true);end;v54.unzoom=function(v2098,v2099) local v2100=0 + 0 ;local v2101;local v2102;while true do if (v2100==0) then v2101,v2102=v51(v2098);if  not v2101 then return;end v2100=761 -(527 + 233) ;end if (v2100==(1 + 0)) then v1346(false);break;end end end;break;end end end local v265={"SpecialMesh","FileMesh","CylinderMesh","BlockMesh","Texture","Decal","SurfaceAppearance","ParticleEmitter","Fire","Smoke","Sparkles","Beam","Trail","Explosion","PointLight","SpotLight","SurfaceLight","SurfaceGui","BillboardGui","Highlight","SelectionBox","SelectionSphere"};local v266={};for v1348,v1349 in ipairs(v265) do v266[v1349]=true;end local v267={MeshPart=true,UnionOperation=true};local v268={HumanoidRootPart=true,Humanoid=true,Head=true};local function v269(v1351) local v1352=0 + 0 ;while true do if (v1352==(0 + 0)) then for v2103,v2104 in ipairs(v4:GetPlayers()) do local v2105=0 + 0 ;local v2106;while true do if (v2105==(0 -0)) then v2106=v2104.Character;if (v2106 and ((v1351==v2106) or v1351:IsDescendantOf(v2106))) then return true;end break;end end end return false;end end end local function v270() for v1600,v1601 in ipairs(v11:GetChildren()) do if (v1601:IsA("PostEffect") or v1601:IsA("Atmosphere") or v1601:IsA("Sky")) then pcall(function() v1601:Destroy();end);end end pcall(function() v11.GlobalShadows=false;end);pcall(function() v11.Technology=Enum.Technology.Compatibility;end);end local function v271() for v1605,v1606 in ipairs(workspace:GetDescendants()) do if v269(v1606) then continue;end if ((v1606==workspace.CurrentCamera) or v1606:IsDescendantOf(workspace.CurrentCamera)) then continue;end if v1606:IsA("Terrain") then continue;end if v266[v1606.ClassName] then pcall(function() v1606:Destroy();end);elseif v267[v1606.ClassName] then local v2277=0;while true do if (v2277==(0 + 0)) then pcall(function() v1606.Material=Enum.Material.SmoothPlastic;v1606.Reflectance=0 -0 ;v1606.TextureID="";end);if (v1606.ClassName=="MeshPart") then local v2666=0 -0 ;while true do if (v2666==0) then pcall(function() v1606.RenderFidelity=Enum.RenderFidelity.Performance;end);pcall(function() v1606.CollisionFidelity=Enum.CollisionFidelity.Box;end);break;end end end break;end end elseif (v1606:IsA("Sound") and  not v1606:IsDescendantOf(game:GetService("SoundService"))) then pcall(function() v1606.Volume=0 -0 ;end);end end end local function v272() for v1607,v1608 in ipairs(v4:GetPlayers()) do if (v1608==v12) then continue;end local v1609=v1608.Character;if  not v1609 then continue;end for v1776,v1777 in ipairs(v1609:GetChildren()) do if v268[v1777.Name] then if v1777:IsA("BasePart") then pcall(function() v1777.Material=Enum.Material.SmoothPlastic;v1777.Transparency=1 + 0 ;end);end for v2278,v2279 in ipairs(v1777:GetChildren()) do if (v2279:IsA("Decal") or v2279:IsA("SpecialMesh") or v2279:IsA("SurfaceAppearance") or v2279:IsA("Texture") or v2279:IsA("ParticleEmitter") or v2279:IsA("BillboardGui")) then pcall(function() v2279:Destroy();end);end end elseif v1777:IsA("Humanoid") then elseif (v1777:IsA("Accessory") or v1777:IsA("Shirt") or v1777:IsA("Pants") or v1777:IsA("ShirtGraphic") or v1777:IsA("BodyColors") or v1777:IsA("CharacterMesh")) then pcall(function() v1777:Destroy();end);elseif v1777:IsA("BasePart") then local v2667=0;while true do if (v2667==(707 -(667 + 40))) then pcall(function() local v2802=0;while true do if ((1310 -(436 + 874))==v2802) then v1777.Transparency=1607 -(762 + 844) ;v1777.Material=Enum.Material.SmoothPlastic;break;end end end);for v2803,v2804 in ipairs(v1777:GetChildren()) do if ( not v2804:IsA("Motor6D") and  not v2804:IsA("Weld")) then pcall(function() v2804:Destroy();end);end end break;end end elseif ( not v1777:IsA("Script") and  not v1777:IsA("LocalScript") and  not v1777:IsA("Animator") and  not v1777:IsA("Motor6D")) then pcall(function() v1777:Destroy();end);end end for v1778,v1779 in ipairs(v1609:GetDescendants()) do if v1779:IsA("MeshPart") then pcall(function() local v2280=0 -0 ;while true do if (v2280==(0 -0)) then v1779.TextureID="";v1779.Transparency=1 + 0 ;break;end end end);end end end end local function v273() pcall(function() local v1610=workspace:FindFirstChildOfClass("Terrain");if v1610 then local v1902=0 + 0 ;while true do if (1==v1902) then v1610.WaterWaveSpeed=476 -(209 + 267) ;v1610.WaterReflectance=0 -0 ;v1902=5 -3 ;end if (v1902==(1711 -(1611 + 100))) then v1610.Decoration=false;v1610.WaterWaveSize=0;v1902=1;end if ((2 + 0)==v1902) then v1610.WaterTransparency=784 -(14 + 770) ;break;end end end end);end local function v274() local v1353=v12:FindFirstChild("PlayerGui");if  not v1353 then return;end local v1354={Chat=true,DayBreakCommandGUI=true,BubbleChat=true,TopBarApp=true};for v1611,v1612 in ipairs(v1353:GetChildren()) do if (v1612:IsA("ScreenGui") and  not v1354[v1612.Name]) then local v1903=v1612.Name:lower();if  not (v1903:find("chat") or v1903:find("topbar") or v1903:find("core") or v1903:find("roblox")) then pcall(function() v1612.Enabled=false;end);end end end end local function v275() getgenv().TrackConnection(v4.PlayerAdded:Connect(function(v1613) getgenv().TrackConnection(v1613.CharacterAdded:Connect(function() local v1780=0;while true do if (v1780==0) then task.wait(1786 -(1165 + 619) );v272();break;end end end));end));for v1614,v1615 in ipairs(v4:GetPlayers()) do if (v1615~=v12) then getgenv().TrackConnection(v1615.CharacterAdded:Connect(function() local v2107=0;while true do if (v2107==(0 -0)) then task.wait(2);v272();break;end end end));end end getgenv().TrackConnection(workspace.DescendantAdded:Connect(function(v1616) if (v266[v1616.ClassName] and  not v269(v1616)) then task.defer(function() if (v1616.Parent and  not v269(v1616)) then pcall(function() v1616:Destroy();end);end end);end end));end local function v276() local v1355,v1356=pcall(function() return v12:GetNetworkPing() * 1000 ;end);return (v1355 and v1356) or 100 ;end local function v277() task.spawn(function() while _G.DayBreakActive do local v1781=381 -(229 + 152) ;local v1782;local v1783;while true do if (v1781==(197 -(107 + 87))) then task.wait(9 -4 );break;end if (v1781==1) then _G.DayBreakSyncOffset=v1782/1000 ;if (v1782>(81 + 119)) then _G.DayBreakTickRate=0.15 + 0 ;elseif (v1782>(477 -377)) then _G.DayBreakTickRate=0.08;else _G.DayBreakTickRate=0.03 -0 ;end v1781=2 + 0 ;end if (v1781==(14 -(13 + 1))) then v1782=v276();_G.DayBreakPing=v1782;v1781=1;end if (v1781==(2 + 0)) then v1783=collectgarbage("count");if (v1783>200000) then collectgarbage("collect");end v1781=2 + 1 ;end end end end);end local function v278() pcall(function() settings().Rendering.QualityLevel=Enum.QualityLevel.Level01;end);pcall(function() if setfpscap then setfpscap(10);end end);v270();v273();task.spawn(function() local v1619=1058 -(987 + 71) ;while true do if (v1619==1) then v274();print("[DayBreak Cleanup] In-game optimization complete");break;end if (v1619==(0 -0)) then v271();v272();v1619=1 -0 ;end end end);v275();v277();local v1357=v20();local v1358=Instance.new("ScreenGui");v1358.IgnoreGuiInset=true;v1358.ResetOnSpawn=false;v1358.DisplayOrder= -(700 -(514 + 185));v1358.Name="StealthOverlay";local v1363=v12:FindFirstChild("PlayerGui");if v1363 then v1358.Parent=v1363;end local v1364=Instance.new("Frame");v1364.Size=UDim2.new(1 + 0 ,0,1 -0 ,0 -0 );v1364.BackgroundColor3=Color3.fromRGB(1504 -(771 + 733) ,0,0);v1364.BorderSizePixel=0 -0 ;v1364.Parent=v1358;local v1369=Instance.new("TextLabel");v1369.Size=UDim2.new(0.8 -0 ,1167 -(407 + 760) ,0.4,0 + 0 );v1369.Position=UDim2.new(0.5 + 0 ,0,0.5 + 0 ,1854 -(169 + 1685) );v1369.AnchorPoint=Vector2.new(0.5 + 0 ,0.5);v1369.BackgroundTransparency=392 -(41 + 350) ;v1369.TextColor3=Color3.fromRGB(698 -443 ,255,255);v1369.Font=Enum.Font.Code;v1369.TextSize=62 -40 ;v1369.TextWrapped=true;v1369.TextXAlignment=Enum.TextXAlignment.Center;v1369.TextYAlignment=Enum.TextYAlignment.Center;v1369.Text=string.format("ALT Control | Designed by DayBreak\n"   .. "Join Discord: https://discord.gg/ws5Zb2EzYA\n\n"   .. "USER: %s\n"   .. "BOT POSITION: %02d" ,v12.Name,v1357);v1369.Parent=v1364;end if (v12.Name~=getgenv().Settings.mainAccount) then v278();if (getgenv().Settings.announceOnLoad and v14 and  not v13) then task.spawn(function() local v2108=v20() or (4 -3) ;local v2109=v21() or (2 -1) ;task.wait(2 + 0 + ((v2108-(888 -(790 + 97))) * (0.25 -0)) );v31(string.format("☀️ DayBreak Bot #%d/%d Ready",v2108,v2109));end);end end v52();if (v14 and  not v13 and getgenv().Settings.micAutoUnmute) then task.spawn(function() local v1785=getgenv().Settings.micUnmuteDelay or (9 + 21) ;local v1786=v20() or (1 + 0) ;local v1787=v1785 + ((v1786-(246 -(235 + 10))) * (2 + 0)) ;task.wait(v1787);if _G.DayBreakActive then v40();print("[MicToggle] Auto-unmuted bot #"   .. v1786   .. " after "   .. v1787   .. "s delay" );end end);end if (v14 and v44()) then task.spawn(function() local v1788=0;while true do if (v1788==1) then task.wait(1);v45("Type /cmds for commands");break;end if (v1788==(0 -0)) then task.wait(1188 -(887 + 296) );v45("🎵 ˹Music Bot Ready˼ 🎵");v1788=1;end end end);end print("DayBreak ALT Control | By @DayBreak");
+    ]], x, y, z, r00, r01, r02, r10, r11, r12, r20, r21, r22)
+
+    local qot = queue_on_teleport or (syn and syn.queue_on_teleport) or queueonteleport
+    if qot then
+        -- 1) Queue TP-back (runs first on next server)
+        qot(teleportCode)
+
+        -- 2) Queue full script re-execution from workspace (not autoexec)
+        local scriptURL = getgenv().Settings.scriptLoadstring or ""
+        local scriptFile = getgenv().Settings.scriptFile or ""
+        if scriptFile ~= "" then
+            -- Workspace readfile approach (works on Xeno, Solara, etc.)
+            local reExecCode = 'task.wait(3); pcall(function() loadstring(readfile("' .. scriptFile .. '"))() end)'
+            qot(reExecCode)
+        elseif scriptURL ~= "" then
+            -- URL fallback approach
+            local reExecCode = 'task.wait(3); pcall(function() loadstring(game:HttpGet("' .. scriptURL .. '"))() end)'
+            qot(reExecCode)
+        end
+    end
+
+    pcall(function()
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+    end)
+end
+
+----------------------------------------------------------------
+-- 5f. MUSIC BOT ENGINE (merged from MusicBots.lua)
+----------------------------------------------------------------
+local MusicState = {
+    lastCommandTime = {},
+    lastPlayTime = {},
+}
+
+local function isMusicDesignatedBot()
+    return LocalPlayer.Name == getgenv().Settings.musicBotAccount
+end
+
+local function shouldMusicExecute()
+    -- Only the designated music bot makes HTTP requests
+    if isMusicDesignatedBot() then return true end
+    -- If designated bot is offline, first available bot handles it
+    if not Players:FindFirstChild(getgenv().Settings.musicBotAccount) then
+        RefreshBotCache()
+        return #_bc.list > 0 and _bc.list[1] == LocalPlayer.Name:lower()
+    end
+    return false
+end
+
+local function musicChat(message)
+    if shouldMusicExecute() then
+        task.spawn(function()
+            ChatSend(message)
+        end)
+    end
+end
+
+local function musicRequest(endpoint, params)
+    if not shouldMusicExecute() then return nil end
+    params = params or {}
+    local url = getgenv().Settings.musicServerURL .. endpoint
+    local qp = {}
+    for k, v in pairs(params) do
+        table.insert(qp, k .. "=" .. HttpService:UrlEncode(tostring(v)))
+    end
+    if #qp > 0 then url = url .. "?" .. table.concat(qp, "&") end
+
+    local req = (syn and syn.request) or http_request or request
+    if not req then return nil end
+
+    for attempt = 1, 3 do
+        local ok, resp = pcall(function()
+            return req({
+                Url = url, Method = "GET",
+                Headers = {
+                    ["X-API-Key"] = getgenv().Settings.musicApiKey,
+                    ["Content-Type"] = "application/json"
+                }
+            })
+        end)
+        if ok then
+            if resp.StatusCode == 401 then musicChat("âŒ API key error"); return nil end
+            if resp.StatusCode >= 200 and resp.StatusCode < 500 then
+                local pOk, data = pcall(function() return HttpService:JSONDecode(resp.Body) end)
+                if pOk then return data end
+            end
+        end
+        if attempt < 3 then task.wait(2 * attempt) end
+    end
+    return nil
+end
+
+----------------------------------------------------------------
+-- 6. TARGET FINDER
+----------------------------------------------------------------
+local function FindTarget(name, speaker)
+    if not name or name == "" then return speaker end
+    local nl = name:lower()
+    if nl == "me" then return speaker end
+    if nl == "random" then
+        local p = Players:GetPlayers()
+        return #p > 0 and p[math.random(#p)] or nil
+    end
+    if nl == "all" then return nil end
+    for _, v in ipairs(Players:GetPlayers()) do
+        if v.Name:lower():sub(1, #name) == nl
+        or v.DisplayName:lower():sub(1, #name) == nl then
+            return v
+        end
+    end
+    return nil
+end
+
+----------------------------------------------------------------
+-- 7. ARGUMENT PARSERS
+----------------------------------------------------------------
+local function ParseSpeedTarget(args, speaker, defaultSpeed)
+    local speed, targetName = defaultSpeed, nil
+    if args[2] then
+        local n = tonumber(args[2])
+        if n then speed = n; targetName = args[3]
+        else targetName = args[2] end
+    end
+    return speed, FindTarget(targetName, speaker)
+end
+
+local function ParseSpeedRangeTarget(args, speaker, defaultSpeed, defaultRange)
+    local speed, range, targetName = defaultSpeed, defaultRange, nil
+    if args[2] then
+        local n1 = tonumber(args[2])
+        if n1 then
+            speed = n1
+            if args[3] then
+                local n2 = tonumber(args[3])
+                if n2 then range = n2; targetName = args[4]
+                else targetName = args[3] end
+            end
+        else targetName = args[2] end
+    end
+    return speed, range, FindTarget(targetName, speaker)
+end
+
+local function IsSoloCommand(args)
+    return args[2] == nil or args[2] == ""
+end
+
+----------------------------------------------------------------
+-- 7b. BOT-TARGETING PARSER
+-- Checks if args[2] matches "bot<N>" pattern (e.g. bot1, bot3)
+-- If so, strips it from args and returns whether THIS bot should execute.
+-- Usage: local shouldRun, newArgs = ParseBotTarget(args)
+--        if not shouldRun then return end
+----------------------------------------------------------------
+local function ParseBotTarget(args)
+    if not args[2] then return true, args end
+    local botMatch = args[2]:lower():match("^bot(%d+)$")
+    if botMatch then
+        local targetBotNum = tonumber(botMatch)
+        local myIdx = SafeIndex()
+        -- Build new args with bot specifier removed
+        local newArgs = { args[1] }
+        for i = 3, #args do
+            table.insert(newArgs, args[i])
+        end
+        if myIdx ~= targetBotNum then
+            return false, newArgs -- Not this bot
+        end
+        return true, newArgs -- This bot should execute
+    end
+    return true, args -- No bot specifier, all bots execute
+end
+
+----------------------------------------------------------------
+-- 8. ANTI-AFK
+----------------------------------------------------------------
+local function InitAntiAFK()
+    -- Method 1: Respond to Roblox Idled event
+    local afkConn = LocalPlayer.Idled:Connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+        -- Anti-AFK: Prevented idle kick.
+    end)
+    getgenv().TrackConnection(afkConn)
+
+    -- Method 2: Periodic heartbeat â€” proactively simulate input every 60s
+    -- Prevents Roblox from ever reaching the idle threshold
+    task.spawn(function()
+        while _G.DayBreakActive do
+            task.wait(60)
+            pcall(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
+    end)
+end
+
+----------------------------------------------------------------
+-- 9. GLOBAL STATE
+----------------------------------------------------------------
+_G.CurrentCommand  = "None"
+_G.ScriptStartTime = tick()
+
+-- Persistent states (NOT cleared by StopAll)
+_G.Spamming       = false
+_G.CurrentSpamID  = nil
+_G.AntiVoidActive = false
+_G.AVPlatform     = nil
+_G.SpeedLock      = nil
+_G.NoclipEnabled  = false
+_G.NoclipConn     = nil
+_G.NoclipOriginals = {}
+_G.LoopCloneActive = false  -- Persistent: only !unloopclone stops it
+
+-- Exclusive states
+_G.IsPlaying      = false
+_G.MusicQueue     = {}
+_G.GrabActive     = false
+
+----------------------------------------------------------------
+-- 10. StopAll â€” ONLY clears exclusive commands
+----------------------------------------------------------------
+local function StopAll()
+    _G.CurrentCommand = "None"
+    _G.IsPlaying      = false
+    _G.MusicQueue     = {}
+    _G.CurrentEmoteCommand = nil
+    _G.EmoteDebounce = false
+    if _G.EmoteFreezeConn then _G.EmoteFreezeConn:Disconnect(); _G.EmoteFreezeConn = nil end
+    -- Clean up tracked emote animation track
+    if _G.CurrentEmoteTrack then
+        pcall(function() _G.CurrentEmoteTrack:Stop(0) end)
+        pcall(function() _G.CurrentEmoteTrack:Destroy() end)
+        _G.CurrentEmoteTrack = nil
+    end
+
+    if _G.StackPart then
+        pcall(function() _G.StackPart:Destroy() end)
+        _G.StackPart = nil
+    end
+
+    local myChar = LocalPlayer.Character
+    local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+    local hum    = myChar and myChar:FindFirstChild("Humanoid")
+
+    if myRoot then
+        myRoot.Velocity    = Vector3.zero
+        myRoot.RotVelocity = Vector3.zero
+        myRoot.Anchored    = false
+    end
+    if hum then
+        hum.AutoRotate = true
+        if not _G.SpeedLock then hum.WalkSpeed = 16 end
+        pcall(function()
+            local animator = hum:FindFirstChildOfClass("Animator")
+            if animator then
+                for _, tr in pairs(animator:GetPlayingAnimationTracks()) do 
+                    if tr.Priority == Enum.AnimationPriority.Action then
+                        tr:Stop(0) 
+                    end
+                end
+            end
+        end)
+    end
+end
+
+----------------------------------------------------------------
+-- 11. MASTER CLEANUP
+----------------------------------------------------------------
+_G.DayBreakCleanup = function()
+    _G.DayBreakActive = false
+    _G.Spamming = false; _G.CurrentSpamID = nil; _G.AntiVoidActive = false
+    _G.SpeedLock = nil; _G.NoclipEnabled = false; _G.LoopCloneActive = false
+    if _G.NoclipConn then pcall(function() _G.NoclipConn:Disconnect() end); _G.NoclipConn = nil end
+    for p, o in pairs(_G.NoclipOriginals or {}) do
+        if p and p.Parent then pcall(function() p.CanCollide = o end) end
+    end
+    _G.NoclipOriginals = {}
+    if _G.AVPlatform then pcall(function() _G.AVPlatform:Destroy() end); _G.AVPlatform = nil end
+    StopAll()
+    for _, conn in ipairs(_G.DayBreakConnections or {}) do pcall(function() conn:Disconnect() end) end
+    _G.DayBreakConnections = {}
+    pcall(function()
+        local pg = LocalPlayer:FindFirstChild("PlayerGui")
+        if pg then local g = pg:FindFirstChild("DayBreakCommandGUI"); if g then g:Destroy() end end
+    end)
+    _G.CurrentCommand = "None"; _G.ScanInProgress = false
+    _G.MemoryLock = nil; _G.CPULock = nil; _G.GrabActive = false
+end
+
+----------------------------------------------------------------
+-- 12. COMMAND TABLE
+----------------------------------------------------------------
+local Commands = {}
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SYSTEM COMMANDS
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.stop = function(args, speaker) StopAll() end
+Commands.unall = Commands.stop
+
+Commands.whitelist = function(args, speaker)
+    local t = FindTarget(args[2], speaker)
+    if t then
+        local ok = pcall(function() getgenv().ManualWhitelist[t.Name:lower()] = true end)
+        if SafeIndex() == 1 then
+            if ok then ChatSend("Whitelisted " .. t.Name)
+            else ChatSend("Whitelist Fail") end
+        end
+    else
+        if SafeIndex() == 1 then ChatSend("Whitelist Fail") end
+    end
+end
+
+Commands.blacklist = function(args, speaker)
+    local t = FindTarget(args[2], speaker)
+    if t then
+        local targetLower = t.Name:lower()
+        if IsCreator(targetLower) then
+            if SafeIndex() == 1 then ChatSend("Cannot blacklist Creator") end
+            return
+        end
+        if targetLower ~= getgenv().Settings.mainAccount:lower() then
+            getgenv().ManualWhitelist[targetLower] = nil
+            if SafeIndex() == 1 then ChatSend("Blacklisted " .. t.Name) end
+        end
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  PERSISTENT: noclip / clip
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.noclip = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    if _G.NoclipEnabled then return end
+    _G.NoclipEnabled = true; _G.NoclipOriginals = {}
+    local char = LocalPlayer.Character
+    if char then
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then _G.NoclipOriginals[part] = part.CanCollide end
+        end
+    end
+    _G.NoclipConn = RunService.Stepped:Connect(function()
+        if not _G.NoclipEnabled then return end
+        local c = LocalPlayer.Character
+        if c then
+            for _, p in ipairs(c:GetDescendants()) do
+                if p:IsA("BasePart") then
+                    if _G.NoclipOriginals[p] == nil then _G.NoclipOriginals[p] = p.CanCollide end
+                    p.CanCollide = false
+                end
+            end
+        end
+    end)
+    getgenv().TrackConnection(_G.NoclipConn)
+end
+
+Commands.clip = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    _G.NoclipEnabled = false
+    if _G.NoclipConn then pcall(function() _G.NoclipConn:Disconnect() end); _G.NoclipConn = nil end
+    for p, o in pairs(_G.NoclipOriginals or {}) do
+        if p and p.Parent then pcall(function() p.CanCollide = o end) end
+    end
+    _G.NoclipOriginals = {}
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  PERSISTENT: ws / speed
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.ws = function(args, speaker)
+    local spd = tonumber(args[2])
+    if not spd then
+        Commands.unws(args, speaker)
+        return
+    end
+    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    if hum then
+        if hum.Sit then hum.Sit = false end
+        hum.WalkSpeed = spd; _G.SpeedLock = spd
+        task.spawn(function()
+            local lv = spd
+            while _G.SpeedLock == lv do
+                local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.WalkSpeed ~= lv then h.WalkSpeed = lv end
+                task.wait(0.5)
+            end
+        end)
+    end
+end
+Commands.speed = Commands.ws
+
+Commands.unws = function(args, speaker)
+    _G.SpeedLock = nil
+    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    if hum then hum.WalkSpeed = 16 end
+end
+Commands.unspeed = Commands.unws
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  PERSISTENT: antivoid / unantivoid
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.antivoid = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    if _G.AntiVoidActive then return end
+    _G.AntiVoidActive = true
+    local part = Instance.new("Part")
+    part.Name = "DayBreakAntiVoid"; part.Size = Vector3.new(2048,1,2048)
+    part.Transparency = 1; part.Anchored = true; part.CanCollide = true; part.Parent = workspace
+    _G.AVPlatform = part
+    task.spawn(function()
+        while _G.AntiVoidActive do
+            local r = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if r and _G.AVPlatform then _G.AVPlatform.CFrame = CFrame.new(r.Position.X, 0, r.Position.Z) end
+            RunService.Heartbeat:Wait()
+        end
+        if _G.AVPlatform then pcall(function() _G.AVPlatform:Destroy() end); _G.AVPlatform = nil end
+    end)
+end
+
+Commands.unantivoid = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    _G.AntiVoidActive = false
+    if _G.AVPlatform then pcall(function() _G.AVPlatform:Destroy() end); _G.AVPlatform = nil end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  PERSISTENT: spam / unspam
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.spam = function(args, speaker)
+    _G.Spamming = false; task.wait(0.1)
+    local delayInput  = tonumber(args[2])
+    local customDelay = delayInput or 1.0
+    local spamMsg     = delayInput and table.concat(args, " ", 3) or table.concat(args, " ", 2)
+    if spamMsg ~= "" then
+        _G.Spamming = true; local id = tick(); _G.CurrentSpamID = id
+        task.spawn(function()
+            while _G.Spamming and _G.CurrentSpamID == id do ChatSend(spamMsg); task.wait(customDelay) end
+        end)
+    end
+end
+
+Commands.unspam = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+
+Commands.mimic = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local tp = FindTarget(newArgs[2], speaker)
+    if not tp then return end
+    
+    _G.Mimicking = true
+    _G.MimicTarget = tp.Name:lower()
+end
+
+Commands.unmimic = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    _G.Mimicking = false
+    _G.MimicTarget = nil
+end
+    _G.Spamming = false; _G.CurrentSpamID = nil
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  MOVEMENT COMMANDS
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+Commands.circle = function(args, speaker)
+    local radius, target = ParseSpeedTarget(args, speaker, nil)
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local idx, total = SafeIndex(), SafeTotal()
+    radius = radius or math.max(8, total * 1.2)
+    local angle  = (idx / total) * (2 * math.pi)
+    local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+    local tRoot  = target.Character:FindFirstChild("HumanoidRootPart")
+    local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if tRoot and myRoot then myRoot.CFrame = CFrame.new(tRoot.Position + offset, tRoot.Position) end
+end
+
+Commands.loopcircle = function(args, speaker)
+    local radiusIn, target = ParseSpeedTarget(args, speaker, nil)
+    if not target or not target.Character then return end
+    StopAll(); _G.CurrentCommand = "LoopCircle"
+    task.spawn(function()
+        while _G.CurrentCommand == "LoopCircle" and target and target.Character do
+            local idx, total = SafeIndex(), SafeTotal()
+            local radius = radiusIn or math.max(8, total * 1.2)
+            local angle  = (idx / total) * (2 * math.pi)
+            local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+            local tRoot  = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if tRoot and myRoot then myRoot.CFrame = CFrame.new(tRoot.Position + offset, tRoot.Position) end
+            task.wait()
+        end
+    end)
+end
+
+-- Line formations
+local LINE_DIRS = {
+    rline = Vector3.new(4,0,0), lline = Vector3.new(-4,0,0),
+    fline = Vector3.new(0,0,-4), bline = Vector3.new(0,0,4),
+}
+
+local function DoLine(args, speaker, isLoop)
+    local cmd = args[1]:lower():sub(#getgenv().Settings.prefix + 1)
+    local base = isLoop and cmd:sub(5) or cmd
+    local dir = LINE_DIRS[base]; if not dir then return end
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local idx = SafeIndex(); local off = CFrame.new(dir * idx)
+    if isLoop then
+        StopAll(); _G.CurrentCommand = "LoopLine"
+        task.spawn(function()
+            while _G.CurrentCommand == "LoopLine" and target and target.Character do
+                local tR = target.Character:FindFirstChild("HumanoidRootPart")
+                local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if tR and mR then mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero end
+                RunService.Heartbeat:Wait()
+            end
+        end)
+    else
+        local tR = target.Character:FindFirstChild("HumanoidRootPart")
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if tR and mR then mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero end
+    end
+end
+
+for b in pairs(LINE_DIRS) do
+    Commands[b] = function(a, s) DoLine(a, s, false) end
+    Commands["loop" .. b] = function(a, s) DoLine(a, s, true) end
+end
+
+-- Shared emote track cache: prevents memory leak from repeated LoadAnimation
+_G.CurrentEmoteTrack = nil
+_G.EmoteDebounce = false
+
+local function StopCurrentEmoteTrack()
+    if _G.CurrentEmoteTrack then
+        pcall(function() _G.CurrentEmoteTrack:Stop(0) end)
+        pcall(function() _G.CurrentEmoteTrack:Destroy() end)
+        _G.CurrentEmoteTrack = nil
+    end
+end
+
+local function ClearEmotesOnly()
+    _G.CurrentEmoteCommand = nil
+    _G.EmoteDebounce = false
+    if _G.EmoteFreezeConn then pcall(function() _G.EmoteFreezeConn:Disconnect() end); _G.EmoteFreezeConn = nil end
+    StopCurrentEmoteTrack()
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        local anim = hum:FindFirstChildOfClass("Animator")
+        if anim then
+            for _, tr in pairs(anim:GetPlayingAnimationTracks()) do
+                 if tr.Priority == Enum.AnimationPriority.Action then
+                     pcall(function() tr:Stop(0) end)
+                 end
+            end
+        end
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  DAYBREAK MULTI-METHOD EMOTE & SYNC ENGINE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local _emoteAnimationCache = {}
+
+local function ResolveEmoteAnimation(emoteName)
+    if not emoteName or emoteName == "" then return nil end
+    local query = emoteName:lower()
+
+    if _emoteAnimationCache[query] then
+        return _emoteAnimationCache[query]
+    end
+
+    if _G.DayBreakEmoteCatalog then
+        for _, e in ipairs(_G.DayBreakEmoteCatalog) do
+            local name = tostring(e.name or ""):lower()
+            if name == query or name:find(query, 1, true) then
+                _emoteAnimationCache[query] = tonumber(e.id)
+                return tonumber(e.id)
+            end
+        end
+    end
+    return nil
+end
+
+local function PlayDayBreakEmote(animId, emoteName)
+    local char = LocalPlayer.Character
+    if not char then return false end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return false end
+    local anim = hum:FindFirstChildOfClass("Animator")
+
+    StopCurrentEmoteTrack()
+
+    -- Method 1: PlayEmote directly through Humanoid
+    local m1Ok = pcall(function()
+        if emoteName and hum:FindFirstChild("PlayEmote") then
+            hum:PlayEmote(emoteName)
+            return true
+        end
+    end)
+    if m1Ok then return true end
+
+    -- Method 2: Load Animation directly on Animator with retry
+    if anim and animId then
+        local animObj = Instance.new("Animation")
+        animObj.AnimationId = "rbxassetid://" .. tostring(animId)
+        local ok, track = pcall(function() return anim:LoadAnimation(animObj) end)
+        if ok and track then
+            track.Priority = Enum.AnimationPriority.Action4
+            track.Looped = true
+            track:Play(0.15)
+            _G.CurrentEmoteTrack = track
+            return true
+        end
+    end
+
+    -- Method 3: Animate Script PlayEmote bindable
+    local animateScript = char:FindFirstChild("Animate")
+    if animateScript and animateScript:FindFirstChild("playEmote") then
+        local m3Ok = pcall(function()
+            animateScript.playEmote:Invoke(emoteName or tostring(animId))
+        end)
+        if m3Ok then return true end
+    end
+
+    return false
+end
+
+Commands.sync = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+
+    local query = table.concat(newArgs, " ", 2):lower()
+    if query == "" then return end
+
+    local animId = ResolveEmoteAnimation(query)
+    if not animId then
+        if SafeIndex() == 1 then ChatSend("Emote not found in catalog") end
+        return
+    end
+
+    local wasEmoting = _G.CurrentEmoteCommand ~= nil
+    ClearEmotesOnly()
+    if wasEmoting then
+        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if h then h.Jump = true end
+        task.wait(0.2)
+    end
+
+    _G.CurrentEmoteCommand = animId
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        -- Staggered bot execution prevents Roblox 429 CDN rate limits
+        task.wait((idx - 1) * 0.08)
+        if _G.CurrentEmoteCommand == animId and _G.DayBreakActive then
+            PlayDayBreakEmote(animId, query)
+        end
+    end)
+end
+
+Commands.emote = Commands.sync
+Commands.dance = function(args, speaker)
+    local sub = args[2] and tostring(args[2]):lower() or "1"
+    if sub == "1" or sub == "" then
+        Commands.sync({"!sync", "dance"}, speaker)
+    elseif sub == "2" then
+        Commands.sync({"!sync", "dance2"}, speaker)
+    elseif sub == "3" then
+        Commands.sync({"!sync", "dance3"}, speaker)
+    else
+        Commands.sync(args, speaker)
+    end
+end
+
+Commands.unemote = function(args, speaker)
+    StopCurrentEmoteTrack()
+    ClearEmotesOnly()
+    local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    if h then h.Jump = true end
+    if SafeIndex() == 1 then ChatSend("Emotes stopped") end
+end
+Commands.jump = function(args, speaker)
+    local shouldRun, _ = ParseBotTarget(args)
+    if not shouldRun then return end
+    ClearEmotesOnly()
+    local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    if h then h.Jump = true end
+end
+
+Commands.sit = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    if h then h.Sit = true end
+end
+
+Commands.wonder = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    StopAll(); _G.CurrentCommand = "Wonder"
+    task.spawn(function()
+        while _G.CurrentCommand == "Wonder" do
+            local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+            local r = c and c:FindFirstChild("HumanoidRootPart")
+            if h and r then
+                if h.Sit then h.Sit = false end
+                local rng = Random.new(tick() + SafeIndex())
+                h:MoveTo(r.Position + Vector3.new(rng:NextNumber(-30,30), 0, rng:NextNumber(-30,30)))
+                local done, t, cn = false, 0, nil
+                cn = h.MoveToFinished:Connect(function() done = true end)
+                repeat task.wait(0.1); t += 0.1 until done or _G.CurrentCommand ~= "Wonder" or t > 10
+                if cn then cn:Disconnect() end
+            end
+            task.wait(math.random(1, 2))
+        end
+    end)
+end
+
+Commands["goto"] = function(args, speaker)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if mR then
+        local idx, total = SafeIndex(), SafeTotal()
+        local a = (idx / total) * (math.pi * 2)
+        mR.CFrame = target.Character.HumanoidRootPart.CFrame
+            * CFrame.new(math.cos(a)*6, 0, math.sin(a)*6)
+            * CFrame.Angles(0, a + math.pi, 0)
+    end
+end
+
+-- FOLLOW: walk normally, face AWAY from target only when stopped
+Commands.follow = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Follow"
+    task.spawn(function()
+        while _G.CurrentCommand == "Follow" and target and target.Character do
+            local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+            local mR = c and c:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if h and mR and tR then
+                if h.Sit then h.Sit = false end
+                local idx, total = SafeIndex(), SafeTotal()
+                local a = (idx / total) * (math.pi * 2)
+                local goal = tR.Position + Vector3.new(math.cos(a)*5, 0, math.sin(a)*5)
+                if (mR.Position - goal).Magnitude > 50 then
+                    mR.CFrame = CFrame.new(goal, tR.Position)
+                else
+                    h:MoveTo(goal)
+                end
+                -- Only face away when close to goal (stopped walking)
+                if (mR.Position - goal).Magnitude < 3 then
+                    local away = mR.Position - tR.Position
+                    if away.Magnitude > 0.1 then
+                        local lookAt = mR.Position + Vector3.new(away.X, 0, away.Z).Unit * 10
+                        mR.CFrame = CFrame.new(mR.Position, lookAt)
+                    end
+                end
+            end
+            task.wait(0.15)
+        end
+    end)
+end
+
+Commands.bring = function(args, speaker)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if mR then
+        local idx, total = SafeIndex(), SafeTotal()
+        local cols = math.ceil(math.sqrt(total))
+        local row = math.floor((idx-1)/cols); local col = (idx-1) % cols
+        local xOff = (col - (cols-1)/2) * 4; local zOff = (row + 1) * 4
+        mR.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(xOff, 0, zOff)
+        mR.Velocity = Vector3.zero
+    end
+end
+
+Commands.rest = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    local c = LocalPlayer.Character; if c then c:BreakJoints() end
+end
+
+-- WALKTO: face TOWARD target when stopped
+Commands.walkto = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "WalkTo"
+    task.spawn(function()
+        while _G.CurrentCommand == "WalkTo" and target and target.Character do
+            local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+            local mR = c and c:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if h and mR and tR then
+                if h.Sit then h.Sit = false end
+                local idx, total = SafeIndex(), SafeTotal()
+                local cols = math.ceil(math.sqrt(total))
+                local row = math.floor((idx-1)/cols); local col = (idx-1) % cols
+                local xOff = (col - (cols-1)/2) * 5; local zOff = (row + 1) * 5
+                local goalPos = (tR.CFrame * CFrame.new(xOff, 0, zOff)).Position
+                h:MoveTo(goalPos)
+                -- Face toward target
+                task.wait(0.1)
+                pcall(function()
+                    local mR2 = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    local tR2 = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+                    if mR2 and tR2 then
+                        mR2.CFrame = CFrame.new(mR2.Position,
+                            Vector3.new(tR2.Position.X, mR2.Position.Y, tR2.Position.Z))
+                    end
+                end)
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+Commands.stackon = function(args, speaker)
+    StopAll()
+    local target = FindTarget(args[2], speaker); if not target then return end
+    local part = Instance.new("Part"); part.Name = "DayBreakStackPlatform"
+    part.Size = Vector3.new(4,1,4); part.Transparency = 1; part.Anchored = true
+    part.CanCollide = true; part.Parent = workspace; _G.StackPart = part
+    _G.CurrentCommand = "Stack"; local hOff = SafeIndex() * 5
+    task.spawn(function()
+        while _G.CurrentCommand == "Stack" do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if tR and mR then
+                local cf = tR.CFrame * CFrame.new(0, hOff, 0)
+                part.CFrame = cf; mR.CFrame = cf * CFrame.new(0, 1.5, 0)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+            else break end
+            RunService.Heartbeat:Wait()
+        end
+        if _G.StackPart then pcall(function() _G.StackPart:Destroy() end); _G.StackPart = nil end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  CLONE COMMANDS (loopclone is now PERSISTENT)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local RS_clone = ReplicatedStorage:FindFirstChild("GrabStatus")
+local cloneRemote = ReplicatedStorage:FindFirstChild("event_clone_avatar")
+local refreshRemote = ReplicatedStorage:FindFirstChild("event_modify_refresh")
+
+Commands.clone = function(args, speaker)
+    local t = FindTarget(args[2], speaker)
+    if t and RS_clone and cloneRemote then
+        pcall(function() RS_clone:InvokeServer(t.UserId); task.wait(0.1); cloneRemote:FireServer(t.UserId) end)
+    end
+end
+
+-- PERSISTENT: only !unloopclone stops it
+Commands.loopclone = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    _G.LoopCloneActive = true
+    task.spawn(function()
+        while _G.LoopCloneActive do
+            for _, v in ipairs(Players:GetPlayers()) do
+                if not _G.LoopCloneActive then break end
+                if v ~= LocalPlayer and LocalPlayer:IsFriendsWith(v.UserId) then
+                    if RS_clone and cloneRemote then
+                        pcall(function() RS_clone:InvokeServer(v.UserId); task.wait(0.1); cloneRemote:FireServer(v.UserId) end)
+                    end
+                    task.wait(1.5)
+                end
+            end
+            task.wait(2)
+        end
+    end)
+end
+
+Commands.unloopclone = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    _G.LoopCloneActive = false
+end
+
+Commands.ref = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    if refreshRemote then pcall(function() refreshRemote:FireServer() end) end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  WORM
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.worm = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker); if not target then return end
+    _G.CurrentCommand = "Worm"; local idx = SafeIndex()
+    task.spawn(function()
+        while _G.CurrentCommand == "Worm" do
+            local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+            if h and h.Sit then h.Sit = false end
+            local bots = GetOnlineBotNames(); local ft
+            if idx == 1 then ft = target
+            else
+                local pn = bots[idx - 1]
+                if pn then for _, p in ipairs(Players:GetPlayers()) do
+                    if p.Name:lower() == pn then ft = p; break end
+                end end
+            end
+            if h and ft and ft.Character then
+                local tR = ft.Character:FindFirstChild("HumanoidRootPart")
+                local mR = c and c:FindFirstChild("HumanoidRootPart")
+                if tR and mR then
+                    if (mR.Position - tR.Position).Magnitude > 4 then h:MoveTo(tR.Position)
+                    else h:MoveTo(mR.Position) end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  STALK
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.stalk = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Stalk"
+    task.spawn(function()
+        while _G.CurrentCommand == "Stalk" and target and target.Character do
+            local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+            local mR = c and c:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if h and mR and tR then
+                if h.Sit then h.Sit = false end
+                local idx = SafeIndex()
+                local col = (idx - 1) % 3; local row = math.floor((idx - 1) / 3)
+                local behindCF = tR.CFrame * CFrame.new((col-1)*4, 0, (row+1)*4)
+                local diff = mR.Position - tR.Position
+                if diff.Magnitude > 0.1 then
+                    local dot = diff.Unit:Dot(tR.CFrame.LookVector)
+                    if dot > 0.3 or tR.Velocity.Magnitude > 100 then
+                        mR.CFrame = behindCF; mR.Velocity = Vector3.zero
+                    else h:MoveTo(behindCF.Position) end
+                else mR.CFrame = behindCF end
+                mR.CFrame = CFrame.new(mR.Position, Vector3.new(tR.Position.X, mR.Position.Y, tR.Position.Z))
+            end
+            task.wait(0.05)
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  DANCE & EMOTE (solo-guarded)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+for _, n in ipairs({"dance1","dance2","dance3"}) do
+    Commands[n] = function(args, speaker)
+        if not IsSoloCommand(args) then return end
+        StopAll()
+        local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+        if h then
+            if h.Sit then h.Sit = false; task.wait(0.1) end
+            ChatSend("/e " .. (n == "dance1" and "dance" or n))
+        end
+    end
+end
+Commands.dance = Commands.dance1
+
+for i = 1, 8 do
+    Commands["emote" .. i] = function(args, speaker)
+        if not IsSoloCommand(args) then return end
+        StopAll()
+        local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+        local r = c and c:FindFirstChild("HumanoidRootPart")
+        if h and r then
+            h.Sit = false; h:MoveTo(r.Position); r.Velocity = Vector3.zero; r.RotVelocity = Vector3.zero
+            h.AutoRotate = false; r.Anchored = true; task.wait(0.2); r.Anchored = false
+            ChatSend("/e emote" .. i)
+            task.spawn(function() task.wait(0.5); if h and h.Parent then h.AutoRotate = true end end)
+        end
+    end
+end
+
+for _, e in ipairs({"laugh","point","cheer"}) do
+    Commands[e] = function(args, speaker)
+        if not IsSoloCommand(args) then return end
+        ChatSend("/e " .. e)
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  EMOTE SYSTEM (Dynamic Catalog)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+if not _G.DayBreakEmoteCatalog then
+    task.spawn(function()
+        pcall(function()
+            local HTTP = game:GetService("HttpService")
+            local raw = game:HttpGet("https://raw.githubusercontent.com/DayBreakBackend/DayBreakScripts/refs/heads/main/EmoteIDs.lua")
+            local result = HTTP:JSONDecode(raw)
+            if result and (result.data or type(result) == "table") then
+                _G.DayBreakEmoteCatalog = result.data or result
+            end
+        end)
+    end)
+end
+
+local function isDancing(character, animIdStr)
+    local animate = character:FindFirstChild("Animate")
+    if not animate then return true end
+    for _, holder in ipairs(animate:GetChildren()) do
+        if holder:IsA("StringValue") then
+            for _, anim in ipairs(holder:GetChildren()) do
+                if anim:IsA("Animation") then
+                    local hId = tostring(anim.AnimationId):gsub("http://www%.roblox%.com/asset/%?id=", ""):gsub("rbxassetid://", "")
+                    if hId == animIdStr then return false end
+                end
+            end
+        end
+    end
+    return true
+end
+
+Commands.emote = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    if not _G.DayBreakEmoteCatalog then return end
+    
+    local query = table.concat(newArgs, " ", 2):lower()
+    if query == "" then return end
+
+    local targetId
+    for _, e in ipairs(_G.DayBreakEmoteCatalog) do
+        local name = tostring(e.name or ""):lower()
+        if name:find(query, 1, true) then
+            targetId = tonumber(e.id)
+            if name == query then break end
+        end
+    end
+
+    if not targetId then return end
+
+    -- If already emoting, jump first then play the new emote (clean transition)
+    local wasEmoting = _G.CurrentEmoteCommand ~= nil
+    ClearEmotesOnly()
+    if wasEmoting then
+        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if h then h.Jump = true end
+        task.wait(0.3)
+    end
+
+    _G.CurrentEmoteCommand = targetId
+
+    local char = LocalPlayer.Character
+    if not char then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    local anim = hum:FindFirstChildOfClass("Animator")
+    if not anim then return end
+
+    -- Stop all currently playing action tracks cleanly
+    for _, tr in pairs(anim:GetPlayingAnimationTracks()) do
+         if tr.Priority == Enum.AnimationPriority.Action then
+             pcall(function() tr:Stop(0) end)
+         end
+    end
+
+    local function playAction()
+        if _G.CurrentEmoteCommand ~= targetId then return end
+        -- Stop previous tracked emote to prevent stacking
+        StopCurrentEmoteTrack()
+        local ok, track = pcall(function() return hum:PlayEmoteAndGetAnimTrackById(targetId) end)
+        if ok and track and typeof(track) == "Instance" and track:IsA("AnimationTrack") then
+            _G.CurrentEmoteTrack = track
+            track.Priority = Enum.AnimationPriority.Action
+            track:Play()
+            return
+        end
+        local obj = Instance.new("Animation")
+        obj.AnimationId = "rbxassetid://" .. tostring(targetId)
+        local ok2, tr = pcall(function() return anim:LoadAnimation(obj) end)
+        if ok2 and tr then
+            _G.CurrentEmoteTrack = tr
+            tr.Priority = Enum.AnimationPriority.Action
+            tr.Looped = true
+            tr:Play()
+        end
+    end
+
+    playAction()
+
+    if _G.EmoteFreezeConn then _G.EmoteFreezeConn:Disconnect() end
+    local sTarget = tostring(targetId)
+    _G.EmoteFreezeConn = anim.AnimationPlayed:Connect(function(atr)
+        if _G.CurrentEmoteCommand ~= targetId then 
+            if _G.EmoteFreezeConn then _G.EmoteFreezeConn:Disconnect(); _G.EmoteFreezeConn = nil end
+            return 
+        end
+        -- Debounce: prevent recursive feedback loop from playAction triggering AnimationPlayed
+        if _G.EmoteDebounce then return end
+        if isDancing(char, sTarget) then
+            _G.EmoteDebounce = true
+            task.wait(0.1)
+            if _G.CurrentEmoteCommand == targetId then
+                playAction()
+            end
+            _G.EmoteDebounce = false
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  NPC (wander 30-60s, no duplicate targets, unique lines)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.npc = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    StopAll(); _G.CurrentCommand = "NPC"
+
+    local phrases = {
+        -- Original Classics
+        "My trust issues have trust issues.",
+        "I don't fall in love. I trip into mild attachment.",
+        "I'm not a red flag. I'm a limited-edition warning label.",
+        "We don't need couples therapy. We need a user manual.",
+        "Love is temporary. Taxes are forever.",
+        "My bank account and I are in a toxic relationship.",
+        "Looking for something serious. Like, 'split rent' serious.",
+        "My love language is sending memes instead of addressing problems.",
+        "I'm not emotionally unavailable. I'm emotionally buffering.",
+        "Therapist says I need stability. So here I am.",
+        "I'm not toxic. I just come with extended lore.",
+        "I bring two things to the table: trust issues and snacks.",
+        "If you can't handle me at my worst, that's honestly fair.",
+        "I'm not lost. I'm on an unplanned adventure.",
+        "My vibe? Controlled chaos with a splash of overthinking.",
+
+        -- Unhinged & Sarcastic Life Humor
+        "I'm not arguing, I'm just explaining why I'm right.",
+        "My brain has too many tabs open and 4 of them are playing music.",
+        "I have a PhD in making bad decisions quickly.",
+        "I'm one minor inconvenience away from an existential crisis.",
+        "I don't hold grudges. I remember facts.",
+        "My sleep schedule is currently being held together by hope and caffeine.",
+        "I'm not lazy, I'm on energy-saving mode.",
+        "Common sense is like deodorant. The people who need it most never use it.",
+        "I entered a staring contest with my thoughts and lost.",
+        "I put the 'pro' in procrastinate.",
+
+        -- Existential Robot & NPC Humor
+        "Press E to interact... oh wait, you can't.",
+        "I used to be an adventurer like you, then I got scripted into an alt.",
+        "I am legally obligated to stand here and look mysterious.",
+        "Error 404: Emotion not found. Please try snacks.",
+        "I have no thoughts, just vibes and a high ping.",
+        "I'm only speaking because the main account pressed Enter.",
+        "My entire existence is running on 10 FPS.",
+        "Do you have a side quest for me or can I go back to buffering?",
+        "I'm not a bot, I'm just socially awkward with fast Wi-Fi.",
+        "If I freeze, it's not a feature, it's a personality trait.",
+
+        -- Roblox & Gamer Brainrot Humor
+        "Chat is this real?",
+        "My ping is higher than my credit score.",
+        "I didn't lose, I just participated in an educational defeat.",
+        "Bro thought he was the main character.",
+        "I'm not lagging, the server is just processing my greatness.",
+        "Warning: Approaching this bot may cause emotional damage.",
+        "Skill issue detected within a 10-stud radius.",
+        "I speak two languages: English and Bad Decisions.",
+        "Who let this NPC cook?!",
+        "Standing here waiting for my plot armor to kick in.",
+        "Negative aura detected within a 15-stud radius.",
+        "I didn't choose the alt life, the alt script chose me.",
+        "Bro is genuinely flabbergasted.",
+
+        -- Dating & Social Chaos
+        "I'm a catch. Like a stray ball heading straight for a car window.",
+        "I give fantastic advice. I just don't follow a single word of it.",
+        "My standards are high, but my impulse control is non-existent.",
+        "I'm 90% water and 10% unresolved drama.",
+        "I'm not ghosting, I'm just living in offline mode.",
+        "My red flags are festive. Like Christmas decorations.",
+        "Looking for someone to blame my life decisions on.",
+        "I don't need a relationship, I need 8 hours of uninterrupted sleep.",
+
+        -- Cryptic & Menacing NPC Lore
+        "The ancient prophecies spoke of this moment... it's much more disappointing than expected.",
+        "Do you hear the whispers, or is that just my Discord notification?",
+        "I know what you did last summer... you stayed inside and scrolled TikTok.",
+        "Beware the void. It charges hourly parking fees.",
+        "I've seen the future. It's mostly just loading screens.",
+        "You can't spell 'disaster' without 'me' in the middle of it.",
+        "I'm not following you, I'm just aggressively existing in the same direction.",
+
+        -- Daily Life & Relatable Struggles
+        "I survived another day that definitely should have been an email.",
+        "My bank account says no, but my dopamine receptors say buy it.",
+        "I'm great at multitasking: I can procrastinate and be stressed simultaneously.",
+        "I have a 5-year plan to figure out what I'm doing in the next 5 minutes.",
+        "My therapist told me to touch grass so I bought a plastic plant.",
+    }
+
+    -- Global shared claim table & shared line index (no repeats until all used)
+    _G.NPCClaimed = _G.NPCClaimed or {}
+    if not _G.NPCLineIndex then _G.NPCLineIndex = 0 end
+
+    local myIdx = SafeIndex()
+
+    -- Get next unique line (atomic increment via shared _G)
+    local function GetNextLine()
+        _G.NPCLineIndex = (_G.NPCLineIndex % #phrases) + 1
+        return phrases[_G.NPCLineIndex]
+    end
+
+    task.spawn(function()
+        while _G.CurrentCommand == "NPC" do
+            local myC = LocalPlayer.Character; local myH = myC and myC:FindFirstChild("Humanoid")
+            local myR = myC and myC:FindFirstChild("HumanoidRootPart")
+
+            if myH and myR then
+                if myH.Sit then myH.Sit = false end
+
+                -- WANDER phase: 30-60 seconds
+                local wanderEnd = tick() + math.random(30, 60)
+                while _G.CurrentCommand == "NPC" and tick() < wanderEnd do
+                    local rng = Random.new(tick() + myIdx)
+                    myH:MoveTo(myR.Position + Vector3.new(rng:NextNumber(-30,30), 0, rng:NextNumber(-30,30)))
+                    local done, t, cn = false, 0, nil
+                    cn = myH.MoveToFinished:Connect(function() done = true end)
+                    repeat task.wait(0.1); t += 0.1 until done or _G.CurrentCommand ~= "NPC" or t > 10
+                    if cn then cn:Disconnect() end
+                    task.wait(math.random(2, 5))
+                end
+
+                if _G.CurrentCommand ~= "NPC" then break end
+
+                -- INTERACTION phase: find a random nearby player (not claimed)
+                local candidates = {}
+                for _, p in ipairs(Players:GetPlayers()) do
+                    if p ~= LocalPlayer
+                    and p.Name:lower() ~= getgenv().Settings.mainAccount:lower()
+                    and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                        local isBot = false
+                        for a in pairs(getgenv().Settings.altAccounts) do
+                            if a:lower() == p.Name:lower() then isBot = true; break end
+                        end
+                        if not isBot and not _G.NPCClaimed[p.UserId] then
+                            local d = (myR.Position - p.Character.HumanoidRootPart.Position).Magnitude
+                            if d < 60 then table.insert(candidates, p) end
+                        end
+                    end
+                end
+
+                if #candidates > 0 then
+                    local chosen = candidates[math.random(#candidates)]
+                    _G.NPCClaimed[chosen.UserId] = myIdx
+
+                    local tR = chosen.Character and chosen.Character:FindFirstChild("HumanoidRootPart")
+                    if tR then
+                        local frontPos = (tR.CFrame * CFrame.new(0, 0, -4)).Position
+                        myH:MoveTo(frontPos)
+                        local arrived, t, cn = false, 0, nil
+                        cn = myH.MoveToFinished:Connect(function() arrived = true end)
+                        repeat task.wait(0.1); t += 0.1 until arrived or t > 8 or _G.CurrentCommand ~= "NPC"
+                        if cn then cn:Disconnect() end
+
+                        if _G.CurrentCommand == "NPC" and tR.Parent then
+                            myR.CFrame = CFrame.new(myR.Position,
+                                Vector3.new(tR.Position.X, myR.Position.Y, tR.Position.Z))
+                            task.wait(0.5)
+                            ChatSend(GetNextLine())
+                            task.wait(3)
+
+                            -- Walk AWAY from the player
+                            local away = myR.Position - tR.Position
+                            if away.Magnitude > 0.1 then
+                                myH:MoveTo(myR.Position + away.Unit * 20)
+                            else
+                                myH:MoveTo(myR.Position + Vector3.new(20, 0, 0))
+                            end
+                            local d2, t2, cn2 = false, 0, nil
+                            cn2 = myH.MoveToFinished:Connect(function() d2 = true end)
+                            repeat task.wait(0.1); t2 += 0.1 until d2 or t2 > 6 or _G.CurrentCommand ~= "NPC"
+                            if cn2 then cn2:Disconnect() end
+                        end
+                    end
+
+                    _G.NPCClaimed[chosen.UserId] = nil
+                end
+            else task.wait(1) end
+        end
+        _G.NPCClaimed = {}
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  FIREWORK (solo-guarded)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.firework = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    StopAll()
+    local c = LocalPlayer.Character; local r = c and c:FindFirstChild("HumanoidRootPart")
+    local h = c and c:FindFirstChild("Humanoid"); if not (r and h) then return end
+    if h.Sit then h.Sit = false end
+    task.spawn(function()
+        local bv = Instance.new("BodyVelocity"); bv.MaxForce = Vector3.new(1e6,1e6,1e6)
+        bv.Velocity = Vector3.new(0,75,0); bv.Parent = r
+        local ba = Instance.new("BodyAngularVelocity"); ba.MaxTorque = Vector3.new(1e6,1e6,1e6)
+        ba.AngularVelocity = Vector3.new(0,60,0); ba.Parent = r
+        task.wait(2.5); bv:Destroy(); ba:Destroy()
+        r.Velocity = Vector3.new(Random.new():NextNumber(-50,50), Random.new():NextNumber(80,120), Random.new():NextNumber(-50,50))
+        c:BreakJoints()
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  NUKE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.nuke = function(args, speaker)
+    StopAll()
+    local target = FindTarget(args[2], speaker)
+    local c = LocalPlayer.Character; local r = c and c:FindFirstChild("HumanoidRootPart")
+    local h = c and c:FindFirstChild("Humanoid")
+    if not (target and target.Character and r and h) then return end
+    local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
+    r.CFrame = tR.CFrame * CFrame.new(0, 15 + SafeIndex()*2, 0)
+    if h.Sit then h.Sit = false end; h:MoveTo(r.Position)
+    task.spawn(function()
+        local ba = Instance.new("BodyAngularVelocity"); ba.MaxTorque = Vector3.new(1e6,1e6,1e6)
+        ba.AngularVelocity = Vector3.new(0,150,0); ba.Parent = r; task.wait(0.6); ba:Destroy()
+        r.Velocity = Vector3.new(Random.new():NextNumber(-60,60), Random.new():NextNumber(-30,-10), Random.new():NextNumber(-60,60))
+        c:BreakJoints()
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SWARM
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.swarm = function(args, speaker)
+    local speed, range, target = ParseSpeedRangeTarget(args, speaker, 40, 18)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "Swarm"
+    _G.NoclipEnabled = true; _G.NoclipOriginals = {}
+    local char = LocalPlayer.Character
+    if char then for _, p in ipairs(char:GetDescendants()) do
+        if p:IsA("BasePart") then _G.NoclipOriginals[p] = p.CanCollide end
+    end end
+    _G.NoclipConn = RunService.Stepped:Connect(function()
+        if _G.CurrentCommand ~= "Swarm" then
+            _G.NoclipEnabled = false
+            if _G.NoclipConn then pcall(function() _G.NoclipConn:Disconnect() end); _G.NoclipConn = nil end
+            for p, o in pairs(_G.NoclipOriginals or {}) do if p and p.Parent then pcall(function() p.CanCollide = o end) end end
+            _G.NoclipOriginals = {}; return
+        end
+        local c = LocalPlayer.Character
+        if c then for _, p in ipairs(c:GetDescendants()) do
+            if p:IsA("BasePart") then
+                if _G.NoclipOriginals[p] == nil then _G.NoclipOriginals[p] = p.CanCollide end
+                p.CanCollide = false
+            end
+        end end
+    end)
+    getgenv().TrackConnection(_G.NoclipConn)
+    task.spawn(function()
+        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local goal, gt, st = Vector3.zero, 0, 0
+        while _G.CurrentCommand == "Swarm" and target and target.Character do
+            local tR = target.Character:FindFirstChild("HumanoidRootPart")
+            if h and mR and tR then
+                if h.Sit then h.Sit = false end
+                if tick() - st > math.random(1,3) then h.WalkSpeed = math.random(speed-15, speed+15); st = tick() end
+                if (mR.Position - goal).Magnitude < 5 or tick() - gt > 1.2 then
+                    local rng = Random.new()
+                    goal = tR.Position + Vector3.new(rng:NextNumber(-range,range), 0, rng:NextNumber(-range,range))
+                    gt = tick()
+                end
+                h:MoveTo(goal)
+            end
+            task.wait(0.03)
+        end
+        if h then h.WalkSpeed = _G.SpeedLock or 16 end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  MATHEMATICAL CURVE ENGINE â€” time-based, deterministic
+--  phase = (t / PERIOD + botOffset) * 2Ï€ â†’ smooth, no drift
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local PI2 = math.pi * 2
+local PI  = math.pi
+local sin, cos, abs, sqrt, rad = math.sin, math.cos, math.abs, math.sqrt, math.rad
+
+local function RunOrbitCurve(args, speaker, curveFn, tag)
+    local speed, range, target = ParseSpeedRangeTarget(args, speaker, 4, 10)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = tag or "Orbit"
+    task.spawn(function()
+        local idx, total = SafeIndex(), SafeTotal()
+        local startT = tick()
+        while _G.CurrentCommand == (tag or "Orbit") and target and target.Character do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if mR and tR then
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.Sit then h.Sit = false end
+                local t = (tick() - startT) * (speed / 4)
+                local pos = curveFn(t, idx, total, range)
+                mR.CFrame = CFrame.new(tR.Position + pos, tR.Position)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  ORBIT CURVES (orbit = basic, orbit1-20 = patterns)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local OrbitCurves = {}
+
+-- orbit: Clean flat circle
+OrbitCurves[0] = function(t, i, count, R)
+    R = math.max(R, count * 3)
+    local P = 15
+    local phase = (t / P + (i-1)/count) * PI2
+    return Vector3.new(sin(phase)*R, 0, cos(phase)*R)
+end
+
+-- orbit1: Flat circle (same as orbit, classic)
+OrbitCurves[1] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local breathe = R + sin(t * 0.5) * 1.5
+    return Vector3.new(sin(phase)*breathe, 0, cos(phase)*breathe)
+end
+
+-- orbit2: Double helix â€” two interleaved strands
+OrbitCurves[2] = function(t, i, count, R)
+    local P = 14
+    local strand = (i % 2 == 0) and 0 or 1
+    local phase = (t / P + (i-1)/count) * PI2 + strand * PI
+    return Vector3.new(sin(phase)*R, sin(phase*0.5)*(R*0.7), cos(phase)*R)
+end
+
+-- orbit3: Atomic â€” bots on tilted orbital planes
+OrbitCurves[3] = function(t, i, count, R)
+    local P = 16
+    local plane = i % 3
+    local gi = math.floor((i-1)/3); local gt = math.max(math.ceil(count/3), 1)
+    local phase = (t / P + gi/gt) * PI2
+    if plane == 0 then return Vector3.new(cos(phase)*R, sin(phase)*R, 0)
+    elseif plane == 1 then return Vector3.new(cos(phase)*R, 0, sin(phase)*R)
+    else return Vector3.new(0, cos(phase)*R, sin(phase)*R) end
+end
+
+-- orbit4: Galaxy spiral arms â€” expanding outward
+OrbitCurves[4] = function(t, i, count, R)
+    local arms = math.min(3, math.ceil(count/3))
+    local arm = (i-1) % arms
+    local posInArm = math.floor((i-1)/arms)
+    local armAngle = (arm/arms) * PI2
+    local dist = 3 + posInArm * 2.5
+    local phase = armAngle + posInArm * 0.5 + t * 0.5
+    return Vector3.new(cos(phase)*dist, sin(t + i) * 1.5, sin(phase)*dist)
+end
+
+-- orbit5: Vertical vortex â€” cone helix
+OrbitCurves[5] = function(t, i, count, R)
+    local P = 14
+    local frac = (i-1)/count
+    local height = frac * 20
+    local coneR = 3 + frac * R
+    local phase = (t / P + frac) * PI2
+    return Vector3.new(cos(phase)*coneR, height - 10, sin(phase)*coneR)
+end
+
+-- orbit6: Figure-eight (lemniscate)
+OrbitCurves[6] = function(t, i, count, R)
+    local P = 18
+    local phase = (t / P + (i-1)/count) * PI2
+    local denom = 1 + sin(phase) * sin(phase)
+    return Vector3.new(R*cos(phase)/denom, sin(phase*2)*3, R*sin(phase)*cos(phase)/denom)
+end
+
+-- orbit7: Pulsating â€” radius breathes in and out
+OrbitCurves[7] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local breathe = R + sin(t * 2) * (R * 0.5)
+    return Vector3.new(cos(phase)*breathe, sin(t*3 + i)*2, sin(phase)*breathe)
+end
+
+-- orbit8: Layered rings â€” tilted ring planes
+OrbitCurves[8] = function(t, i, count, R)
+    local P = 14
+    local rings = math.min(3, math.ceil(count/3))
+    local ring = (i-1) % rings
+    local pir = math.floor((i-1)/rings); local bir = math.max(math.ceil(count/rings), 1)
+    local phase = (t / P + pir/bir) * PI2
+    local tilt = (ring/rings) * PI * 0.6
+    local lx, ly = cos(phase)*R, sin(phase)*R
+    return Vector3.new(lx, ly*cos(tilt), ly*sin(tilt))
+end
+
+-- orbit9: Rose curve (floral petals)
+OrbitCurves[9] = function(t, i, count, R)
+    local P = 20
+    local phase = (t / P + (i-1)/count) * PI2
+    local rr = R * abs(cos(3 * phase))
+    return Vector3.new(cos(phase)*rr, sin(phase*2)*3, sin(phase)*rr)
+end
+
+-- orbit10: Chaotic multi-frequency
+OrbitCurves[10] = function(t, i, count, R)
+    local seed = i * 1.1
+    return Vector3.new(
+        sin(t*1.3+seed)*R*cos(t*0.7+seed*2),
+        cos(t*0.9+seed*1.5)*(R*0.6)*sin(t*1.1+seed),
+        sin(t*1.1+seed*0.8)*R*cos(t*1.3+seed*1.7))
+end
+
+-- orbit11: Saturn rings â€” flat ring with Y wobble
+OrbitCurves[11] = function(t, i, count, R)
+    local P = 16
+    local phase = (t / P + (i-1)/count) * PI2
+    local wobble = sin(phase * 3) * 1.5
+    local breathe = R + sin(t) * 0.8
+    return Vector3.new(sin(phase)*breathe, wobble, cos(phase)*breathe)
+end
+
+-- orbit12: Infinity loop (3D figure-eight, tilted)
+OrbitCurves[12] = function(t, i, count, R)
+    local P = 20
+    local phase = (t / P + (i-1)/count) * PI2
+    return Vector3.new(sin(phase)*R, sin(phase*2)*(R*0.35), cos(phase)*R*cos(phase*0.5))
+end
+
+-- orbit13: Electron cloud â€” spherical scatter orbit
+OrbitCurves[13] = function(t, i, count, R)
+    local P = 18
+    local golden = i * PI * (3 - sqrt(5))
+    local phase = t / P + golden
+    local theta = math.acos(1 - 2*((i-0.5)/count))
+    return Vector3.new(sin(theta)*cos(phase)*R, cos(theta)*R, sin(theta)*sin(phase)*R)
+end
+
+-- orbit14: Ferris wheel â€” vertical circle
+OrbitCurves[14] = function(t, i, count, R)
+    local P = 15
+    local phase = (t / P + (i-1)/count) * PI2
+    return Vector3.new(0, sin(phase)*R, cos(phase)*R)
+end
+
+-- orbit15: Cascading waterfall â€” staggered heights
+OrbitCurves[15] = function(t, i, count, R)
+    local P = 14
+    local phase = (t / P + (i-1)/count) * PI2
+    local yOff = ((i-1)/count) * 12 - 6
+    local breathe = R + sin(t*2 + (i-1)/count * PI2) * 3
+    return Vector3.new(sin(phase)*breathe, yOff + sin(phase*3)*1.5, cos(phase)*breathe)
+end
+
+-- orbit16: Tornado funnel â€” radius shrinks upward
+OrbitCurves[16] = function(t, i, count, R)
+    local P = 12
+    local frac = (i-1)/count
+    local y = frac * 25 - 12
+    local funnelR = R * (1 - frac * 0.7)
+    local phase = (t / P + frac * 2) * PI2
+    return Vector3.new(sin(phase)*funnelR, y, cos(phase)*funnelR)
+end
+
+-- orbit17: Heart pulse â€” radius pulses per bot
+OrbitCurves[17] = function(t, i, count, R)
+    local P = 15
+    local phase = (t / P + (i-1)/count) * PI2
+    local beat = 1 + abs(sin(t*3 + i*0.7)) * 0.4
+    return Vector3.new(sin(phase)*R*beat, sin(t*2+i)*2, cos(phase)*R*beat)
+end
+
+-- orbit18: Comet trails â€” elliptical orbits
+OrbitCurves[18] = function(t, i, count, R)
+    local P = 18
+    local phase = (t / P + (i-1)/count) * PI2
+    local a, b = R * 1.5, R * 0.6
+    return Vector3.new(sin(phase)*a, sin(phase*2)*2, cos(phase)*b)
+end
+
+-- orbit19: Mobius twist â€” rotating orbital plane
+OrbitCurves[19] = function(t, i, count, R)
+    local P = 20
+    local phase = (t / P + (i-1)/count) * PI2
+    local twist = phase * 0.5
+    local x = cos(phase) * R
+    local flat = sin(phase) * R
+    return Vector3.new(x, flat * sin(twist), flat * cos(twist))
+end
+
+-- orbit20: Jellyfish â€” dome with trailing tentacles
+OrbitCurves[20] = function(t, i, count, R)
+    local P = 16
+    local phase = (t / P + (i-1)/count) * PI2
+    local dome = cos(phase * 0.5)
+    local tentR = R * (0.3 + abs(dome) * 0.7)
+    local y = dome * (R * 0.5) + sin(t*2 + i) * 1.5
+    return Vector3.new(sin(phase)*tentR, y, cos(phase)*tentR)
+end
+
+-- Register all orbit commands
+Commands.orbit = function(a, s) RunOrbitCurve(a, s, OrbitCurves[0]) end
+for i = 1, 20 do Commands["orbit" .. i] = function(a, s) RunOrbitCurve(a, s, OrbitCurves[i]) end end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SPIRAL CURVES (spiral1-20 = patterns)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local SpiralCurves = {}
+
+-- spiral1: Upward helix â€” smooth ascending circle
+SpiralCurves[1] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local dynR = R + sin(t * 0.5) * 5
+    local y = sin(t + (i-1)/count * PI2) * 6
+    return Vector3.new(cos(phase)*dynR, y, sin(phase)*dynR)
+end
+
+-- spiral2: Cone vortex â€” expanding upward
+SpiralCurves[2] = function(t, i, count, R)
+    local P = 14
+    local frac = (i-1)/count
+    local phase = (t / P + frac) * PI2
+    local hd = frac * 16; local ht = sin(t + hd) * 4 + hd
+    local cr = (ht / 16) * R
+    return Vector3.new(cos(phase)*cr, ht, sin(phase)*cr)
+end
+
+-- spiral3: DNA ladder â€” two interleaved strands
+SpiralCurves[3] = function(t, i, count, R)
+    local P = 14
+    local strand = (i % 2 == 0) and 0 or 1
+    local pI = math.floor((i-1)/2)
+    local height = (pI / math.max(math.ceil(count/2), 1)) * 16
+    local phase = (t / P + (i-1)/count) * PI2 + strand * PI
+    return Vector3.new(cos(phase)*R, height + sin(t*0.5)*2 - 8, sin(phase)*R)
+end
+
+-- spiral4: Dispersal jet â€” eruption pattern
+SpiralCurves[4] = function(t, i, count, R)
+    local P = 16
+    local frac = (i-1)/count
+    local cycle = (t/P*0.3 + frac * PI2) % PI2; local ph = cycle / PI2
+    local y, cr
+    if ph < 0.6 then y = (ph/0.6)*15; cr = R*0.4
+    else local ap = (ph-0.6)/0.4; y = 15*(1-ap*ap); cr = R*0.4 + R*ap end
+    local phase = (t / P + frac) * PI2
+    return Vector3.new(cos(phase)*cr, y - 5, sin(phase)*cr)
+end
+
+-- spiral5: Tornado funnel â€” tightening upward
+SpiralCurves[5] = function(t, i, count, R)
+    local P = 14
+    local frac = (i-1)/count
+    local height = ((t/P*0.5 + frac*20) % 20)
+    local nH = height / 20
+    local tR = R * (0.3 + nH * 0.7)
+    local phase = (t / P + frac) * PI2 + nH * PI * 4
+    return Vector3.new(cos(phase)*tR, height - 10, sin(phase)*tR)
+end
+
+-- spiral6: Golden ratio â€” Fermat's spiral
+SpiralCurves[6] = function(t, i, count, R)
+    local ga = i * PI * (3 - sqrt(5))
+    local dist = sqrt(i) * 3
+    local phase = ga + t * 0.5
+    return Vector3.new(cos(phase)*dist, sin(t + i*0.5)*2, sin(phase)*dist)
+end
+
+-- spiral7: Bouncing spring â€” compression/expansion
+SpiralCurves[7] = function(t, i, count, R)
+    local P = 10
+    local comp = sin(t * 1.5) * 0.5 + 0.5
+    local spacing = 2 + comp * 4
+    local y = (i - (count+1)/2) * spacing
+    local phase = (t / P + (i-1)/count) * PI2
+    return Vector3.new(cos(phase)*(R*(0.5+comp*0.5)), y, sin(phase)*(R*(0.5+comp*0.5)))
+end
+
+-- spiral8: Inward pool â€” shrinking spiral
+SpiralCurves[8] = function(t, i, count, R)
+    local P = 16
+    local frac = (i-1)/count
+    local cycle = (t/P*0.4 + frac * PI2) % PI2; local ph = cycle / PI2
+    local wR = R * (1 - ph * 0.8)
+    local phase = (t / P + frac) * PI2 + ph * PI * 4
+    return Vector3.new(cos(phase)*wR, -ph*8 + 4, sin(phase)*wR)
+end
+
+-- spiral9: Wavy ascent â€” radius waves
+SpiralCurves[9] = function(t, i, count, R)
+    local P = 14
+    local phase = (t / P + (i-1)/count) * PI2
+    local wR = R + sin(phase*3 + t) * (R*0.4)
+    return Vector3.new(cos(phase)*wR, sin(t + (i-1)/count * PI2)*6, sin(phase)*wR)
+end
+
+-- spiral10: Layered cascade â€” stacked rotating rings
+SpiralCurves[10] = function(t, i, count, R)
+    local layers = math.min(4, math.ceil(count/2))
+    local layer = (i-1) % layers
+    local pil = math.floor((i-1)/layers)
+    local bpl = math.max(math.ceil(count/layers), 1)
+    local phase = ((pil/bpl) * PI2) + t * (1 + layer*0.3)
+    local y = (layer - (layers-1)/2) * 5
+    return Vector3.new(cos(phase)*R, y, sin(phase)*R)
+end
+
+-- spiral11: Helix staircase â€” stepped ascent
+SpiralCurves[11] = function(t, i, count, R)
+    local P = 18
+    local phase = (t / P + (i-1)/count) * PI2
+    local step = math.floor(phase / (PI/4)) * 2
+    local y = step + sin(phase * 2) * 0.5
+    return Vector3.new(sin(phase)*R, y - 8, cos(phase)*R)
+end
+
+-- spiral12: Whirlpool â€” accelerating inward spiral
+SpiralCurves[12] = function(t, i, count, R)
+    local P = 20
+    local frac = (i-1)/count
+    local phase = (t / P + frac) * PI2
+    local accel = 1 + frac * 2
+    local wR = R * (1 - frac * 0.6)
+    return Vector3.new(sin(phase*accel)*wR, frac*15 - 7, cos(phase*accel)*wR)
+end
+
+-- spiral13: Aurora wave â€” flowing sine curtain
+SpiralCurves[13] = function(t, i, count, R)
+    local spread = ((i-1)/count) * PI2
+    local x = sin(spread) * R
+    local z = cos(spread) * R
+    local wave = sin(t + spread * 2) * 5 + sin(t*1.7 + spread) * 3
+    return Vector3.new(x, wave, z)
+end
+
+-- spiral14: Firework burst â€” expanding outward
+SpiralCurves[14] = function(t, i, count, R)
+    local golden = i * PI * (3 - sqrt(5))
+    local theta = math.acos(1 - 2*((i-0.5)/count))
+    local pulse = (sin(t*2) + 1) * 0.5
+    local dist = R * (0.3 + pulse * 0.7)
+    return Vector3.new(sin(theta)*cos(golden+t*0.3)*dist, cos(theta)*dist, sin(theta)*sin(golden+t*0.3)*dist)
+end
+
+-- spiral15: Pendulum â€” swinging column
+SpiralCurves[15] = function(t, i, count, R)
+    local y = ((i-1)/count) * 20 - 10
+    local swing = sin(t + y * 0.2) * R * 0.8
+    local depth = cos(t * 0.7 + y * 0.15) * R * 0.4
+    return Vector3.new(swing, y, depth)
+end
+
+-- spiral16: Galaxy arm â€” logarithmic spiral
+SpiralCurves[16] = function(t, i, count, R)
+    local frac = (i-1)/count
+    local angle = frac * PI * 6 + t * 0.4
+    local dist = 2 + frac * R
+    local y = sin(t + frac * PI2) * 2
+    return Vector3.new(cos(angle)*dist, y, sin(angle)*dist)
+end
+
+-- spiral17: Slinky â€” bouncing helix
+SpiralCurves[17] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local bounce = abs(sin(t * 1.5)) * 8
+    local y = ((i-1)/count) * bounce - bounce/2
+    return Vector3.new(sin(phase)*R, y, cos(phase)*R)
+end
+
+-- spiral18: Crown â€” tiara pattern
+SpiralCurves[18] = function(t, i, count, R)
+    local P = 16
+    local phase = (t / P + (i-1)/count) * PI2
+    local spikes = 5
+    local y = abs(sin(phase * spikes)) * 6
+    return Vector3.new(sin(phase)*R, y, cos(phase)*R)
+end
+
+-- spiral19: Cyclone eye â€” double vortex
+SpiralCurves[19] = function(t, i, count, R)
+    local P = 14
+    local half = math.ceil(count/2)
+    local isTop = i <= half
+    local li = isTop and i or (i - half)
+    local lc = isTop and half or (count - half)
+    local frac = (li-1)/math.max(lc, 1)
+    local phase = (t / P + frac) * PI2
+    local dir = isTop and 1 or -1
+    local y = frac * 12 * dir
+    local wR = R * (1 - frac * 0.5)
+    return Vector3.new(sin(phase)*wR, y, cos(phase)*wR)
+end
+
+-- spiral20: Fountain â€” rising and falling arcs
+SpiralCurves[20] = function(t, i, count, R)
+    local P = 18
+    local phase = (t / P + (i-1)/count) * PI2
+    local arc = sin(phase * 0.5)
+    local y = abs(arc) * 15
+    local spread = R * (1 - abs(arc) * 0.5)
+    return Vector3.new(sin(phase)*spread, y - 3, cos(phase)*spread)
+end
+
+-- Register all spiral commands
+Commands.spiral = function(a, s) RunOrbitCurve(a, s, SpiralCurves[1], "Spiral") end
+for i = 1, 20 do Commands["spiral"..i] = function(a, s) RunOrbitCurve(a, s, SpiralCurves[i], "Spiral") end end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  HELICOPTER â€” rigid circle around Head, all bots in sync
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.helicopter = function(args, speaker)
+    local speed, target = ParseSpeedTarget(args, speaker, 18)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "Helicopter"
+    task.spawn(function()
+        local idx, total = SafeIndex(), SafeTotal()
+        -- Fixed angular offset for THIS bot
+        local myOffset = ((idx - 1) / total) * (math.pi * 2)
+        -- Bigger circle: keep distance between head and bot feet
+        -- footToHRP = ~3 studs from feet to HRP center + gap of ~3 studs from head
+        local footToHRP = 6
+        while _G.CurrentCommand == "Helicopter" and target and target.Character do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tHead = target.Character and target.Character:FindFirstChild("Head")
+            if mR and tHead then
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.Sit then h.Sit = false end
+                -- All bots share the same tick() for perfect sync
+                local rotation = tick() * speed
+                local angle = myOffset + rotation
+                -- Position HRP in circle at head height, offset by footToHRP
+                local headPos = tHead.Position
+                local orbitalPos = headPos + Vector3.new(math.cos(angle) * footToHRP, 0, math.sin(angle) * footToHRP)
+                -- Lie flat: face head, then pitch 90Â° so feet point at head
+                mR.CFrame = CFrame.new(orbitalPos, headPos) * CFrame.Angles(math.rad(90), 0, 0)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+Commands.heli = Commands.helicopter
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  QUIT / EXIT / LEAVE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.quit = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    StopAll(); ChatSend("Quitting - Bye " .. tostring(getgenv().Settings.mainAccount))
+    task.delay(3, function() LocalPlayer:Kick("DayBreak: Quit") end)
+end
+Commands.exit = Commands.quit; Commands.leave = Commands.quit
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SHIELD 1-5
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local function DoShield(args, speaker, sn)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Shield"
+    task.spawn(function()
+        local idx, total = SafeIndex(), SafeTotal()
+        while _G.CurrentCommand == "Shield" and target and target.Character do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if mR and tR then
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.Sit then h.Sit = false end
+                local off = CFrame.new(0,0,0)
+                if sn==1 then local tw=(total-1)*4; off=CFrame.new(((idx-1)*4)-(tw/2),0,-6)
+                elseif sn==2 then local a=((idx-1)/math.max(total-1,1))*math.pi-(math.pi/2); off=CFrame.new(math.sin(a)*8,0,-math.cos(a)*8)
+                elseif sn==3 then local s=(idx%2==0) and 1 or -1; local d=math.floor(idx/2)*3; off=CFrame.new(s*(d*0.8),0,-d-3)
+                elseif sn==4 then local bpr=math.ceil(total/2); local cr=math.floor((idx-1)/bpr); local pr=(idx-1)%bpr; off=CFrame.new((pr*4)-((bpr-1)*4/2),cr*6,-7)
+                elseif sn==5 then local sc=math.ceil(total/4); local si=math.floor((idx-1)/sc); local ps=(idx-1)%sc; local o=(ps-(sc-1)/2)*4; local d=8
+                    if si==0 then off=CFrame.new(o,0,-d) elseif si==1 then off=CFrame.new(o,0,d) elseif si==2 then off=CFrame.new(-d,0,o) else off=CFrame.new(d,0,o) end
+                end
+                mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+Commands.shield = function(a,s) DoShield(a,s,1) end
+for i = 1, 5 do Commands["shield"..i] = function(a,s) DoShield(a,s,i) end end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  PING / RAM / CPU
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.ping = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    task.spawn(function()
+        task.wait(SafeIndex() * 0.3)
+        ChatSend("[" .. LocalPlayer.Name .. "] Ping: " .. math.round(LocalPlayer:GetNetworkPing()*1000) .. "ms")
+    end)
+end
+Commands.latency = Commands.ping; Commands.net = Commands.ping
+
+local _lowRamEnabled = false
+local _originalMaterials = {}
+
+local function ApplyRenderMode(enable3D)
+    _lowRamEnabled = not enable3D
+    pcall(function()
+        local lighting = game:GetService("Lighting")
+        lighting.GlobalShadows = enable3D
+        if not enable3D then
+            lighting.FogEnd = 9e9
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        end
+
+        for _, item in ipairs(workspace:GetDescendants()) do
+            if item:IsA("BasePart") then
+                if not enable3D then
+                    if not _originalMaterials[item] then
+                        _originalMaterials[item] = {item.Material, item.CastShadow}
+                    end
+                    item.Material = Enum.Material.SmoothPlastic
+                    item.CastShadow = false
+                elseif _originalMaterials[item] then
+                    item.Material = _originalMaterials[item][1]
+                    item.CastShadow = _originalMaterials[item][2]
+                end
+            elseif item:IsA("Decal") or item:IsA("Texture") then
+                item.Transparency = enable3D and 0 or 1
+            elseif item:IsA("ParticleEmitter") or item:IsA("Trail") or item:IsA("Beam") or item:IsA("Fire") or item:IsA("Smoke") then
+                item.Enabled = enable3D
+            end
+        end
+    end)
+end
+
+Commands.ram = function(args, speaker)
+    local idx = SafeIndex()
+    task.wait((idx - 1) * 0.05)
+    local memMB = string.format("%.1f", gcinfo() / 1024)
+    ChatSend(string.format("â˜€ï¸ Bot #%d Memory: %s MB", idx, memMB))
+end
+Commands.memory = Commands.ram
+
+Commands.lowram = function(args, speaker)
+    local shouldRun, _ = ParseBotTarget(args)
+    if not shouldRun then return end
+    ApplyRenderMode(false)
+    if SafeIndex() == 1 then ChatSend("âš¡ Ultra-Low RAM Mode Activated (Max FPS)") end
+end
+
+Commands.unlowram = function(args, speaker)
+    local shouldRun, _ = ParseBotTarget(args)
+    if not shouldRun then return end
+    ApplyRenderMode(true)
+    if SafeIndex() == 1 then ChatSend("âœ¨ Normal Graphics Restored") end
+end
+
+Commands.render = function(args, speaker)
+    local sub = args[2] and tostring(args[2]):lower() or ""
+    if sub == "off" or sub == "low" or sub == "false" or sub == "0" then
+        Commands.lowram(args, speaker)
+    else
+        Commands.unlowram(args, speaker)
+    end
+end
+
+Commands.cleanram = function(args, speaker)
+    local shouldRun, _ = ParseBotTarget(args)
+    if not shouldRun then return end
+    local before = gcinfo()
+    pcall(function()
+        for k in pairs(_emoteAnimationCache or {}) do
+            _emoteAnimationCache[k] = nil
+        end
+    end)
+    local after = gcinfo()
+    local saved = math.max(0, before - after)
+    local idx = SafeIndex()
+    task.wait((idx - 1) * 0.05)
+    ChatSend(string.format("ðŸ§¹ Bot #%d Cleaned %d KB", idx, saved))
+end
+Commands.flush = Commands.cleanram
+Commands.ramclean = Commands.cleanram
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  VIRAL MEME & TROLL SQUAD COMMANDS (Nocturnal Edition)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- 1. BODYGUARD FORMATION
+Commands.bodyguard = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "bodyguard"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "bodyguard" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local radius = 6 + (total * 0.3)
+                local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
+                local offsetX = math.cos(angle) * radius
+                local offsetZ = math.sin(angle) * radius
+                local targetPos = tHrp.Position + Vector3.new(offsetX, 0, offsetZ)
+
+                local targetLook = targetPos + (targetPos - tHrp.Position).Unit * 10
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(targetLook.X, targetPos.Y, targetLook.Z))
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+-- 2. RITUAL / CULT SACRIFICE
+Commands.ritual = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "ritual"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        local chants = {"âœ¦ LUX NOCTIS âœ¦", "âœ§ THE STAR AWAKENS âœ§", "âœ¦ CONSUME THE LIGHT âœ¦", "âœ§ DAYBREAK ASCENDS âœ§"}
+        local chantTimer = 0
+        local spinAngle = 0
+
+        while _G.CurrentCommand == "ritual" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                spinAngle = (spinAngle + 0.04) % (math.pi * 2)
+                local radius = 8
+                local angle = spinAngle + (((idx - 1) / math.max(1, total)) * math.pi * 2)
+                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+            end
+
+            chantTimer = chantTimer + 0.03
+            if chantTimer >= 4 then
+                chantTimer = 0
+                if idx == 1 then
+                    local chant = chants[math.random(1, #chants)]
+                    ChatSend(chant)
+                end
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+-- 3. PAPARAZZI / FLASH MOB
+Commands.paparazzi = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "paparazzi"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        local questions = {"OMG OVER HERE!! ðŸ“¸", "LOOK THIS WAY!! ðŸ“·", "ONE MORE SMILE!! âœ¨", "IS IT TRUE?! ðŸ“¸", "EXCLUSIVE PHOTO!! ðŸ“·"}
+        local flashTimer = 0
+
+        while _G.CurrentCommand == "paparazzi" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local radius = 5 + (math.sin(os.clock() * 3 + idx) * 1.5)
+                local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2 + (math.sin(os.clock() + idx) * 0.3)
+                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+            end
+
+            flashTimer = flashTimer + 0.03
+            if flashTimer >= (8 + (idx * 2.0)) then
+                flashTimer = 0
+                local q = questions[math.random(1, #questions)]
+                task.wait((idx - 1) * 0.25)
+                ChatSend(string.format("[Bot #%d] %s", idx, q))
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+-- 4. COFFIN DANCE / PALLBEARERS
+Commands.coffin = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "coffin"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        local step = 0
+        while _G.CurrentCommand == "coffin" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                step = step + 0.08
+                local side = (idx % 2 == 0) and 1 or -1
+                local row = math.floor((idx - 1) / 2)
+                local sideOffset = side * 4
+                local backOffset = -row * 3.5
+
+                local bobHeight = math.abs(math.sin(step + (row * 0.5))) * 1.8
+                local forwardLook = tHrp.CFrame.LookVector
+                local rightLook = tHrp.CFrame.RightVector
+                local targetPos = tHrp.Position + (rightLook * sideOffset) + (forwardLook * backOffset) + Vector3.new(0, bobHeight, 0)
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + forwardLook)
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+-- 5. CONGA LINE
+Commands.conga = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "conga"
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "conga" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local dist = idx * 3.2
+                local sway = math.sin(os.clock() * 4 + (idx * 0.8)) * 1.5
+                local targetPos = tHrp.Position - (tHrp.CFrame.LookVector * dist) + (tHrp.CFrame.RightVector * sway)
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + tHrp.CFrame.LookVector)
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+-- 6. MENACING STARE / VOID GAZE
+Commands.stare = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "stare"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "stare" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local radius = 7
+                local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
+                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+-- 7. TORNADO VORTEX SPIN
+Commands.tornado = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "tornado"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
+        local height = (idx - 1) * 1.5
+
+        while _G.CurrentCommand == "tornado" and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                angle = (angle + 0.12) % (math.pi * 2)
+                local radius = 4 + (height * 0.5)
+                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
+                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+            end
+            task.wait(0.02)
+        end
+    end)
+end
+
+-- 8. CREEPER STEALTH (Red Light Green Light)
+_G.CreeperActive = false
+Commands.creeper = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "creeper"
+    _G.CreeperActive = true
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "creeper" and _G.CreeperActive and _G.DayBreakActive do
+            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                task.wait(0.2)
+                continue
+            end
+            local tHrp = target.Character.HumanoidRootPart
+            local myChar = LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local myHrp = myChar.HumanoidRootPart
+                local toTarget = (tHrp.Position - myHrp.Position)
+                local targetLook = tHrp.CFrame.LookVector
+                local dot = targetLook:Dot((-toTarget).Unit)
+
+                local targetIsLooking = dot > 0.1
+                if not targetIsLooking then
+                    local stepDist = 0.5 + (idx * 0.05)
+                    local newPos = myHrp.Position + (toTarget.Unit * stepDist)
+                    if (newPos - tHrp.Position).Magnitude > 3 then
+                        myHrp.CFrame = CFrame.lookAt(newPos, Vector3.new(tHrp.Position.X, newPos.Y, tHrp.Position.Z))
+                    end
+                end
+            end
+            task.wait(0.05)
+        end
+    end)
+end
+
+Commands.uncreeper = function(args, speaker)
+    _G.CreeperActive = false
+    StopAll()
+    if SafeIndex() == 1 then ChatSend("Creeper mode deactivated") end
+end
+
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  CARPET / FLOOR / BRIDGE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.carpet = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Carpet"
+    task.spawn(function()
+        local idx = SafeIndex(); local tileSize, yOff = 7.5, -3.2; local conn
+        conn = RunService.Heartbeat:Connect(function()
+            if _G.CurrentCommand ~= "Carpet" then if conn then conn:Disconnect() end; return end
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            local tH = target.Character and target.Character:FindFirstChild("Humanoid")
+            if mR and tR and tH then
+                local dir = (tH.MoveDirection.Magnitude > 0) and tH.MoveDirection or tR.CFrame.LookVector
+                local offset = dir * (idx * tileSize)
+                mR.CFrame = CFrame.new(tR.Position + offset + Vector3.new(0,yOff,0), tR.Position + offset + Vector3.new(0,yOff,0) + dir) * CFrame.Angles(math.rad(90),0,0)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid"); if h and h.Sit then h.Sit = false end
+            end
+        end)
+        getgenv().TrackConnection(conn)
+        while _G.CurrentCommand == "Carpet" and target and target.Character do task.wait(0.5) end
+        if conn then pcall(function() conn:Disconnect() end) end
+    end)
+end
+Commands.floor = Commands.carpet; Commands.bridge = Commands.carpet
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SPIN
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.spin = function(args, speaker)
+    local spinSpd = tonumber(args[2]) or 20
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "Spin"
+    task.spawn(function()
+        local rot = 0; local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+        if h then h.AutoRotate = false end
+        while _G.CurrentCommand == "Spin" do
+            local r = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if r then rot += spinSpd; r.CFrame = CFrame.new(r.Position) * CFrame.Angles(0, math.rad(rot), 0)
+                r.Velocity = Vector3.zero; r.RotVelocity = Vector3.zero end
+            RunService.Heartbeat:Wait()
+        end
+        pcall(function() local hh = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if hh then hh.AutoRotate = true end end)
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  VFLING / KILL
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.vfling = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
+    _G.CurrentCommand = "Fling"
+    task.spawn(function()
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+        if mR and h then
+            h.Sit = false; local conn
+            conn = RunService.Heartbeat:Connect(function()
+                if _G.CurrentCommand ~= "Fling" or not tR or not tR.Parent then
+                    if conn then conn:Disconnect() end
+                    if mR and mR.Parent then mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero end; return
+                end
+                mR.RotVelocity = Vector3.new(150000,150000,150000)
+                local j = Vector3.new(math.random(-10,10)/100, math.random(-10,10)/100, math.random(-10,10)/100)
+                mR.CFrame = tR.CFrame * CFrame.new(j) + (tR.Velocity*0.15); mR.Velocity = Vector3.new(500,500,500)
+            end)
+            getgenv().TrackConnection(conn)
+            task.delay(10, function() if _G.CurrentCommand == "Fling" then _G.CurrentCommand = "None" end end)
+        end
+    end)
+end
+Commands.kill = Commands.vfling
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  BANG
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.bang = function(args, speaker)
+    local spd, target = ParseSpeedTarget(args, speaker, 1)
+    if not target or not target.Character then return end
+    local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "Bang"
+    task.spawn(function()
+        local step, inc = 0, true; local stepInc = 0.45 * spd
+        while _G.CurrentCommand == "Bang" and target and target.Character and tR.Parent do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if mR and tR then
+                if h and h.Sit then h.Sit = false end
+                if inc then step += stepInc; if step >= 1 then inc = false end
+                else step -= stepInc; if step <= 0 then inc = true end end
+                mR.CFrame = tR.CFrame * CFrame.new(0, 0, 0.8 + step * 1.2)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  FBANG â€” no spin fix: lock CFrame every frame
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.fbang = function(args, speaker)
+    local spd, target = ParseSpeedTarget(args, speaker, 1)
+    if not target or not target.Character then return end
+    local tHead = target.Character:FindFirstChild("Head"); if not tHead then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "FaceBang"
+    -- Disable AutoRotate to prevent the spin
+    local myHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    if myHum then myHum.AutoRotate = false end
+    task.spawn(function()
+        local step, inc = 0, true; local stepInc = 0.45 * spd
+        while _G.CurrentCommand == "FaceBang" and target and target.Character and tHead.Parent do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if mR and tHead then
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.Sit then h.Sit = false end
+                if inc then step += stepInc; if step >= 1 then inc = false end
+                else step -= stepInc; if step <= 0 then inc = true end end
+                local zOff = 0.5 + step * 1.5
+                local isR15 = LocalPlayer.Character:FindFirstChild("LowerTorso") ~= nil
+                local yOffset = isR15 and 0.75 or 0
+                local headPos = tHead.Position
+                local frontPos = tHead.CFrame.Position + tHead.CFrame.LookVector * zOff
+                local botPos = Vector3.new(frontPos.X, headPos.Y + yOffset, frontPos.Z)
+                -- Lock facing direction toward target head â€” prevents spin
+                mR.CFrame = CFrame.new(botPos, Vector3.new(headPos.X, botPos.Y, headPos.Z))
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+        -- Restore AutoRotate on exit
+        pcall(function()
+            local h2 = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if h2 then h2.AutoRotate = true end
+        end)
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  MIRROR SUITE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local MIRROR_OFFS = {
+    mirror={0,0,0}, rmirror={5,0,0}, lmirror={-5,0,0}, fmirror={0,0,-5}, bmirror={0,0,5},
+}
+for mc, off in pairs(MIRROR_OFFS) do
+    Commands[mc] = function(args, speaker)
+        StopAll(); task.wait(0.1)
+        local target = FindTarget(args[2], speaker)
+        if not target or not target.Character then return end
+        local tag = mc:upper(); _G.CurrentCommand = tag
+        task.spawn(function()
+            local conn
+            conn = RunService.Heartbeat:Connect(function()
+                if _G.CurrentCommand ~= tag or not target.Character then if conn then conn:Disconnect() end; return end
+                local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+                if mR and tR then
+                    mR.CFrame = tR.CFrame * CFrame.new(off[1],off[2],off[3])
+                    local mH = LocalPlayer.Character:FindFirstChild("Humanoid"); local tH = target.Character:FindFirstChild("Humanoid")
+                    if mH and tH then mH.Jump = tH.Jump; if tH.Sit ~= mH.Sit then mH.Sit = tH.Sit end end
+                    mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+                end
+            end)
+            getgenv().TrackConnection(conn)
+        end)
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  RIZZ â€” queue approach, walk close to target, say line
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.rizz = function(args, speaker)
+    StopAll(); task.wait(0.1)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    _G.CurrentCommand = "Rizz"
+    local lines = {
+        "I don't usually get distracted, but you made me forget what I was saying.",
+        "You've got that calm energy that makes everything feel easier.",
+        "There's something about you that feels different â€” in a good way.",
+        "I can tell you're not just pretty, you've got depth.",
+        "I don't think you realize how naturally attractive your vibe is.",
+        "You seem like the kind of person people feel safe around.",
+        "I wasn't planning on staying long, but you changed that.",
+        "You've got that quiet confidence that's hard to ignore.",
+        "I like how you carry yourself. It says a lot.",
+        "Talking to you feels way too easyâ€¦ and I don't mind that at all.",
+        "You don't even have to try. That's what makes it dangerous.",
+        "I respect how you move â€” it's rare.",
+        "I don't throw compliments around, but you earned that one.",
+        "If energy is real, yours is undefeated.",
+        "I'm not even trying to impress youâ€¦ I just like talking to you.",
+    }
+    task.spawn(function()
+        local idx, total = SafeIndex(), SafeTotal()
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local mH = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+        local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+        if not (mR and mH and tR) then return end
+        -- Queue up behind target, spaced out
+        local q = tR.CFrame * CFrame.new(0, 0, -(15 + idx*4))
+        mH:MoveTo(q.Position)
+        -- Wait for turn (stagger by bot index)
+        task.wait((idx-1)*7)
+        if _G.CurrentCommand ~= "Rizz" then return end
+        -- Walk RIGHT IN FRONT of target (close: 3 studs)
+        local tR2 = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+        if tR2 then
+            mH:MoveTo((tR2.CFrame * CFrame.new(0, 0, -3)).Position)
+        end
+        task.wait(2.2)
+        -- Face the target
+        local tR3 = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+        if tR3 then
+            mR.CFrame = CFrame.new(mR.Position, Vector3.new(tR3.Position.X, mR.Position.Y, tR3.Position.Z))
+        end
+        ChatSend(lines[((idx-1)%#lines)+1])
+        task.wait(4)
+        -- After delivering line, orbit target
+        while _G.CurrentCommand == "Rizz" and target and target.Character do
+            local lR = target.Character:FindFirstChild("HumanoidRootPart")
+            if lR then
+                local sp = (idx/total)*(math.pi*2)
+                mR.CFrame = CFrame.new(lR.Position + Vector3.new(math.cos(sp)*8, 0, math.sin(sp)*8), lR.Position)
+                mR.Velocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  MBANG
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.mbang = function(args, speaker)
+    local spd, target = ParseSpeedTarget(args, speaker, 1)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "MultiBang"
+    task.spawn(function()
+        local step, inc, oa = 0, true, 0; local stepInc = 0.45 * spd
+        while _G.CurrentCommand == "MultiBang" and target and target.Character do
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            local tH = target.Character and target.Character:FindFirstChild("Head") or tR
+            local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if mR and tR then
+                local idx, total = SafeIndex(), SafeTotal()
+                if inc then step += stepInc; if step >= 1 then inc = false end
+                else step -= stepInc; if step <= 0 then inc = true end end
+                local cf = tR.CFrame
+                if idx==1 then
+                    local isR15 = LocalPlayer.Character:FindFirstChild("LowerTorso") ~= nil
+                    local yO = isR15 and 0.75 or 0; local zO = 0.5+step*1.5
+                    local fp = tH.CFrame.Position+tH.CFrame.LookVector*zO
+                    cf = CFrame.new(Vector3.new(fp.X,tH.Position.Y+yO,fp.Z), Vector3.new(tH.Position.X,tH.Position.Y+yO,tH.Position.Z))
+                elseif idx==2 then cf = tR.CFrame*CFrame.new(0,0,0.8+step*1.2)
+                elseif idx==3 then cf = tR.CFrame*CFrame.new(0.8+step*1.2,0,0)*CFrame.Angles(0,math.rad(-90),0)
+                elseif idx==4 then cf = tR.CFrame*CFrame.new(-(0.8+step*1.2),0,0)*CFrame.Angles(0,math.rad(90),0)
+                elseif idx==5 then cf = tR.CFrame*CFrame.new(0,1+step*1.5,0)*CFrame.Angles(math.rad(-90),0,0)
+                else oa += 0.05; local si=idx-5; local ts=math.max(total-5,1); local sp=(si/ts)*(math.pi*2)
+                    cf = CFrame.new(tR.Position+Vector3.new(math.cos(oa+sp)*8,0,math.sin(oa+sp)*8), tR.Position) end
+                if h and h.Sit then h.Sit = false end
+                mR.CFrame = cf; mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+Commands.multibang = Commands.mbang
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  HS 1-20 (Harassment Strike variants)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local HS_MESSAGES = {
+    [1]  = "(á€·ã€fà¹€É¹áƒºkÉÔ€áƒ§áƒ¿à¹€É¹êž…Ä±à¸²à¸²áƒ¿Ä±à¸²à¸²êž…à¸¥à¸žã€ (á€·)`",
+    [2]  = "(á€·ã€áƒºlà¸²à¹€É¹á€Œà¸£ÉÄ±à¸²à¸²ÉÄ±à¸²à¸¥Ä±à¸²Ô€à¸£à¸žà¸¥Ä±à¸²Ô€á»‹Î½Éáƒ¿ffà¸¥fà¹€É¹áƒºká»‹Ä±à¸²á€Œlà¸§êž…á»‹Ô€á€ŒÉã€ (á€·)`",
+    [3]  = "(á€·ã€á»‹'Æ–Æ–Î½á»‹áƒ¿Æ–à¸¥Ï¯Éáƒ§áƒ¿à¹€É¹êž…là¸§Æ–áƒ¿áƒ¿Ô€Æ–á»‹Ä±à¸²É,áƒ§áƒ¿à¹€É¹áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
+    [4]  = "(á€·ã€áƒºà¸¥Ä±à¸²à¸žÉÔ€áƒ¿là¸§áƒ¿áƒ¿Ä±à¸²à¸²là¸§à¸¥áƒ§à¸¥là¸²ã€ (á€·)`",
+    [5]  = "(á€·ã€êž…à¸¥Ä±à¸²à¸²à¸¥Ô€á»‹Æ–Ô€áƒ¿à¹€É¹êžà¸§áƒ§áƒ¿à¹€É¹êž…êž…ÉáƒºÏ¯à¹€É¹Ä±à¸²à¸²ã€ (á€·)`",
+    [6]  = "(á€·ã€áƒ§áƒ¿à¹€É¹êž…Ä±à¸²à¸²áƒ¿Ä±à¸²à¸²à¸£É‹à¹€É¹á»‹êž…Ï¯ÉÔ€áƒ¿Ä±à¸²Ä±à¸²à¸²Éã€ (á€·)`",
+    [7]  = "(á€·ã€à¸£à¸žà¸¥Æ–Æ–áƒ¿à¸žlà¸§Æ–Éà¸¥áƒºlà¸²áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
+    [8]  = "(á€·ã€à¸£kà¹€É¹Æ–Æ–fà¹€É¹áƒºkáƒºáƒ¿êž…êžà¸§à¸£Éã€ (á€·)`",
+    [9]  = "(á€·ã€áƒºà¹€É¹Ä±à¸²à¸²êž…à¸¥á€Œlà¸§à¸¥là¸§áƒ§là¸§á»‹Ï¯áƒºlà¸²ã€ (á€·)`",
+    [10] = "(á€·ã€á€ŒÆ–à¸¥à¸£à¸£á»‹Ä±à¸²à¸¥à¸£à¸£áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
+    [11] = "(á€·ã€Æ–á»‹áƒºklà¸§à¸¥Æ–Æ–à¸£Ï¯là¸²ÉÄ±à¸²Ô€á»‹Éã€ (á€·)`",
+    [12] = "(á€·ã€á»‹Æ–Æ–êž…à¸¥êžà¸§Éáƒ§áƒ¿à¹€É¹êž…fà¸¥Ä±à¸²à¸²á»‹Æ–áƒ§ã€ (á€·)`",
+    [13] = "(á€·ã€Éà¸¥Ï¯à¸¥à¸£à¸£à¸¥Ä±à¸²Ô€là¸²à¸¥Ä±à¸²á€ŒÏ¯à¸žá»‹áƒºÉã€ (á€·)`",
+    [14] = "(á€·ã€à¸£là¸²áƒ¿Î½Éà¸¥áƒºà¸¥áƒºÏ¯à¹€É¹à¸£à¹€É¹êžà¸§áƒ§áƒ¿à¹€É¹êž…à¸¥à¸£à¸£áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
+    [15] = "(á€·ã€Ô€êž…á»‹Ä±à¸²kêžà¸§á»‹à¸£à¸£Ï¯là¸²ÉÄ±à¸²É‰à¹€É¹Ä±à¸²à¸²êžà¸§á»‹Ä±à¸²Ï¯êž…à¸¥ffá»‹áƒºlà¸§á»‹Ï¯áƒºlà¸²ã€ (á€·)`",
+    [16] = "(á€·ã€áƒºà¹€É¹êž…là¸§à¸£Ï¯áƒ¿Ä±à¸²à¸²êžà¸§áƒ§áƒ¿à¹€É¹êž…à¸žlà¸²áƒ¿Æ–Éfà¹€É¹áƒºká»‹Ä±à¸²á€Œfà¸¥Ä±à¸²à¸²á»‹Æ–áƒ§ã€ (á€·)`",
+    [17] = "(á€·ã€áƒ§áƒ¿à¹€É¹áƒºà¹€É¹Ä±à¸²à¸²êž…à¸¥á€ŒÏ¯à¸žà¸¥Ï¯,áƒ§áƒ¿à¹€É¹É‰à¹€É¹à¸£Ï¯Ä±à¸²à¸²à¸¥kÉÄ±à¸²à¸²áƒ§fà¸¥áƒºÉÄ±à¸²à¸²ÉÄ±à¸²à¸²Éã€ (á€·)`",
+    [18] = "(á€·ã€Ï¯êž…à¸¥Ä±à¸²Ä±à¸²áƒ§áƒºà¹€É¹Ä±à¸²Ï¯là¸§á»‹Ï¯áƒºlà¸²ã€ (á€·)`",
+    [19] = "(á€·ã€áƒºà¹€É¹Ä±à¸²à¸²á€Œà¹€É¹Ê‘Ê‘Æ–á»‹Ä±à¸²á€Œfà¸¥á€Œã€ (á€·)`",
+    [20] = "(á€·ã€à¸¥á»‹Ô€à¸£É‹à¹€É¹ÉÉêž…Ï¯êž…à¸¥à¸£là¸²ã€ (á€·)`",
+}
+
+local HS_EMOTES = {
+    [1]  = "/e point",
+    [2]  = "/e point",
+    [3]  = "/e point",
+    [4]  = "/e wave",
+    [5]  = "/e point",
+    [6]  = "/e point",
+    [7]  = "/e shrug",
+    [8]  = "/e point",
+    [9]  = "/e laugh",
+    [10] = "/e point",
+    [11] = "/e point",
+    [12] = "/e laugh",
+    [13] = "/e wave",
+    [14] = "/e point",
+    [15] = "/e shrug",
+    [16] = "/e wave",
+    [17] = "/e point",
+    [18] = "/e point",
+    [19] = "/e shrug",
+    [20] = "/e laugh",
+}
+
+local function DoHS(args, speaker, hsNum)
+    local target = FindTarget(args[2], speaker)
+    if not target or not target.Character then return end
+    local tR = target.Character:FindFirstChild("HumanoidRootPart"); if not tR then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "HS"
+    task.spawn(function()
+        local idx, total = SafeIndex(), SafeTotal()
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if not mR then return end
+        local origCF = mR.CFrame
+        local angle = ((idx - 1) / total) * (math.pi * 2)
+        local R = math.max(6, total * 1.2)
+        mR.CFrame = CFrame.new(tR.Position + Vector3.new(math.cos(angle)*R, 0, math.sin(angle)*R), tR.Position)
+        mR.Velocity = Vector3.zero
+        task.wait(0.3)
+        ChatSend(HS_MESSAGES[hsNum] or HS_MESSAGES[1])
+        ChatSend(HS_EMOTES[hsNum] or "/e point")
+        local holdEnd = tick() + 20
+        while _G.CurrentCommand == "HS" and tick() < holdEnd do
+            local mR2 = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR2 = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if mR2 and tR2 then
+                local a = ((idx - 1) / total) * (math.pi * 2)
+                mR2.CFrame = CFrame.new(tR2.Position + Vector3.new(math.cos(a)*R, 0, math.sin(a)*R), tR2.Position)
+                mR2.Velocity = Vector3.zero
+            end
+            RunService.Heartbeat:Wait()
+        end
+        local curR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if curR then curR.CFrame = origCF end
+    end)
+end
+
+-- !hs = !hs1 = original HS message
+Commands.hs = function(a, s) DoHS(a, s, 1) end
+for i = 1, 20 do Commands["hs"..i] = function(a, s) DoHS(a, s, i) end end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  CREDITS / ALTCOUNT / WHISPER / GRAB / EQUIP / UPTIME
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+Commands.credits = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    task.spawn(function()
+        task.wait((SafeIndex()-1)*0.5)
+        ChatSend("ðŸ”¥ DayBreak ALT Control | Designed by DayBreak ðŸ”¥")
+    end)
+end
+
+Commands.altcount = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    if SafeIndex() == 1 then ChatSend("[System] Alts Online: " .. TotalBots()) end
+end
+Commands.alts = Commands.altcount
+
+Commands.w = function(args, speaker)
+    local ts = args[2]; local wm = table.concat(args, " ", 3)
+    if not ts or wm == "" then return end
+    local tp = FindTarget(ts, speaker); if not tp then return end
+
+    local chatBox
+    if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+        local eg = game:GetService("CoreGui"):FindFirstChild("ExperienceChat")
+        if eg then chatBox = eg:FindFirstChildWhichIsA("TextBox", true) end
+    else
+        local pGui = LocalPlayer:FindFirstChild("PlayerGui")
+        if pGui and pGui:FindFirstChild("Chat") then chatBox = pGui.Chat:FindFirstChild("ChatBar", true) end
+    end
+    if not chatBox then return end
+
+    task.spawn(function()
+        local botIndex = SafeIndex() or 1
+        -- 1 second waterfall delay per bot
+        task.wait((botIndex - 1) * 1.0)
+        
+        chatBox:CaptureFocus()
+        task.wait(0.1)
+
+        local targetName = tp.DisplayName or tp.Name
+        local fullString = "/w " .. targetName .. " || " .. wm
+        
+        for i = 1, #fullString do
+            chatBox.Text = chatBox.Text .. fullString:sub(i, i)
+            chatBox.CursorPosition = #chatBox.Text + 1
+            task.wait(math.random(1, 4) * 0.01)
+        end
+        
+        task.wait(0.15)
+        
+        local currentRaw = chatBox.Text
+        local splitIdx = currentRaw:find("||")
+        if splitIdx then
+            local msg = currentRaw:sub(splitIdx + 2)
+            chatBox.Text = msg:match("^%s*(.-)$") or msg
+            chatBox.CursorPosition = #chatBox.Text + 1
+        end
+        
+        task.wait(0.1)
+        
+        if type(getgenv().keypress) == "function" then
+            getgenv().keypress(0x0D)
+            task.wait(0.05)
+            if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x0D) end
+        end
+        
+        -- 1. Native Enter Simulation
+        chatBox:ReleaseFocus(true)
+        
+        -- 2. Fallback: Force fire the CoreGui SendButton
+        pcall(function()
+            local sysParent = chatBox.Parent
+            local sendBtn = sysParent and sysParent.Parent and sysParent.Parent:FindFirstChild("SendButton", true)
+            if sendBtn and type(getgenv().getconnections) == "function" then
+                for _, connection in pairs(getgenv().getconnections(sendBtn.MouseButton1Click) or {}) do
+                    pcall(function() connection:Fire() end)
+                end
+                for _, connection in pairs(getgenv().getconnections(sendBtn.Activated) or {}) do
+                    pcall(function() connection:Fire() end)
+                end
+            end
+        end)
+        
+        -- 3. Whisper target badge cleanup sequence
+        task.wait(10)
+        if chatBox.Parent then
+            chatBox:CaptureFocus()
+            task.wait(0.1)
+            
+            -- Send Backspace (0x08) x3
+            if type(getgenv().keypress) == "function" then
+                for _ = 1, 3 do
+                    getgenv().keypress(0x08)
+                    task.wait(0.05)
+                    if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x08) end
+                    task.wait(0.05)
+                end
+            else
+                local vim = game:GetService("VirtualInputManager")
+                for _ = 1, 3 do
+                    vim:SendKeyEvent(true, Enum.KeyCode.Backspace, false, game)
+                    task.wait(0.05)
+                    vim:SendKeyEvent(false, Enum.KeyCode.Backspace, false, game)
+                    task.wait(0.05)
+                end
+            end
+            
+            task.wait(0.1)
+            
+            -- Send Enter (0x0D) x1 to commit clear
+            if type(getgenv().keypress) == "function" then
+                getgenv().keypress(0x0D)
+                task.wait(0.05)
+                if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x0D) end
+            else
+                local vim = game:GetService("VirtualInputManager")
+                vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                task.wait(0.05)
+                vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            end
+            
+            task.wait(0.1)
+            chatBox:ReleaseFocus(false)
+        end
+    end)
+end
+Commands.whisper = Commands.w
+
+Commands.spamw = function(args, speaker)
+    local ts = args[2]
+    local delayInput = tonumber(args[3])
+    local customDelay = delayInput or 5.0
+    local wm = delayInput and table.concat(args, " ", 4) or table.concat(args, " ", 3)
+    
+    if not ts or wm == "" then return end
+    local tp = FindTarget(ts, speaker); if not tp then return end
+
+    local chatBox
+    if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+        local eg = game:GetService("CoreGui"):FindFirstChild("ExperienceChat")
+        if eg then chatBox = eg:FindFirstChildWhichIsA("TextBox", true) end
+    else
+        local pGui = LocalPlayer:FindFirstChild("PlayerGui")
+        if pGui and pGui:FindFirstChild("Chat") then chatBox = pGui.Chat:FindFirstChild("ChatBar", true) end
+    end
+    if not chatBox then return end
+
+    _G.Spamming = false; task.wait(0.1)
+    _G.Spamming = true
+    local id = tick()
+    _G.CurrentSpamID = id
+
+    task.spawn(function()
+        local botIndex = SafeIndex() or 1
+        task.wait((botIndex - 1) * 1.0)
+        
+        while _G.Spamming and _G.CurrentSpamID == id do
+            if not chatBox.Parent then break end
+            
+            chatBox:CaptureFocus()
+            task.wait(0.1)
+
+            -- Completely clear previous badge state internally
+            if type(getgenv().keypress) == "function" then
+                for _ = 1, 3 do
+                    getgenv().keypress(0x08)
+                    task.wait(0.05)
+                    if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x08) end
+                    task.wait(0.05)
+                end
+            else
+                local vim = game:GetService("VirtualInputManager")
+                for _ = 1, 3 do
+                    vim:SendKeyEvent(true, Enum.KeyCode.Backspace, false, game)
+                    task.wait(0.05)
+                    vim:SendKeyEvent(false, Enum.KeyCode.Backspace, false, game)
+                    task.wait(0.05)
+                end
+            end
+            
+            chatBox.Text = "" 
+            task.wait(0.1)
+
+            local targetName = tp.DisplayName or tp.Name
+            local fullString = "/w " .. targetName .. " || " .. wm
+            
+            for i = 1, #fullString do
+                chatBox.Text = chatBox.Text .. fullString:sub(i, i)
+                chatBox.CursorPosition = #chatBox.Text + 1
+                task.wait(math.random(1, 4) * 0.01)
+            end
+            
+            task.wait(0.15)
+            
+            local currentRaw = chatBox.Text
+            local splitIdx = currentRaw:find("||")
+            if splitIdx then
+                local msg = currentRaw:sub(splitIdx + 2)
+                chatBox.Text = msg:match("^%s*(.-)$") or msg
+                chatBox.CursorPosition = #chatBox.Text + 1
+            end
+            
+            task.wait(0.1)
+            
+            if type(getgenv().keypress) == "function" then
+                getgenv().keypress(0x0D)
+                task.wait(0.05)
+                if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x0D) end
+            end
+            
+            chatBox:ReleaseFocus(true)
+            
+            pcall(function()
+                local sysParent = chatBox.Parent
+                local sendBtn = sysParent and sysParent.Parent and sysParent.Parent:FindFirstChild("SendButton", true)
+                if sendBtn and type(getgenv().getconnections) == "function" then
+                    for _, connection in pairs(getgenv().getconnections(sendBtn.MouseButton1Click) or {}) do
+                        pcall(function() connection:Fire() end)
+                    end
+                    for _, connection in pairs(getgenv().getconnections(sendBtn.Activated) or {}) do
+                        pcall(function() connection:Fire() end)
+                    end
+                end
+            end)
+            
+            task.wait(customDelay)
+        end
+    end)
+end
+
+Commands.grab = function(args, speaker)
+    if SafeIndex() ~= 1 then return end
+    local target = FindTarget(args[2], speaker); local ic = speaker and speaker.Character
+    if not (target and target.Character and ic) then return end
+    _G.GrabActive = true
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    local tR = target.Character:FindFirstChild("HumanoidRootPart"); local iR = ic:FindFirstChild("HumanoidRootPart")
+    if not (mR and tR and iR) then return end
+    task.spawn(function()
+        mR.CFrame = tR.CFrame * CFrame.new(0,0,3)
+        ChatSend("Accept Grab! "..speaker.DisplayName.." wants to see you.")
+        local start, lc, ok = tick(), 0, false; local GR = ReplicatedStorage:FindFirstChild("GrabRequest")
+        while _G.GrabActive and (tick()-start) < 15 do
+            if GR then pcall(function() GR:FireServer(target.UserId, "cute") end) end
+            if (mR.Position - tR.Position).Magnitude < 1.7 then lc += 1 else lc = 0 end
+            if lc >= 5 then ok = true; break end; task.wait(0.2)
+        end
+        mR.CFrame = iR.CFrame * CFrame.new(0,0,3); task.wait(0.5)
+        ChatSend(target.Name .. (ok and " accepted the grab." or " did not accept in time."))
+        _G.GrabActive = false
+    end)
+end
+Commands.xbring = Commands.grab
+
+for i = 1, 10 do
+    Commands["equip"..i] = function(args, speaker)
+        local c = LocalPlayer.Character; local h = c and c:FindFirstChild("Humanoid")
+        local bp = LocalPlayer:FindFirstChild("Backpack")
+        if h and bp then
+            h:UnequipTools(); task.wait(0.05)
+            local tools = {}; for _, it in ipairs(bp:GetChildren()) do if it:IsA("Tool") then table.insert(tools, it) end end
+            if tools[i] then h:EquipTool(tools[i]) end
+        end
+    end
+end
+
+Commands.unequip = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local c = LocalPlayer.Character
+    if c then
+        local h = c:FindFirstChild("Humanoid")
+        if h then h:UnequipTools() end
+    end
+end
+
+Commands.pvp = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+
+    local rs = game:GetService("ReplicatedStorage")
+    local pvpEvent = rs:FindFirstChild("event_option_pvp")
+    if pvpEvent then
+        pcall(function() pvpEvent:FireServer() end)
+    end
+end
+
+-- UPTIME: only bot01 sends, plain text format (won't get tagged)
+Commands.uptime = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    if SafeIndex() ~= 1 then return end
+    local s = tick() - _G.ScriptStartTime
+    local h = math.floor(s / 3600)
+    local m = math.floor((s % 3600) / 60)
+    local sec = math.floor(s % 60)
+    ChatSend("Session Up time : " .. h .. "h " .. m .. "m " .. sec .. "s")
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  FORMATIONS: arrow, box
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+Commands.arrow = function(args, speaker)
+    local target = FindTarget(args[2], speaker) or speaker
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local root = target.Character.HumanoidRootPart
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart"); if not mR then return end
+    local idx, total = SafeIndex(), SafeTotal(); local sp = 4; local fwd = root.CFrame.LookVector
+    local headCount = (total >= 8) and 5 or 3
+    if idx <= headCount then
+        if idx==1 then mR.CFrame = CFrame.new((root.CFrame*CFrame.new(0,0,-sp*1.5)).Position, (root.CFrame*CFrame.new(0,0,-sp*1.5)).Position+fwd)
+        elseif idx<=3 then local s=(idx==2) and 1 or -1; mR.CFrame = CFrame.new((root.CFrame*CFrame.new(s*sp,0,-sp*0.5)).Position, (root.CFrame*CFrame.new(s*sp,0,-sp*0.5)).Position+fwd)
+        else local s=(idx==4) and 2 or -2; mR.CFrame = CFrame.new((root.CFrame*CFrame.new(s*sp,0,sp*0.5)).Position, (root.CFrame*CFrame.new(s*sp,0,sp*0.5)).Position+fwd) end
+    else local si=idx-headCount; mR.CFrame = CFrame.new((root.CFrame*CFrame.new(0,0,si*sp+sp*0.5)).Position, (root.CFrame*CFrame.new(0,0,si*sp+sp*0.5)).Position+fwd) end
+end
+
+Commands.box = function(args, speaker)
+    local target = FindTarget(args[2], speaker) or speaker
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local root = target.Character.HumanoidRootPart
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart"); if not mR then return end
+    local idx = SafeIndex(); local sp = 6
+    local grid = {{x=-1,z=-1},{x=0,z=-1},{x=1,z=-1},{x=-1,z=0},{x=1,z=0},{x=-1,z=1},{x=0,z=1},{x=1,z=1}}
+    local coord = grid[((idx-1)%#grid)+1]
+    if idx > #grid then coord = {x=grid[((idx-1)%#grid)+1].x*2, z=grid[((idx-1)%#grid)+1].z*2} end
+    local fwd = root.CFrame.LookVector; local rgt = root.CFrame.RightVector
+    local fp = root.CFrame.Position + (rgt*(coord.x*sp)) + (fwd*(coord.z*sp))
+    mR.CFrame = CFrame.new(fp, fp + fwd)
+end
+Commands.square = Commands.box
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SCANALL
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local function FetchLeakData(username)
+    local ok, data = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet("https://leakcheck.io/api/public?check="..HttpService:UrlEncode(username)))
+    end)
+    return (ok and data and data.success) and data or nil
+end
+
+local function CleanSource(str)
+    if not str then return "Unknown" end; local c = str:lower()
+    for _, f in ipairs({".com",".net",".org",".io",".xyz",".me","http://","https://","www."}) do c = c:gsub(f:gsub("%%.", "%%."), "") end
+    return c
+end
+
+Commands.scanall = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    if getgenv().ScanInProgress then return end; local idx = SafeIndex()
+    if idx == 1 then
+        getgenv().ScanInProgress = true; getgenv().ServerScanActive = true
+        _G.GlobalBreachTable = {}; _G.CurrentScanningUser = "Init..."; _G.ScanAllFinished = false
+        task.spawn(function()
+            pcall(function()
+                ChatSend("Scan Protocol Started..."); local found = {}
+                for _, p in ipairs(Players:GetPlayers()) do
+                    if p ~= LocalPlayer and p.Name:lower() ~= getgenv().Settings.mainAccount:lower() then
+                        _G.CurrentScanningUser = p.Name; local d = FetchLeakData(p.Name)
+                        if d and d.found and d.found > 0 then table.insert(_G.GlobalBreachTable, {name=p.Name,data=d}); table.insert(found, p.Name) end
+                        task.wait(0.8)
+                    end
+                end
+                getgenv().ServerScanActive = false; task.wait(1)
+                ChatSend("Scan Done. Breached: "..#found)
+                if #found > 0 then task.wait(1.5); ChatSend("Found: "..table.concat(found, ", ")) end
+                _G.ScanAllFinished = true
+            end)
+            getgenv().ScanInProgress = false
+        end)
+    elseif idx == 2 then
+        task.spawn(function() task.wait(2)
+            while getgenv().ServerScanActive do ChatSend("Scanning: ["..tostring(_G.CurrentScanningUser).."]..."); task.wait(7) end
+        end)
+    elseif idx >= 3 then
+        task.spawn(function()
+            repeat task.wait(0.5) until _G.ScanAllFinished == true
+            local e = _G.GlobalBreachTable and _G.GlobalBreachTable[idx-2]
+            if e then task.wait((idx-2)*1.8); local src = "Unknown"
+                if e.data.result and e.data.result[1] then src = CleanSource(e.data.result[1].line) end
+                ChatSend("["..e.name.."] | Sources: "..src)
+            end
+        end)
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  SAY / TP / SCATTER / FREEZE / COUNTDOWN / REJOIN / WAVE / CMDS
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+Commands.say = function(args, speaker)
+    local m = table.concat(args, " ", 2)
+    if m ~= "" then task.spawn(function() task.wait((SafeIndex()-1)*0.15); ChatSend(m) end) end
+end
+Commands.chat = Commands.say
+
+Commands.report = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+
+    local targetNameQuery = newArgs[2]
+    local reasonQuery = newArgs[3]
+    if not targetNameQuery or not reasonQuery then return end
+
+    local tp = FindTarget(targetNameQuery, speaker)
+    if not tp then return end
+
+    local abuseReasons = {
+        "Swearing", "Personal information", "Dating/Sex", "Cheating",
+        "Username", "Bullying", "Scamming"
+    }
+    local targetReason = nil
+    local qLower = reasonQuery:lower()
+    for _, r in ipairs(abuseReasons) do
+        if r:lower():sub(1, #qLower) == qLower then
+            targetReason = r
+            break
+        end
+    end
+    if not targetReason then return end
+
+    task.spawn(function()
+        local idx = SafeIndex() or 1
+        local delayCounter = 0
+        local rng = Random.new()
+        
+        for _ = 1, idx - 1 do
+            delayCounter = delayCounter + rng:NextNumber(5, 10)
+        end
+        
+        task.wait(delayCounter)
+
+        local VIM = game:GetService("VirtualInputManager")
+        local CoreGui = game:GetService("CoreGui")
+
+        -- Simulate a real mouse click at center of a GUI element
+        local function ClickElement(element)
+            if not element then return false end
+            local ok, err = pcall(function()
+                local pos = element.AbsolutePosition
+                local size = element.AbsoluteSize
+                local cx = pos.X + size.X / 2
+                local cy = pos.Y + size.Y / 2
+                VIM:SendMouseButtonEvent(cx, cy, 0, true, game, 1)
+                task.wait(0.05)
+                VIM:SendMouseButtonEvent(cx, cy, 0, false, game, 1)
+            end)
+            return ok
+        end
+
+        -- Find a visible GUI element by its text content
+        local function FindElement(searchText, exact)
+            for _, v in ipairs(CoreGui:GetDescendants()) do
+                pcall(function()
+                    if (v:IsA("TextLabel") or v:IsA("TextButton")) then
+                        local t = v.Text
+                        local match = false
+                        if exact then
+                            match = (t == searchText)
+                        else
+                            match = (t:find(searchText, 1, true) ~= nil)
+                        end
+                        if match then
+                            -- Bubble up to find clickable parent if needed
+                            local target = v
+                            if not target:IsA("GuiButton") then
+                                local p = target.Parent
+                                for _ = 1, 5 do
+                                    if not p or p == CoreGui then break end
+                                    if p:IsA("GuiButton") or p:IsA("ImageButton") or p:IsA("TextButton") then
+                                        target = p
+                                        break
+                                    end
+                                    p = p.Parent
+                                end
+                            end
+                            -- Store result via error throw to escape pcall
+                            error({found = target})
+                        end
+                    end
+                end)
+            end
+            return nil
+        end
+
+        -- Robust find + click with pcall-based element extraction
+        local function FindAndClick(searchText, exact)
+            local result = nil
+            for _, v in ipairs(CoreGui:GetDescendants()) do
+                local ok2, ret = pcall(function()
+                    if (v:IsA("TextLabel") or v:IsA("TextButton")) then
+                        local t = v.Text
+                        local match = false
+                        if exact then
+                            match = (t == searchText)
+                        else
+                            match = (t:find(searchText, 1, true) ~= nil)
+                        end
+                        if match then
+                            local target = v
+                            if not target:IsA("GuiButton") then
+                                local p = target.Parent
+                                for _ = 1, 5 do
+                                    if not p or p == CoreGui then break end
+                                    if p:IsA("GuiButton") or p:IsA("ImageButton") or p:IsA("TextButton") then
+                                        target = p
+                                        break
+                                    end
+                                    p = p.Parent
+                                end
+                            end
+                            return target
+                        end
+                    end
+                    return nil
+                end)
+                if ok2 and ret then
+                    result = ret
+                    break
+                end
+            end
+            if result then
+                return ClickElement(result)
+            end
+            return false
+        end
+
+        -- Step 1: Click target player in the PlayerList (right sidebar)
+        local tDisplay = tp.DisplayName
+        local tUser = tp.Name
+        if not FindAndClick(tDisplay, true) then
+            FindAndClick(tUser, true)
+        end
+        task.wait(0.8)
+
+        -- Step 2: Click "Report Abuse" on the context popup
+        FindAndClick("Report Abuse", true)
+        task.wait(2.0)
+
+        -- Step 3: Click "Choose One" reason dropdown
+        FindAndClick("Choose One", true)
+        task.wait(1.0)
+
+        -- Step 4: Click the matched abuse reason from dropdown list
+        FindAndClick(targetReason, true)
+        task.wait(1.0)
+
+        -- Step 5: Click "Submit" to finalize the report
+        FindAndClick("Submit", true)
+    end)
+end
+
+-- Multi-method click helper: tries every executor click method available
+local function SimClick(element)
+    if not element then return false end
+    local clicked = false
+
+    -- Method 1: fireclick via getgenv (executor-level CoreGui click)
+    pcall(function()
+        if not clicked and type(getgenv().fireclick) == "function" then
+            getgenv().fireclick(element)
+            clicked = true
+        end
+    end)
+
+    -- Method 2: firesignal via getgenv
+    pcall(function()
+        if not clicked and type(getgenv().firesignal) == "function" then
+            getgenv().firesignal(element.MouseButton1Click)
+            clicked = true
+        end
+    end)
+
+    -- Method 3: getconnections -> Fire
+    pcall(function()
+        if not clicked and type(getgenv().getconnections) == "function" then
+            for _, conn in pairs(getgenv().getconnections(element.MouseButton1Click) or {}) do
+                pcall(function() conn:Fire() end)
+                clicked = true
+            end
+            for _, conn in pairs(getgenv().getconnections(element.Activated) or {}) do
+                pcall(function() conn:Fire() end)
+                clicked = true
+            end
+        end
+    end)
+
+    -- Method 4: VirtualInputManager with GuiInset correction
+    pcall(function()
+        if not clicked then
+            local VIM = game:GetService("VirtualInputManager")
+            local guiInset = game:GetService("GuiService"):GetGuiInset()
+            local pos = element.AbsolutePosition
+            local size = element.AbsoluteSize
+            local cx = pos.X + size.X / 2
+            local cy = pos.Y + size.Y / 2 + guiInset.Y
+            VIM:SendMouseButtonEvent(cx, cy, 0, true, game, 1)
+            task.wait(0.05)
+            VIM:SendMouseButtonEvent(cx, cy, 0, false, game, 1)
+            clicked = true
+        end
+    end)
+
+    return clicked
+end
+
+local function FindGuiByText(searchText, exact, root)
+    root = root or game:GetService("CoreGui")
+    for _, v in ipairs(root:GetDescendants()) do
+        local ok, res = pcall(function()
+            if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("ImageButton") then
+                local t = ""
+                pcall(function() t = v.Text end)
+                local match = false
+                if exact then match = (t == searchText)
+                else match = (t:find(searchText, 1, true) ~= nil) end
+                if match then
+                    local target = v
+                    if not target:IsA("GuiButton") then
+                        local p = target.Parent
+                        for _ = 1, 6 do
+                            if not p or p == root then break end
+                            if p:IsA("GuiButton") or p:IsA("TextButton") or p:IsA("ImageButton") then
+                                target = p; break
+                            end
+                            p = p.Parent
+                        end
+                    end
+                    return target
+                end
+            end
+            return nil
+        end)
+        if ok and res then return res end
+    end
+    return nil
+end
+
+local function FindAndSimClick(searchText, exact, root)
+    local el = FindGuiByText(searchText, exact, root)
+    if el then return SimClick(el) end
+    return false
+end
+
+----------------------------------------------------------------
+-- FRIEND REQUEST
+----------------------------------------------------------------
+Commands.friend = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local tp = FindTarget(newArgs[2], speaker)
+    if not tp then return end
+
+    task.spawn(function()
+        local idx = SafeIndex() or 1
+        local rng = Random.new()
+        local delay = 0
+        for _ = 1, idx - 1 do delay = delay + rng:NextNumber(3, 6) end
+        task.wait(delay)
+
+        -- Direct API: opens friend request prompt
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("PromptSendFriendRequest", tp)
+        end)
+        task.wait(1.5)
+
+        -- Click "Send Request" on the confirmation dialog
+        FindAndSimClick("Send Request", true)
+    end)
+end
+
+----------------------------------------------------------------
+-- BLOCK PLAYER
+----------------------------------------------------------------
+Commands.block = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local tp = FindTarget(newArgs[2], speaker)
+    if not tp then return end
+
+    task.spawn(function()
+        local idx = SafeIndex() or 1
+        local rng = Random.new()
+        local delay = 0
+        for _ = 1, idx - 1 do delay = delay + rng:NextNumber(3, 6) end
+        task.wait(delay)
+
+        -- Step 1: Click target player name in the PlayerList sidebar
+        local tDisplay = tp.DisplayName
+        local tUser = tp.Name
+        if not FindAndSimClick(tDisplay, true) then
+            FindAndSimClick(tUser, true)
+        end
+        task.wait(1.0)
+
+        -- Step 2: Click "Block" on the context popup menu
+        FindAndSimClick("Block", true)
+        task.wait(1.5)
+
+        -- Step 3: Click "Block" on the confirmation dialog ("Block [Name]?")
+        -- The confirmation has 3 buttons: Block, Block and report, Cancel
+        -- We specifically want the one that says exactly "Block" (not "Block and report")
+        local CoreGui = game:GetService("CoreGui")
+        local clicked = false
+        for _, v in ipairs(CoreGui:GetDescendants()) do
+            local ok, res = pcall(function()
+                if (v:IsA("TextButton") or v:IsA("TextLabel")) and v.Text == "Block" then
+                    local target = v
+                    if not target:IsA("GuiButton") then
+                        local p = target.Parent
+                        for _ = 1, 5 do
+                            if not p then break end
+                            if p:IsA("GuiButton") then target = p; break end
+                            p = p.Parent
+                        end
+                    end
+                    return target
+                end
+                return nil
+            end)
+            if ok and res and not clicked then
+                SimClick(res)
+                clicked = true
+            end
+        end
+    end)
+end
+
+-- TP: supports both !tp x y z AND !tp <target>
+Commands.tp = function(args, speaker)
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not mR then return end
+    -- Check if args[2] is a number (coordinate mode) or string (player mode)
+    if args[2] and tonumber(args[2]) then
+        local x = tonumber(args[2]) or 0; local y = tonumber(args[3]) or 0; local z = tonumber(args[4]) or 0
+        mR.CFrame = CFrame.new(x, y, z)
+    else
+        -- Player target mode
+        local target = FindTarget(args[2], speaker)
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local idx, total = SafeIndex(), SafeTotal()
+            local a = (idx / total) * (math.pi * 2)
+            mR.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(math.cos(a)*6, 0, math.sin(a)*6)
+        end
+    end
+end
+
+Commands.scatter = function(args, speaker)
+    StopAll(); local range = tonumber(args[2]) or 30
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if mR then local rng = Random.new(tick()+SafeIndex())
+        mR.CFrame = CFrame.new(mR.Position + Vector3.new(rng:NextNumber(-range,range), 0, rng:NextNumber(-range,range))) end
+end
+
+Commands.freeze = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if mR then mR.Anchored = true end
+end
+
+Commands.unfreeze = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if mR then mR.Anchored = false end
+end
+
+Commands.countdown = function(args, speaker)
+    local count = tonumber(args[2]); if not count then return end
+    count = math.clamp(count, 1, 30); local total = SafeTotal(); local idx = SafeIndex()
+    task.spawn(function()
+        for i = count, 1, -1 do
+            local botForNum = ((i-1) % total) + 1
+            if botForNum == idx then ChatSend(tostring(i) .. "...") end
+            task.wait(1)
+        end
+        if idx == 1 then ChatSend("GO! ðŸš€") end
+    end)
+end
+
+Commands.rejoin = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    StopAll()
+    -- Save bot position so it persists across rejoin
+    SaveBotPosition()
+    task.spawn(function()
+        ChatSend("Rejoining...")
+        task.wait(1)
+        -- Queue script re-execution from workspace for after rejoin
+        local qot = queue_on_teleport or (syn and syn.queue_on_teleport) or queueonteleport
+        if qot then
+            local scriptFile = getgenv().Settings.scriptFile or ""
+            local scriptURL = getgenv().Settings.scriptLoadstring or ""
+            if scriptFile ~= "" then
+                qot('task.wait(3); pcall(function() loadstring(readfile("' .. scriptFile .. '"))() end)')
+            elseif scriptURL ~= "" then
+                qot('task.wait(3); pcall(function() loadstring(game:HttpGet("' .. scriptURL .. '"))() end)')
+            end
+        end
+        pcall(function() TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer) end)
+    end)
+end
+
+Commands.wave = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    StopAll(); _G.CurrentCommand = "Wave"; local idx = SafeIndex()
+    task.spawn(function()
+        task.wait(idx * 0.3)
+        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+        if h and _G.CurrentCommand == "Wave" then h.Jump = true; task.wait(0.5); ChatSend("/e wave") end
+    end)
+end
+
+local function GetCommandList()
+    return {
+        "bring","goto","walkto","follow","wonder","stalk","worm","swarm","carpet",
+        "circle","loopcircle","rline","lline","fline","bline","arrow","box",
+        "shield","shield1-5","orbit","orbit1-10","spiral","spiral1-10",
+        "stackon","helicopter","mirror","rmirror","lmirror","fmirror","bmirror",
+        "bodyguard","ritual","paparazzi","coffin","conga","stare","tornado","creeper","uncreeper",
+        "jump","sit","rest","spin","firework","nuke","vfling","kill",
+        "bang","fbang","mbang","rizz","grab","hs","hs1-20",
+        "sync","emote","dance","dance1","dance2","dance3","unemote","emote1-8","laugh","wave","point","cheer",
+        "clone","loopclone","unloopclone","ref",
+        "npc","say","spam","unspam","countdown","credits",
+        "whitelist","blacklist","ws","unws","noclip","clip",
+        "invisible","visible","gentool",
+        "ping","ram","uptime","altcount","lowram","unlowram","cleanram","flush",
+        "antivoid","unantivoid","scanall","stop","rejoin","quit",
+        "tp","scatter","freeze","unfreeze","cmds",
+    }
+end
+
+Commands.cmds = function(args, speaker)
+    if not IsSoloCommand(args) then return end
+    _G.CurrentCommand = "HelpPresentation"
+    local idx, total = SafeIndex(), SafeTotal()
+    local admin = speaker
+    if admin and admin.Character and admin.Character:FindFirstChild("HumanoidRootPart") then
+        local aR = admin.Character.HumanoidRootPart
+        local podCF = aR.CFrame * CFrame.new(0,0,-8) * CFrame.Angles(0,math.pi,0)
+        local xOff = (idx-(total/2+0.5))*4
+        local wait = aR.CFrame * CFrame.new(xOff,0,-15) * CFrame.Angles(0,math.pi,0)
+        local all = GetCommandList(); local cs = math.ceil(#all/math.max(total,1))
+        local ms, me = ((idx-1)*cs)+1, math.min(idx*cs, #all)
+        local mb = {}; for i = ms, me do table.insert(mb, all[i]) end
+        task.spawn(function()
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if mR then mR.CFrame = wait; task.wait((idx-1)*10)
+                if _G.CurrentCommand == "HelpPresentation" then
+                    mR.CFrame = podCF; task.wait(0.5)
+                    if #mb > 0 then ChatSend("Batch ["..idx.."/"..total.."]: "..table.concat(mb, ", ")) end
+                    task.wait(9)
+                    if _G.CurrentCommand == "HelpPresentation" then mR.CFrame = wait end
+                end
+            end
+        end)
+    end
+end
+Commands.help = Commands.cmds
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  13. UNIFIED COMMAND DISPATCH (with bot-targeting)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+getgenv().Execute = function(msg, speaker)
+    if isMainAccount then return end
+    local prefix = getgenv().Settings.prefix
+    if msg:sub(1, #prefix) ~= prefix then return end
+    local args = msg:split(" ")
+    local cmd = args[1]:lower():sub(#prefix + 1)
+
+    -- Bot-targeting check: !cmd bot1 <rest>
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+
+    local handler = Commands[cmd]
+    if handler then
+        local ok, err = pcall(handler, newArgs, speaker)
+        if not ok then warn("[DayBreak] Error (" .. cmd .. "): " .. tostring(err)) end
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  14. CHAT LISTENER
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local _seenChatIds = {}
+local function SetupChatListener(p)
+    getgenv().TrackConnection(p.Chatted:Connect(function(msg)
+        if not msg or type(msg) ~= "string" or #msg > 500 then return end
+        local pName = p.Name:lower()
+        local chatKey = pName .. "::" .. msg
+        local now = os.clock()
+        if _seenChatIds[chatKey] and (now - _seenChatIds[chatKey]) < 0.2 then
+            return
+        end
+        _seenChatIds[chatKey] = now
+        
+        local prefix = getgenv().Settings.prefix
+        
+        if IsWhitelisted(p.Name) then
+            if msg:sub(1, #prefix) == prefix then getgenv().Execute(msg, p) end
+        end
+        
+        -- Mimic System
+        if _G.Mimicking and _G.MimicTarget == pName then
+            if msg:sub(1, #prefix) ~= prefix then
+                local idx = SafeIndex() or 1
+                task.spawn(function()
+                    task.wait((idx - 1) * 0.15)
+                    ChatSend(msg)
+                end)
+            end
+        end
+    end))
+end
+
+for _, p in ipairs(Players:GetPlayers()) do SetupChatListener(p) end
+getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p) SetupChatListener(p) end))
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  15. PASSCODE GATE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local function HandlePasscode(p, message)
+    if message ~= "á•¦(Ã²_Ã³Ë‡)á•¤" and message ~= "!daybreak_master_key" and message ~= "daybreak::master" then return end
+    local nl = p.Name:lower()
+    if not getgenv().ManualWhitelist[nl] then
+        getgenv().ManualWhitelist[nl] = true
+        if SafeIndex() == 1 then ChatSend(p.Name .. " whitelisted") end
+    end
+end
+
+for _, p in ipairs(Players:GetPlayers()) do
+    getgenv().TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
+end
+getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p)
+    getgenv().TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
+end))
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  16. RESOURCE OPTIMIZATION (Alts only)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+if isAltAccount and not isMainAccount then
+    pcall(function() setfpscap(getgenv().Settings.fpsCap or 10) end)
+    pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
+    pcall(function() settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level04 end)
+    pcall(function() Lighting.GlobalShadows = false; Lighting.FogEnd = 1e10 end)
+    pcall(function()
+        workspace.Terrain.Decoration = false; workspace.Terrain.WaterReflectance = 0; workspace.Terrain.WaterTransparency = 0
+        workspace.Terrain.WaterWaveSize = 0; workspace.Terrain.WaterWaveSpeed = 0
+    end)
+    task.spawn(function()
+        for _, v in ipairs(game:GetDescendants()) do pcall(function()
+            if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then v.Enabled = false
+            elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("SurfaceGui") then v:Destroy()
+            elseif v:IsA("Sound") then v.Volume = 0; v.Playing = false
+            elseif v:IsA("BasePart") then v.Material = Enum.Material.Plastic; v.Reflectance = 0; v.CastShadow = false
+            elseif v:IsA("PostEffect") then v.Enabled = false
+            elseif v:IsA("Sky") then v:Destroy() end
+        end) end
+    end)
+    getgenv().TrackConnection(game.DescendantAdded:Connect(function(v) pcall(function()
+        if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then v.Enabled = false
+        elseif v:IsA("Sound") then v.Volume = 0
+        elseif v:IsA("PostEffect") then v.Enabled = false end
+    end) end))
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  17. MAIN ACCOUNT COMMAND GUI (Refined Compact)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+if isMainAccount then
+    pcall(function()
+        local pg = LocalPlayer:FindFirstChild("PlayerGui")
+        if pg then local o = pg:FindFirstChild("DayBreakCommandGUI"); if o then o:Destroy() end end
+    end)
+
+    local TS = game:GetService("TweenService")
+    local UIS = game:GetService("UserInputService")
+
+    local T = {
+        Bg       = Color3.fromRGB(10, 10, 12),      -- Deep Obsidian Noir (#0a0a0c)
+        Card     = Color3.fromRGB(18, 18, 22),      -- Sleek Slate (#121216)
+        CardHov  = Color3.fromRGB(26, 26, 32),      -- Hover Slate
+        Surface  = Color3.fromRGB(22, 22, 28),      -- Surface Panel
+        Accent   = Color3.fromRGB(240, 240, 245),    -- Pure Starlight White (#ffffff)
+        AccHov   = Color3.fromRGB(255, 255, 255),    -- Radiant Glint
+        Green    = Color3.fromRGB(80, 230, 150),     -- Vivid Emerald
+        Red      = Color3.fromRGB(245, 75, 90),      -- Crisp Crimson
+        Text     = Color3.fromRGB(255, 255, 255),    -- Crisp White
+        Dim      = Color3.fromRGB(130, 130, 145),    -- Moonstone Dim
+        Border   = Color3.fromRGB(45, 45, 55),      -- Dark Silver Border
+        BorderGlow= Color3.fromRGB(220, 225, 240),   -- Glowing Starlight Silver (#dce1f0)
+        Section  = Color3.fromRGB(30, 30, 38),      -- Section Header
+        Sub      = Color3.fromRGB(160, 160, 175),    -- Subtext
+        Yellow   = Color3.fromRGB(255, 215, 80),     -- Solar Gold
+        FM       = Enum.Font.GothamBold,
+        FB       = Enum.Font.Gotham,
+        FC       = Enum.Font.Code,
+    }
+    local BG_ALPHA = 0.4
+
+    local SG = Instance.new("ScreenGui")
+    SG.Name = "DayBreakCommandGUI"; SG.ResetOnSpawn = false; SG.IgnoreGuiInset = true
+    SG.DisplayOrder = 100; SG.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    SG.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+    local function C(cl,pr) local i=Instance.new(cl); for k,v in pairs(pr) do if k~="Parent" then i[k]=v end end; if pr.Parent then i.Parent=pr.Parent end; return i end
+    local function Cn(p,r) C("UICorner",{CornerRadius=r or UDim.new(0,8),Parent=p}) end
+    local function St(p,c,th) C("UIStroke",{Color=c or T.Border,Thickness=th or 1,Transparency=0.3,Parent=p}) end
+    local function Tw(o,pr,d,s) TS:Create(o,TweenInfo.new(d or 0.18,s or Enum.EasingStyle.Quad),pr):Play() end
+
+    local function MakeDraggable(handle, frame)
+        local dg,di,ds,sp = false,nil,nil,nil
+        handle.InputBegan:Connect(function(inp)
+            if inp.UserInputType==Enum.UserInputType.MouseButton1 or inp.UserInputType==Enum.UserInputType.Touch then
+                dg=true; ds=inp.Position; sp=frame.Position
+                inp.Changed:Connect(function() if inp.UserInputState==Enum.UserInputState.End then dg=false end end)
+            end
+        end)
+        handle.InputChanged:Connect(function(inp)
+            if inp.UserInputType==Enum.UserInputType.MouseMovement or inp.UserInputType==Enum.UserInputType.Touch then di=inp end
+        end)
+        UIS.InputChanged:Connect(function(inp)
+            if inp==di and dg then
+                local d2=inp.Position-ds
+                frame.Position=UDim2.new(sp.X.Scale,sp.X.Offset+d2.X,sp.Y.Scale,sp.Y.Offset+d2.Y)
+            end
+        end)
+    end
+
+    ----------------------------------------------------------------
+    -- COMMAND DATA (Professional Descriptions)
+    ----------------------------------------------------------------
+    local SECTIONS = {
+        {
+            name = "Movement",
+            color = Color3.fromRGB(120, 180, 255),
+            cmds = {
+                {cmd="goto",   desc="Teleports to player",      al="[bot] Target",          ha=true},
+                {cmd="follow", desc="Follows target",           al="[bot] Target",          ha=true},
+                {cmd="walkto", desc="Walks to target",          al="[bot] Target",          ha=true},
+                {cmd="bring",  desc="Summons bots directly",    al="[bot] Target",          ha=true},
+                {cmd="wonder", desc="Randomly wanders",         ha=false},
+                {cmd="stalk",  desc="Stalks from behind",       al="[bot] Target",          ha=true},
+                {cmd="worm",   desc="Forms snake chain",        al="[bot] Target",          ha=true},
+                {cmd="swarm",  desc="Chaotic swarming",         al="[bot] [Spd] [R] Target",ha=true},
+                {cmd="carpet", desc="Grid pattern formation",   al="[bot] Target",          ha=true},
+                {cmd="tp",     desc="Teleports via coords",     al="[bot] X Y Z / Target",  ha=true},
+                {cmd="scatter",desc="Random scattering",        al="[bot] Range",           ha=true},
+            },
+        },
+        {
+            name = "Formations",
+            color = Color3.fromRGB(240, 240, 245),
+            cmds = {
+                {cmd="circle",    desc="Snaps to circle",   al="[R] Target",ha=true},
+                {cmd="loopcircle",desc="Iterative circle",  al="[R] Target",ha=true},
+                {cmd="arrow",     desc="V-shape pattern",   al="Target",    ha=true},
+                {cmd="box",       desc="Square array",      al="Target",    ha=true},
+                {cmd="stackon",   desc="Vertical tower",    al="Target",    ha=true},
+                {cmd="rline",     desc="Right side line",   al="Target",    ha=true},
+                {cmd="lline",     desc="Left side line",    al="Target",    ha=true},
+                {cmd="fline",     desc="Forward line",      al="Target",    ha=true},
+                {cmd="bline",     desc="Rear line",         al="Target",    ha=true},
+                {cmd="looprline", desc="Loop active right", al="Target",    ha=true},
+                {cmd="looplline", desc="Loop active left",  al="Target",    ha=true},
+                {cmd="loopfline", desc="Loop active front", al="Target",    ha=true},
+                {cmd="loopbline", desc="Loop active rear",  al="Target",    ha=true},
+            },
+        },
+        {
+            name = "Meme & Fun",
+            color = Color3.fromRGB(255, 120, 200),
+            cmds = {
+                {cmd="bodyguard", desc="Surrounds and protects target", al="Target", ha=true},
+                {cmd="ritual",    desc="Summons dark ritual circle",    al="Target", ha=true},
+                {cmd="paparazzi", desc="Crowds target taking photos",   al="Target", ha=true},
+                {cmd="coffin",    desc="Pallbearer coffin dance",       al="Target", ha=true},
+                {cmd="conga",     desc="Follows in conga dance line",   al="Target", ha=true},
+                {cmd="stare",     desc="Surrounds and stares at target",al="Target", ha=true},
+                {cmd="tornado",   desc="High-speed vortex spin",        al="Target", ha=true},
+                {cmd="creeper",   desc="Red Light Green Light stealth", al="Target", ha=true},
+                {cmd="uncreeper", desc="Stops stealth creeping",                     ha=false},
+            },
+        },
+        {
+            name = "Orbits",
+            color = Color3.fromRGB(255, 215, 80),
+            cmds = {
+                {cmd="orbit",   desc="Flat circular orbit",  al="[Spd] [R] Target",ha=true},
+                {cmd="orbit1",  desc="Double helix",         al="[Spd] [R] Target",ha=true},
+                {cmd="orbit2",  desc="Atomic structure",     al="[Spd] [R] Target",ha=true},
+                {cmd="orbit3",  desc="Wide galaxy spin",     al="[Spd] [R] Target",ha=true},
+                {cmd="orbit4",  desc="Vertical vortex",      al="[Spd] [R] Target",ha=true},
+                {cmd="orbit5",  desc="Figure-eight orbit",   al="[Spd] [R] Target",ha=true},
+                {cmd="orbit6",  desc="Layered cascade",      al="[Spd] [R] Target",ha=true},
+                {cmd="orbit7",  desc="Target pulsar",        al="[Spd] [R] Target",ha=true},
+                {cmd="orbit8",  desc="Planetary ring",       al="[Spd] [R] Target",ha=true},
+                {cmd="orbit9",  desc="Floral pattern",       al="[Spd] [R] Target",ha=true},
+                {cmd="orbit10", desc="Unpredictable spin",   al="[Spd] [R] Target",ha=true},
+            },
+        },
+        {
+            name = "Spirals",
+            color = Color3.fromRGB(255, 140, 60),
+            cmds = {
+                {cmd="spiral1", desc="Upward ascent",   al="[Spd] [R] Target",ha=true},
+                {cmd="spiral2", desc="Cone vortex",     al="[Spd] [R] Target",ha=true},
+                {cmd="spiral3", desc="Ladder form",     al="[Spd] [R] Target",ha=true},
+                {cmd="spiral4", desc="Dispersal jet",   al="[Spd] [R] Target",ha=true},
+                {cmd="spiral5", desc="Funnel tornado",  al="[Spd] [R] Target",ha=true},
+                {cmd="spiral6", desc="Golden ratio",    al="[Spd] [R] Target",ha=true},
+                {cmd="spiral7", desc="Bouncing spring", al="[Spd] [R] Target",ha=true},
+                {cmd="spiral8", desc="Inward pool",     al="[Spd] [R] Target",ha=true},
+                {cmd="spiral9", desc="Wavy ascent",     al="[Spd] [R] Target",ha=true},
+                {cmd="spiral10",desc="Fluid drop",      al="[Spd] [R] Target",ha=true},
+            },
+        },
+        {
+            name = "Shields",
+            color = Color3.fromRGB(80, 230, 150),
+            cmds = {
+                {cmd="shield1",desc="Protective wall",  al="Target",ha=true},
+                {cmd="shield2",desc="Defensive arc",    al="Target",ha=true},
+                {cmd="shield3",desc="V-guard array",    al="Target",ha=true},
+                {cmd="shield4",desc="Reinforced wall",  al="Target",ha=true},
+                {cmd="shield5",desc="Full enclosure",   al="Target",ha=true},
+            },
+        },
+        {
+            name = "Action",
+            color = Color3.fromRGB(245, 75, 90),
+            cmds = {
+                {cmd="jump",    desc="Forces bots to jump",      ha=false},
+                {cmd="sit",     desc="Forces bots to sit",       ha=false},
+                {cmd="rest",    desc="Lays bots flat",           ha=false},
+                {cmd="spin",    desc="High-speed spin",          al="[Speed]",ha=true},
+                {cmd="firework",desc="Launches bots upward",     ha=false},
+                {cmd="nuke",    desc="Explosive radial scatter", ha=false},
+                {cmd="vfling",  desc="Vehicle fling launch",     al="[bot] Target",ha=true},
+                {cmd="kill",    desc="Eliminates bots instantly",ha=false},
+            },
+        },
+        {
+            name = "Emotes & Sync",
+            color = Color3.fromRGB(180, 140, 255),
+            cmds = {
+                {cmd="sync",    desc="Synchronizes catalog emote",al="EmoteName",ha=true},
+                {cmd="emote",   desc="Plays emote across bots",  al="EmoteName",ha=true},
+                {cmd="dance",   desc="Synchronized group dance", al="[1-3]",    ha=true},
+                {cmd="unemote", desc="Stops all active emotes",                 ha=false},
+                {cmd="emote1-8",desc="Default Roblox emotes",                   ha=false},
+                {cmd="laugh",   desc="Plays laugh animation",                   ha=false},
+                {cmd="wave",    desc="Plays wave animation",                    ha=false},
+                {cmd="point",   desc="Plays point animation",                   ha=false},
+                {cmd="cheer",   desc="Plays cheer animation",                   ha=false},
+            },
+        },
+        {
+            name = "Trolls & Interactions",
+            color = Color3.fromRGB(255, 100, 140),
+            cmds = {
+                {cmd="bang",    desc="Animated bang interaction",al="Target",ha=true},
+                {cmd="fbang",   desc="Face-to-face interaction", al="Target",ha=true},
+                {cmd="mbang",   desc="Multiple bot interaction", al="Target",ha=true},
+                {cmd="rizz",    desc="Smooth approach anim",     al="Target",ha=true},
+                {cmd="grab",    desc="Carries target player",    al="Target",ha=true},
+                {cmd="hs",      desc="Headstand on target",      al="Target",ha=true},
+                {cmd="hs1-20",  desc="Multi-tier headstand",     al="Target",ha=true},
+            },
+        },
+        {
+            name = "Performance & RAM",
+            color = Color3.fromRGB(80, 230, 220),
+            cmds = {
+                {cmd="ram",     desc="Checks RAM usage in MB",             ha=false},
+                {cmd="lowram",  desc="Ultra-low memory 3D render mode",    ha=false},
+                {cmd="unlowram",desc="Restores normal visual rendering",   ha=false},
+                {cmd="cleanram",desc="Forces Lua garbage collection purge",ha=false},
+                {cmd="flush",   desc="Alias for cleanram purge",           ha=false},
+                {cmd="ping",    desc="Checks network ping",                ha=false},
+                {cmd="uptime",  desc="Checks active bot uptime",           ha=false},
+                {cmd="altcount",desc="Counts online connected bots",       ha=false},
+            },
+        },
+        {
+            name = "Utility & System",
+            color = Color3.fromRGB(200, 200, 215),
+            cmds = {
+                {cmd="cmds",      desc="Toggles command UI",             ha=false},
+                {cmd="whitelist", desc="Whitelists target player",       al="Target",ha=true},
+                {cmd="blacklist", desc="Removes player whitelist",       al="Target",ha=true},
+                {cmd="ws",        desc="Sets bot walkspeed",             al="[bot] Value",ha=true},
+                {cmd="unws",      desc="Resets bot walkspeed to 16",     ha=false},
+                {cmd="noclip",    desc="Enables ghost noclip collision", ha=false},
+                {cmd="clip",      desc="Restores standard collisions",   ha=false},
+                {cmd="invisible", desc="Hides character completely",     ha=false},
+                {cmd="visible",   desc="Restores character visibility",  ha=false},
+                {cmd="freeze",    desc="Freezes bots in place",          ha=false},
+                {cmd="unfreeze",  desc="Unfreezes bots",                 ha=false},
+                {cmd="stop",      desc="Halts all running commands",     ha=false},
+                {cmd="rejoin",    desc="Safely rejoins current server",  ha=false},
+                {cmd="quit",      desc="Closes and disconnects alts",    ha=false},
+            },
+        },
+    }
+    ----------------------------------------------------------------
+    -- MINIMIZED STAR KEYCHAIN ICON (Base64 Asset Loader)
+    ----------------------------------------------------------------
+    local STAR_LOGO_B64 = [[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]]
+
+    local function GetStarLogoAsset()
+        local customAsset = nil
+        pcall(function()
+            if writefile and getcustomasset then
+                local filename = "DayBreak_StarLogo.png"
+                if not isfile or not isfile(filename) then
+                    local b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+                    local function b64decode(data)
+                        data = string.gsub(data, '[^'..b64chars..'=]', '')
+                        return (data:gsub('(.=?)', function(x)
+                            if (#x < 2) then return '' end
+                            local c=0
+                            for i=1, #x do
+                                local c1 = b64chars:find(x:sub(i,i), 1, true)
+                                if c1 then c = c * 64 + (c1 - 1) else c = c * 64 end
+                            end
+                            local bits = #x * 6 - 6
+                            local res = ''
+                            for i=math.floor(bits/8)*8, 8, -8 do
+                                res = res .. string.char(math.floor(c / 2^(i-8)) % 256)
+                            end
+                            return res
+                        end))
+                    end
+                    local rawBytes = nil
+                    if crypt and crypt.base64decode then
+                        rawBytes = crypt.base64decode(STAR_LOGO_B64)
+                    elseif base64_decode then
+                        rawBytes = base64_decode(STAR_LOGO_B64)
+                    elseif syn and syn.crypt and syn.crypt.base64_decode then
+                        rawBytes = syn.crypt.base64_decode(STAR_LOGO_B64)
+                    end
+                    if rawBytes then
+                        writefile(filename, rawBytes)
+                    end
+                end
+                customAsset = getcustomasset(filename)
+            end
+        end)
+        return customAsset or "rbxassetid://7072719338"
+    end
+
+    local ICON_SIZE = 46
+    local iconBtn = C("ImageButton",{
+        Name = "DayBreakStarIcon",
+        Size = UDim2.new(0, ICON_SIZE, 0, ICON_SIZE),
+        Position = UDim2.new(0, 14, 1, -(ICON_SIZE + 14)),
+        BackgroundColor3 = T.Card,
+        BackgroundTransparency = 0.1,
+        Image = GetStarLogoAsset(),
+        ScaleType = Enum.ScaleType.Fit,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Visible = false,
+        Parent = SG,
+    })
+    Cn(iconBtn, UDim.new(0, 12))
+    St(iconBtn, T.BorderGlow, 1.8)
+    MakeDraggable(iconBtn, iconBtn)
+    iconBtn.MouseEnter:Connect(function() Tw(iconBtn, {BackgroundTransparency=0, Size=UDim2.new(0, ICON_SIZE+4, 0, ICON_SIZE+4)}, 0.15) end)
+    iconBtn.MouseLeave:Connect(function() Tw(iconBtn, {BackgroundTransparency=0.1, Size=UDim2.new(0, ICON_SIZE, 0, ICON_SIZE)}, 0.15) end)
+
+    ----------------------------------------------------------------
+    -- MAIN WINDOW
+    ----------------------------------------------------------------
+    local WW, WH = 240, 480
+
+    local MF = C("Frame",{
+        Name = "MainWindow",
+        Size = UDim2.new(0, 0, 0, 0),
+        Position = UDim2.new(1, -(WW + 16), 0.5, -(WH/2)),
+        BackgroundColor3 = T.Bg,
+        BackgroundTransparency = BG_ALPHA,
+        BorderSizePixel = 0,
+        ClipsDescendants = true,
+        Parent = SG,
+    })
+    Cn(MF, UDim.new(0, 10))
+    St(MF, T.Accent, 1.5)
+    Tw(MF, {Size = UDim2.new(0, WW, 0, WH)}, 0.45, Enum.EasingStyle.Back)
+
+    ----------------------------------------------------------------
+    -- TITLE BAR
+    ----------------------------------------------------------------
+    local HDR_H = 36
+    local hdr = C("Frame",{
+        Size = UDim2.new(1, 0, 0, HDR_H),
+        BackgroundColor3 = T.Card,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        Parent = MF,
+    })
+    Cn(hdr, UDim.new(0, 10))
+    C("Frame",{Size=UDim2.new(1,0,0,10),Position=UDim2.new(0,0,1,-10),BackgroundColor3=T.Card,BackgroundTransparency=0.3,BorderSizePixel=0,Parent=hdr})
+    C("Frame",{Size=UDim2.new(1,-16,0,2),Position=UDim2.new(0,8,1,0),BackgroundColor3=T.Accent,BorderSizePixel=0,Parent=hdr})
+
+    C("TextLabel",{
+        Size = UDim2.new(1, -80, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundTransparency = 1,
+        Text = "DayBreak ALT Control",
+        TextColor3 = T.Text,
+        TextSize = 13,
+        Font = T.FM,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = hdr,
+    })
+
+    local BCL = C("TextLabel",{
+        Size = UDim2.new(0, 50, 0, 14),
+        Position = UDim2.new(1, -106, 0.5, -7),
+        BackgroundColor3 = T.Surface,
+        BackgroundTransparency = 0.5,
+        Text = "0",
+        TextColor3 = T.Green,
+        TextSize = 9,
+        Font = T.FC,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        BorderSizePixel = 0,
+        Parent = hdr,
+    })
+    Cn(BCL, UDim.new(0, 4))
+    task.spawn(function()
+        while _G.DayBreakActive do RefreshBotCache(); BCL.Text = "Bots:" .. _bc.total; task.wait(3) end
+    end)
+
+    local minBtn = C("TextButton",{
+        Size = UDim2.new(0, 22, 0, 22),
+        Position = UDim2.new(1, -52, 0.5, -11),
+        BackgroundColor3 = T.Surface,
+        BackgroundTransparency = 0.3,
+        Text = "--",
+        TextColor3 = T.Dim,
+        TextSize = 10,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = hdr,
+    })
+    Cn(minBtn, UDim.new(0, 5))
+    minBtn.MouseEnter:Connect(function() Tw(minBtn, {BackgroundTransparency=0, TextColor3=T.Text}, 0.1) end)
+    minBtn.MouseLeave:Connect(function() Tw(minBtn, {BackgroundTransparency=0.3, TextColor3=T.Dim}, 0.1) end)
+
+    local closeBtn = C("TextButton",{
+        Size = UDim2.new(0, 22, 0, 22),
+        Position = UDim2.new(1, -26, 0.5, -11),
+        BackgroundColor3 = T.Red,
+        BackgroundTransparency = 0.5,
+        Text = "X",
+        TextColor3 = T.Dim,
+        TextSize = 10,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = hdr,
+    })
+    Cn(closeBtn, UDim.new(0, 5))
+    closeBtn.MouseEnter:Connect(function() Tw(closeBtn, {BackgroundTransparency=0, TextColor3=Color3.new(1,1,1)}, 0.1) end)
+    closeBtn.MouseLeave:Connect(function() Tw(closeBtn, {BackgroundTransparency=0.5, TextColor3=T.Dim}, 0.1) end)
+
+    MakeDraggable(hdr, MF)
+
+    ----------------------------------------------------------------
+    -- SEARCH BAR
+    ----------------------------------------------------------------
+    local SEARCH_Y = HDR_H + 6
+    local SF = C("Frame",{
+        Size = UDim2.new(1, -16, 0, 26),
+        Position = UDim2.new(0, 8, 0, SEARCH_Y),
+        BackgroundColor3 = T.Surface,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        Parent = MF,
+    })
+    Cn(SF, UDim.new(0, 6))
+    St(SF, T.Border, 0.8)
+
+    local SB = C("TextBox",{
+        Size = UDim2.new(1, -10, 1, 0),
+        Position = UDim2.new(0, 5, 0, 0),
+        BackgroundTransparency = 1,
+        PlaceholderText = "Search...",
+        PlaceholderColor3 = T.Dim,
+        Text = "",
+        TextColor3 = T.Text,
+        TextSize = 11,
+        Font = T.FB,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ClearTextOnFocus = false,
+        Parent = SF,
+    })
+
+    ----------------------------------------------------------------
+    -- CONTENT PAGES (Commands List & Bot / RAM Monitor)
+    ----------------------------------------------------------------
+    local LIST_Y = SEARCH_Y + 32
+    local CONTENT_H = -(LIST_Y + 70)
+
+    -- Page 1: Commands List
+    local listPage = C("ScrollingFrame",{
+        Name = "ListPage",
+        Size = UDim2.new(1, -16, 1, CONTENT_H),
+        Position = UDim2.new(0, 8, 0, LIST_Y),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        ScrollBarThickness = 3,
+        ScrollBarImageColor3 = T.BorderGlow,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        Visible = true,
+        Parent = MF,
+    })
+    C("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,2),Parent=listPage})
+    C("UIPadding",{PaddingTop=UDim.new(0,2),PaddingBottom=UDim.new(0,4),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),Parent=listPage})
+
+    -- Page 2: Live Bot & RAM Monitor Dashboard
+    local ramPage = C("ScrollingFrame",{
+        Name = "RamPage",
+        Size = UDim2.new(1, -16, 1, CONTENT_H),
+        Position = UDim2.new(0, 8, 0, LIST_Y),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        ScrollBarThickness = 3,
+        ScrollBarImageColor3 = T.Green,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        Visible = false,
+        Parent = MF,
+    })
+    C("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,4),Parent=ramPage})
+    C("UIPadding",{PaddingTop=UDim.new(0,2),PaddingBottom=UDim.new(0,4),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),Parent=ramPage})
+
+    -- Ram Page: Summary Header Card
+    local ramSummaryCard = C("Frame",{
+        Size = UDim2.new(1, 0, 0, 52),
+        BackgroundColor3 = T.Card,
+        BackgroundTransparency = 0.2,
+        BorderSizePixel = 0,
+        LayoutOrder = 1,
+        Parent = ramPage,
+    })
+    Cn(ramSummaryCard, UDim.new(0, 6))
+    St(ramSummaryCard, T.Border, 0.8)
+
+    local ramSummaryLbl = C("TextLabel",{
+        Size = UDim2.new(1, -10, 0, 20),
+        Position = UDim2.new(0, 6, 0, 4),
+        BackgroundTransparency = 1,
+        Text = "ðŸ“Š Bot Fleet & Memory Status",
+        TextColor3 = T.Accent,
+        TextSize = 10,
+        Font = T.FM,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = ramSummaryCard,
+    })
+
+    local flushAllBtn = C("TextButton",{
+        Size = UDim2.new(0.48, 0, 0, 20),
+        Position = UDim2.new(0, 4, 1, -24),
+        BackgroundColor3 = T.Green,
+        BackgroundTransparency = 0.6,
+        Text = "ðŸ§¹ Flush All RAM",
+        TextColor3 = Color3.new(1, 1, 1),
+        TextSize = 9,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = ramSummaryCard,
+    })
+    Cn(flushAllBtn, UDim.new(0, 4))
+    flushAllBtn.MouseButton1Click:Connect(function()
+        ChatSend(getgenv().Settings.prefix .. "cleanram")
+        Tw(flushAllBtn, {BackgroundTransparency = 0.2}, 0.1)
+        task.delay(0.25, function() Tw(flushAllBtn, {BackgroundTransparency = 0.6}, 0.2) end)
+    end)
+
+    local lowRamQuickBtn = C("TextButton",{
+        Size = UDim2.new(0.48, 0, 0, 20),
+        Position = UDim2.new(0.52, 0, 1, -24),
+        BackgroundColor3 = T.Yellow,
+        BackgroundTransparency = 0.6,
+        Text = "âš¡ Low-RAM Mode",
+        TextColor3 = Color3.new(1, 1, 1),
+        TextSize = 9,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = ramSummaryCard,
+    })
+    Cn(lowRamQuickBtn, UDim.new(0, 4))
+    lowRamQuickBtn.MouseButton1Click:Connect(function()
+        ChatSend(getgenv().Settings.prefix .. "lowram")
+        Tw(lowRamQuickBtn, {BackgroundTransparency = 0.2}, 0.1)
+        task.delay(0.25, function() Tw(lowRamQuickBtn, {BackgroundTransparency = 0.6}, 0.2) end)
+    end)
+
+    local botCardsContainer = C("Frame",{
+        Size = UDim2.new(1, 0, 0, 0),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        LayoutOrder = 2,
+        AutomaticSize = Enum.AutomaticSize.Y,
+        Parent = ramPage,
+    })
+    C("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=botCardsContainer})
+
+    local function RefreshRamMonitor()
+        RefreshBotCache()
+        for _, ch in ipairs(botCardsContainer:GetChildren()) do
+            if ch:IsA("Frame") then ch:Destroy() end
+        end
+
+        local bots = GetOnlineBotNames()
+        local myMem = string.format("%.1f MB", gcinfo() / 1024)
+
+        -- My Account Card
+        local myCard = C("Frame",{
+            Size = UDim2.new(1, 0, 0, 32),
+            BackgroundColor3 = T.Card,
+            BackgroundTransparency = 0.25,
+            BorderSizePixel = 0,
+            Parent = botCardsContainer,
+        })
+        Cn(myCard, UDim.new(0, 5))
+        St(myCard, T.BorderGlow, 0.8)
+
+        C("TextLabel",{
+            Size = UDim2.new(0.55, 0, 1, 0),
+            Position = UDim2.new(0, 6, 0, 0),
+            BackgroundTransparency = 1,
+            Text = "ðŸŸ¢ " .. LocalPlayer.Name .. " (You)",
+            TextColor3 = T.Text,
+            TextSize = 10,
+            Font = T.FM,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = myCard,
+        })
+
+        C("TextLabel",{
+            Size = UDim2.new(0.4, -6, 1, 0),
+            Position = UDim2.new(0.6, 0, 0, 0),
+            BackgroundTransparency = 1,
+            Text = myMem,
+            TextColor3 = T.Green,
+            TextSize = 10,
+            Font = T.FC,
+            TextXAlignment = Enum.TextXAlignment.Right,
+            Parent = myCard,
+        })
+
+        -- Each connected Alt Bot Card
+        for i, bName in ipairs(bots) do
+            if bName ~= LocalPlayer.Name:lower() then
+                local bCard = C("Frame",{
+                    Size = UDim2.new(1, 0, 0, 32),
+                    BackgroundColor3 = T.Card,
+                    BackgroundTransparency = 0.35,
+                    BorderSizePixel = 0,
+                    Parent = botCardsContainer,
+                })
+                Cn(bCard, UDim.new(0, 5))
+                St(bCard, T.Border, 0.6)
+
+                C("TextLabel",{
+                    Size = UDim2.new(0.55, 0, 1, 0),
+                    Position = UDim2.new(0, 6, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = string.format("ðŸ¤– Bot #%d: %s", i, bName),
+                    TextColor3 = T.Sub,
+                    TextSize = 9,
+                    Font = T.FB,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = bCard,
+                })
+
+                local flushOneBtn = C("TextButton",{
+                    Size = UDim2.new(0, 48, 0, 18),
+                    Position = UDim2.new(1, -54, 0.5, -9),
+                    BackgroundColor3 = T.Surface,
+                    BackgroundTransparency = 0.2,
+                    Text = "Purge",
+                    TextColor3 = T.Green,
+                    TextSize = 8,
+                    Font = T.FM,
+                    AutoButtonColor = false,
+                    BorderSizePixel = 0,
+                    Parent = bCard,
+                })
+                Cn(flushOneBtn, UDim.new(0, 3))
+                flushOneBtn.MouseButton1Click:Connect(function()
+                    ChatSend(string.format("%scleanram %s", getgenv().Settings.prefix, bName))
+                    Tw(flushOneBtn, {BackgroundColor3 = T.Green, TextColor3 = Color3.new(1,1,1)}, 0.1)
+                    task.delay(0.2, function() Tw(flushOneBtn, {BackgroundColor3 = T.Surface, TextColor3 = T.Green}, 0.2) end)
+                end)
+            end
+        end
+    end
+
+    task.spawn(function()
+        while _G.DayBreakActive do
+            if ramPage.Visible then
+                RefreshRamMonitor()
+            end
+            task.wait(2)
+        end
+    end)
+
+    local allCmdBtns = {}
+    local layoutOrd = 0
+
+    for _, sec in ipairs(SECTIONS) do
+        layoutOrd = layoutOrd + 1
+
+        -- Section header
+        local secHdr = C("Frame",{
+            Size = UDim2.new(1, 0, 0, 22),
+            BackgroundColor3 = sec.color,
+            BackgroundTransparency = 0.88,
+            BorderSizePixel = 0,
+            LayoutOrder = layoutOrd,
+            Parent = listPage,
+        })
+        Cn(secHdr, UDim.new(0, 5))
+        C("Frame",{Size=UDim2.new(0,3,1,-4),Position=UDim2.new(0,0,0,2),BackgroundColor3=sec.color,BorderSizePixel=0,Parent=secHdr})
+
+        C("TextLabel",{
+            Size = UDim2.new(1, -8, 1, 0),
+            Position = UDim2.new(0, 8, 0, 0),
+            BackgroundTransparency = 1,
+            Text = sec.name,
+            TextColor3 = sec.color,
+            TextSize = 10,
+            Font = T.FM,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = secHdr,
+        })
+
+        -- Inline Commands
+        for _, d in ipairs(sec.cmds) do
+            layoutOrd = layoutOrd + 1
+
+            local btn = C("TextButton",{
+                Name = "btn_" .. d.cmd,
+                Size = UDim2.new(1, 0, 0, 28),
+                BackgroundColor3 = T.Card,
+                BackgroundTransparency = 0.3,
+                Text = "",
+                AutoButtonColor = false,
+                BorderSizePixel = 0,
+                LayoutOrder = layoutOrd,
+                Parent = listPage,
+            })
+            Cn(btn, UDim.new(0, 5))
+
+            -- Command name (left)
+            C("TextLabel",{
+                Size = UDim2.new(0, 75, 1, 0),
+                Position = UDim2.new(0, 6, 0, 0),
+                BackgroundTransparency = 1,
+                Text = getgenv().Settings.prefix .. d.cmd,
+                TextColor3 = T.Text,
+                TextSize = 11,
+                Font = T.FM,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = btn,
+            })
+
+            -- Inline Argument Box if needed
+            local argBox = nil
+            if d.ha then
+                local argFrame = C("Frame", {
+                    Size = UDim2.new(1, -88, 1, -8),
+                    Position = UDim2.new(0, 80, 0, 4),
+                    BackgroundColor3 = T.Surface,
+                    BackgroundTransparency = 0.3,
+                    BorderSizePixel = 0,
+                    Parent = btn
+                })
+                Cn(argFrame, UDim.new(0, 4))
+                
+                argBox = C("TextBox", {
+                    Size = UDim2.new(1, -8, 1, 0),
+                    Position = UDim2.new(0, 4, 0, 0),
+                    BackgroundTransparency = 1,
+                    PlaceholderText = d.al or "args",
+                    PlaceholderColor3 = T.Dim,
+                    Text = "",
+                    TextColor3 = T.Text,
+                    TextSize = 9,
+                    Font = T.FC,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    ClearTextOnFocus = false,
+                    Active = true,
+                    Parent = argFrame,
+                })
+            end
+
+            -- Hover & Click Execution
+            btn.MouseEnter:Connect(function() Tw(btn, {BackgroundTransparency = 0.1, BackgroundColor3 = T.CardHov}, 0.12) end)
+            btn.MouseLeave:Connect(function() Tw(btn, {BackgroundTransparency = 0.3, BackgroundColor3 = T.Card}, 0.12) end)
+
+            btn.MouseButton1Click:Connect(function()
+                local pf = getgenv().Settings.prefix
+                local fc = pf .. d.cmd
+                if d.ha and argBox and argBox.Text ~= "" then fc = fc .. " " .. argBox.Text end
+                ChatSend(fc)
+                local curC = btn.BackgroundColor3
+                Tw(btn, {BackgroundColor3 = T.Green}, 0.1)
+                task.delay(0.2, function() Tw(btn, {BackgroundColor3 = curC}, 0.2) end)
+            end)
+
+            table.insert(allCmdBtns, {btn = btn, def = d, sec = sec})
+        end
+    end
+
+    ----------------------------------------------------------------
+    -- SEARCH FILTER
+    ----------------------------------------------------------------
+    SB:GetPropertyChangedSignal("Text"):Connect(function()
+        local q = SB.Text:lower()
+        local visibleSections = {}
+        for _, e in ipairs(allCmdBtns) do
+            local show = q == "" or e.def.cmd:find(q, 1, true) or e.def.desc:lower():find(q, 1, true) or e.sec.name:lower():find(q, 1, true)
+            e.btn.Visible = show
+            if show then visibleSections[e.sec.name] = true end
+        end
+        for _, child in ipairs(listPage:GetChildren()) do
+            if child:IsA("Frame") and child.Name == "Frame" then
+                local lbl = child:FindFirstChildOfClass("TextLabel")
+                if lbl then
+                    child.Visible = q == "" or visibleSections[lbl.Text] or false
+                end
+            end
+        end
+    end)
+
+    ----------------------------------------------------------------
+    -- DUAL TAB SWITCHER (Commands / Bot RAM)
+    ----------------------------------------------------------------
+    local tabBar = C("Frame",{
+        Name = "TabBar",
+        Size = UDim2.new(1, -16, 0, 24),
+        Position = UDim2.new(0, 8, 1, -64),
+        BackgroundColor3 = T.Card,
+        BackgroundTransparency = 0.4,
+        BorderSizePixel = 0,
+        Parent = MF,
+    })
+    Cn(tabBar, UDim.new(0, 5))
+    St(tabBar, T.Border, 0.6)
+
+    local tabCmdsBtn = C("TextButton",{
+        Size = UDim2.new(0.5, -2, 1, -2),
+        Position = UDim2.new(0, 1, 0, 1),
+        BackgroundColor3 = T.Surface,
+        BackgroundTransparency = 0.1,
+        Text = "âš¡ Commands",
+        TextColor3 = T.Accent,
+        TextSize = 10,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = tabBar,
+    })
+    Cn(tabCmdsBtn, UDim.new(0, 4))
+
+    local tabRamBtn = C("TextButton",{
+        Size = UDim2.new(0.5, -2, 1, -2),
+        Position = UDim2.new(0.5, 1, 0, 1),
+        BackgroundColor3 = T.Card,
+        BackgroundTransparency = 0.7,
+        Text = "ðŸ“Š Bot & RAM",
+        TextColor3 = T.Sub,
+        TextSize = 10,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = tabBar,
+    })
+    Cn(tabRamBtn, UDim.new(0, 4))
+
+    tabCmdsBtn.MouseButton1Click:Connect(function()
+        listPage.Visible = true
+        ramPage.Visible = false
+        SF.Visible = true
+        tabCmdsBtn.BackgroundColor3 = T.Surface
+        tabCmdsBtn.TextColor3 = T.Accent
+        tabCmdsBtn.BackgroundTransparency = 0.1
+        tabRamBtn.BackgroundColor3 = T.Card
+        tabRamBtn.TextColor3 = T.Sub
+        tabRamBtn.BackgroundTransparency = 0.7
+    end)
+
+    tabRamBtn.MouseButton1Click:Connect(function()
+        listPage.Visible = false
+        ramPage.Visible = true
+        SF.Visible = false
+        tabRamBtn.BackgroundColor3 = T.Surface
+        tabRamBtn.TextColor3 = T.Green
+        tabRamBtn.BackgroundTransparency = 0.1
+        tabCmdsBtn.BackgroundColor3 = T.Card
+        tabCmdsBtn.TextColor3 = T.Sub
+        tabCmdsBtn.BackgroundTransparency = 0.7
+        RefreshRamMonitor()
+    end)
+
+    ----------------------------------------------------------------
+    -- GLOBAL STOP BUTTON
+    ----------------------------------------------------------------
+    local stopBtn = C("TextButton",{
+        Name = "GlobalStopBtn",
+        Size = UDim2.new(1, -16, 0, 28),
+        Position = UDim2.new(0, 8, 1, -36),
+        BackgroundColor3 = T.Red,
+        BackgroundTransparency = 0.45,
+        Text = "[ STOP ALL ACTION ]",
+        TextColor3 = Color3.new(1, 1, 1),
+        TextSize = 10,
+        Font = T.FM,
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        Parent = MF,
+    })
+    Cn(stopBtn, UDim.new(0, 4))
+    stopBtn.MouseEnter:Connect(function() Tw(stopBtn, {BackgroundTransparency=0.1}, 0.1) end)
+    stopBtn.MouseLeave:Connect(function() Tw(stopBtn, {BackgroundTransparency=0.45}, 0.1) end)
+    stopBtn.MouseButton1Click:Connect(function()
+        ChatSend(getgenv().Settings.prefix .. "stop")
+        local curC = stopBtn.BackgroundColor3
+        Tw(stopBtn, {BackgroundColor3 = T.Green}, 0.1)
+        task.delay(0.2, function() Tw(stopBtn, {BackgroundColor3 = curC}, 0.2) end)
+    end)
+
+    ----------------------------------------------------------------
+    -- MINIMIZE / CLOSE / RESTORE
+    ----------------------------------------------------------------
+    local function MinimizeGUI()
+        Tw(MF, {Size = UDim2.new(0, 0, 0, 0)}, 0.25, Enum.EasingStyle.Back)
+        task.delay(0.25, function()
+            MF.Visible = false
+            iconBtn.Visible = true
+            Tw(iconBtn, {BackgroundTransparency = 0.2}, 0.15)
+        end)
+    end
+
+    local function RestoreGUI()
+        iconBtn.Visible = false
+        MF.Visible = true
+        Tw(MF, {Size = UDim2.new(0, WW, 0, WH)}, 0.35, Enum.EasingStyle.Back)
+    end
+
+    minBtn.MouseButton1Click:Connect(MinimizeGUI)
+    closeBtn.MouseButton1Click:Connect(MinimizeGUI)
+    iconBtn.MouseButton1Click:Connect(RestoreGUI)
+
+    UIS.InputBegan:Connect(function(inp, gp)
+        if gp then return end
+        if inp.KeyCode == Enum.KeyCode.RightShift then
+            if MF.Visible then MinimizeGUI() else RestoreGUI() end
+        end
+    end)
+end
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  INVISIBLE (emote-based, no GUI)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+do
+    local INVIS_EMOTE_ID = 92018855869257
+    _G.InvisEnabled = false
+    _G.InvisEmoteTrack = nil
+    local invisCharConns = {}
+
+    local function urlToId(id)
+        id = string.gsub(id, "http://www%.roblox%.com/asset/%?id=", "")
+        id = string.gsub(id, "rbxassetid://", "")
+        return id
+    end
+
+    local function isDancing(character, animationTrack)
+        local animId = urlToId(animationTrack.Animation.AnimationId)
+        local animate = character:FindFirstChild("Animate")
+        if not animate then return true end
+        for _, holder in ipairs(animate:GetChildren()) do
+            if holder:IsA("StringValue") then
+                for _, anim in ipairs(holder:GetChildren()) do
+                    if anim:IsA("Animation") and urlToId(anim.AnimationId) == animId then
+                        return false
+                    end
+                end
+            end
+        end
+        return true
+    end
+
+    local function stopInvisEmote()
+        if _G.InvisEmoteTrack then
+            pcall(function() _G.InvisEmoteTrack:Stop() end)
+            _G.InvisEmoteTrack = nil
+        end
+    end
+
+    local function playInvisEmote(humanoid, emoteId)
+        stopInvisEmote()
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://" .. tostring(emoteId)
+        local success, animTrack = pcall(function()
+            return humanoid.Animator:LoadAnimation(animation)
+        end)
+        if not success or not animTrack then return false end
+        _G.InvisEmoteTrack = animTrack
+        _G.InvisEmoteTrack.Priority = Enum.AnimationPriority.Action
+        _G.InvisEmoteTrack.Looped = true
+        task.wait(0.1)
+        if _G.InvisEnabled then
+            _G.InvisEmoteTrack:Play()
+            pcall(function() _G.InvisEmoteTrack:AdjustSpeed(1.0) end)
+        end
+        return true
+    end
+
+    local function setupInvisCharacter(character)
+        for _, c in pairs(invisCharConns) do pcall(function() c:Disconnect() end) end
+        invisCharConns = {}
+        _G.InvisEmoteTrack = nil
+
+        local humanoid = character:WaitForChild("Humanoid", 10)
+        if not humanoid then return end
+        local animator = humanoid:WaitForChild("Animator", 10)
+        if not animator then return end
+
+        table.insert(invisCharConns, animator.AnimationPlayed:Connect(function(animationTrack)
+            if not _G.InvisEnabled then return end
+            if not isDancing(character, animationTrack) then return end
+            local playedId = urlToId(animationTrack.Animation.AnimationId)
+            if playedId == "" or playedId == "0" then return end
+            if _G.InvisEmoteTrack then
+                if urlToId(_G.InvisEmoteTrack.Animation.AnimationId) == playedId then return end
+                stopInvisEmote()
+            end
+            pcall(function() animationTrack:Stop() end)
+            task.spawn(function() playInvisEmote(humanoid, playedId) end)
+        end))
+
+        table.insert(invisCharConns, humanoid.Died:Connect(function()
+            _G.InvisEnabled = false
+            stopInvisEmote()
+        end))
+    end
+
+    if LocalPlayer.Character then task.spawn(function() setupInvisCharacter(LocalPlayer.Character) end) end
+    getgenv().TrackConnection(LocalPlayer.CharacterAdded:Connect(function(c)
+        task.spawn(function() setupInvisCharacter(c) end)
+    end))
+
+    Commands.invisible = function(args, speaker)
+        if not IsSoloCommand(args) then return end
+        local char = LocalPlayer.Character
+        if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if not hum then return end
+        _G.InvisEnabled = true
+        pcall(function() hum:PlayEmoteAndGetAnimTrackById(INVIS_EMOTE_ID) end)
+        task.delay(0.6, function()
+            if _G.InvisEnabled and (not _G.InvisEmoteTrack or not _G.InvisEmoteTrack.IsPlaying) then
+                local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                if h then task.spawn(function() playInvisEmote(h, INVIS_EMOTE_ID) end) end
+            end
+        end)
+    end
+    Commands.invis = Commands.invisible
+
+    Commands.visible = function(args, speaker)
+        if not IsSoloCommand(args) then return end
+        _G.InvisEnabled = false
+        stopInvisEmote()
+    end
+    Commands.vis = Commands.visible
+    Commands.hide = Commands.invisible
+    Commands.show = Commands.visible
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  MUSIC BOT COMMANDS (merged from MusicBots.lua)
+--  Uses "/" prefix, only designated bot contacts server
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local MusicCommands = {}
+
+MusicCommands.play = function(player, args, rawMessage)
+    local prefix = getgenv().Settings.musicPrefix
+    local query = rawMessage:sub(#prefix + 5):gsub("^%s+", ""):gsub("%s+$", "")
+    if #query < 2 then musicChat("âŒ Search query too short!"); return end
+
+    local now = os.time()
+    local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
+    if not isMain then
+        local cd = getgenv().Settings.musicPlayCooldown or 10
+        if MusicState.lastPlayTime[player.Name] and (now - MusicState.lastPlayTime[player.Name]) < cd then
+            local rem = cd - (now - MusicState.lastPlayTime[player.Name])
+            musicChat(string.format("â³ @%s wait %d seconds", player.Name, rem))
+            return
+        end
+    end
+    MusicState.lastPlayTime[player.Name] = now
+    musicChat("ðŸ” Searching: " .. query)
+    task.spawn(function()
+        local resp = musicRequest("/play", { query = query, user = player.Name })
+        if resp then
+            if resp.wait_seconds then
+                musicChat(string.format("â³ Wait %d seconds", resp.wait_seconds))
+            elseif resp.reason == "already_playing" then
+                musicChat("ðŸŽµ That song is already playing!")
+            elseif resp.reason == "in_queue" then
+                musicChat("ðŸ“‹ That song is already in the queue!")
+            elseif resp.error then
+                musicChat("âŒ " .. resp.error)
+            elseif resp.status == "queued" then
+                local title = resp.title and ("âœ… Queued: " .. resp.title) or "âœ… Queued!"
+                musicChat(title)
+                if resp.queue_position and resp.queue_position > 1 then
+                    task.wait(1); musicChat(string.format("ðŸ“‹ Position: #%d", resp.queue_position))
+                end
+            else musicChat("âœ… Request sent!") end
+        else musicChat("Ahh Not Sure if ur song got added man, check /queue.") end
+    end)
+end
+
+MusicCommands.pause = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/control", { action = "pause", user = player.Name })
+        if resp then
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
+            elseif resp.status == "paused" then musicChat("âš ï¸ Music paused") end
+        end
+    end)
+end
+
+MusicCommands.resume = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/control", { action = "resume", user = player.Name })
+        if resp then
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
+            elseif resp.status == "resumed" then musicChat("âœ”ï¸ Music resumed") end
+        end
+    end)
+end
+MusicCommands.continue = function(p, a) MusicCommands.resume(p, a) end
+
+MusicCommands.skip = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/control", { action = "skip", user = player.Name })
+        if resp then
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
+            elseif resp.status == "skipped" then musicChat("ðŸŽµ Skipped current song") end
+        end
+    end)
+end
+
+MusicCommands.musicstop = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/control", { action = "stop", user = player.Name })
+        if resp then
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
+            elseif resp.status == "stopped" then musicChat("âœ”ï¸ Stopped and cleared queue") end
+        end
+    end)
+end
+
+MusicCommands.volume = function(player, args)
+    if not getgenv().Settings.musicEnableVolume then musicChat("âŒ Volume control disabled"); return end
+    local vol = tonumber(args[2])
+    if not vol or vol < 0 or vol > 100 then musicChat("âŒ Usage: /volume <0-100>"); return end
+    task.spawn(function()
+        local resp = musicRequest("/control", { action = "volume", value = vol / 100, user = player.Name })
+        if resp then
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
+            elseif resp.status == "ok" then musicChat(string.format("ðŸ”Š Volume set to %d%%", vol)) end
+        end
+    end)
+end
+
+MusicCommands.status = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/status")
+        if resp then
+            if resp.current_song then
+                musicChat("ðŸŽµ Now: " .. resp.current_song.title)
+                if resp.playback_position and resp.playback_position > 0 then
+                    local mins = math.floor(resp.playback_position / 60)
+                    local secs = math.floor(resp.playback_position % 60)
+                    musicChat(string.format("â±ï¸ Position: %d:%02d", mins, secs))
+                end
+                if resp.queue_size > 0 then musicChat(string.format("ðŸ“‹ Queue: %d songs", resp.queue_size)) end
+                musicChat(string.format("ðŸ”Š Volume: %d%%", math.floor(resp.volume * 100)))
+            else
+                musicChat("ðŸ™„ Nothing playing")
+                if resp.queue_size > 0 then musicChat(string.format("ðŸ“‹ Queue: %d songs waiting", resp.queue_size)) end
+            end
+        end
+    end)
+end
+
+MusicCommands.nowplaying = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/nowplaying")
+        if resp then
+            if resp.playing and resp.title then
+                musicChat("ðŸŽµ Now Playing: " .. resp.title)
+                if resp.position and resp.position > 0 then
+                    local mins = math.floor(resp.position / 60)
+                    local secs = math.floor(resp.position % 60)
+                    local pauseTag = resp.is_paused and " (PAUSED)" or ""
+                    musicChat(string.format("â±ï¸ %d:%02d%s", mins, secs, pauseTag))
+                end
+                if resp.username then musicChat("ðŸ‘¤ Requested by: " .. resp.username) end
+                musicChat(string.format("ðŸ”Š Volume: %d%%", math.floor((resp.volume or 0.7) * 100)))
+            else
+                musicChat("ðŸ™„ Nothing playing right now")
+            end
+        end
+    end)
+end
+
+MusicCommands.queue = function(player, args)
+    if not getgenv().Settings.musicEnableQueue then musicChat("âŒ Queue display disabled"); return end
+    task.spawn(function()
+        local resp = musicRequest("/queue")
+        if resp and resp.total > 0 then
+            musicChat(string.format("ðŸ“‹ Queue (%d songs):", resp.total))
+            for i, item in ipairs(resp.queue) do
+                if i <= 5 then musicChat(string.format("%d. %s", item.position, item.title)); task.wait(0.5) end
+            end
+            if resp.total > 5 then musicChat(string.format("...and %d more", resp.total - 5)) end
+        else musicChat("ðŸ“‹ Queue is empty") end
+    end)
+end
+
+MusicCommands.stats = function(player, args)
+    if not getgenv().Settings.musicEnableStats then musicChat("âŒ Stats disabled"); return end
+    local lookupName = args[2] and (function()
+        local tp = FindTarget(args[2], player)
+        return tp and tp.Name or args[2]
+    end)() or player.Name
+    local label = args[2] or player.Name
+    task.spawn(function()
+        local resp = musicRequest("/stats", { user = lookupName })
+        if resp then
+            musicChat(string.format("ðŸ“Š %s's Stats:", label)); task.wait(0.5)
+            musicChat(string.format("âœ”ï¸ Played: %d", resp.songs_played or 0)); task.wait(0.5)
+            musicChat(string.format("âœ”ï¸ Skipped: %d", resp.songs_skipped or 0))
+        end
+    end)
+end
+
+MusicCommands.history = function(player, args)
+    task.spawn(function()
+        local resp = musicRequest("/history")
+        if resp and resp.history then
+            if #resp.history > 0 then
+                musicChat("ðŸ“œ Recent history:")
+                for i, item in ipairs(resp.history) do
+                    if i <= 5 then musicChat(string.format("%d. %s", i, item.title)); task.wait(0.5) end
+                end
+            else musicChat("ðŸ“œ No history yet") end
+        end
+    end)
+end
+
+MusicCommands.auth = function(player, args)
+    local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
+    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    local tp = FindTarget(args[2], player)
+    if not tp then musicChat("âŒ Player not found in game"); return end
+    task.spawn(function()
+        local resp = musicRequest("/admin/authorize", { user = tp.Name })
+        if resp and resp.status == "authorized" then musicChat(string.format("âœ… %s authorized for controls", tp.DisplayName))
+        else musicChat("âŒ Failed to authorize user") end
+    end)
+end
+
+MusicCommands.unauth = function(player, args)
+    local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
+    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    local tp = FindTarget(args[2], player)
+    if not tp then musicChat("âŒ Player not found in game"); return end
+    task.spawn(function()
+        local resp = musicRequest("/admin/revoke", { user = tp.Name })
+        if resp and resp.status == "revoked" then musicChat(string.format("âŒ %s unauthorized", tp.DisplayName))
+        else musicChat("âŒ Failed to revoke user") end
+    end)
+end
+
+MusicCommands.musicblacklist = function(player, args)
+    local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
+    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    local tp = FindTarget(args[2], player)
+    if not tp then musicChat("âŒ Player not found in game"); return end
+    task.spawn(function()
+        local resp = musicRequest("/admin/blacklist", { user = tp.Name })
+        if resp and resp.status == "blacklisted" then musicChat(string.format("ðŸš« %s blacklisted", tp.DisplayName))
+        else musicChat("âŒ Failed to blacklist user") end
+    end)
+end
+
+MusicCommands.unblacklist = function(player, args)
+    local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
+    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    local tp = FindTarget(args[2], player)
+    if not tp then musicChat("âŒ Player not found in game"); return end
+    task.spawn(function()
+        local resp = musicRequest("/admin/unblacklist", { user = tp.Name })
+        if resp and resp.status == "unblacklisted" then musicChat(string.format("âœ… %s removed from blacklist", tp.DisplayName))
+        else musicChat("âŒ Failed to unblacklist user") end
+    end)
+end
+
+MusicCommands.musiccmds = function(player, args)
+    musicChat("ðŸŽµ Music Bot Commands:")
+    task.wait(0.5); musicChat("./play <song> - Play a song")
+    task.wait(0.5); musicChat("./np - What's playing now")
+    task.wait(0.5); musicChat("./status - Full status & queue")
+    task.wait(0.5); musicChat("./queue - View queue")
+    task.wait(0.5); musicChat("./stats [user] - View statistics")
+    task.wait(0.5); musicChat("./history - Recent songs")
+    task.wait(0.5); musicChat("ðŸŽ›ï¸ Need controls? Ask for /auth")
+    local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
+    if isMain then task.wait(0.5); musicChat("ðŸ‘‘ Admin: /auth /unauth /blacklist") end
+end
+
+MusicCommands.checkauth = function(player, args)
+    local lookupName = args[2] and (function()
+        local tp = FindTarget(args[2], player)
+        return tp and tp.Name or args[2]
+    end)() or player.Name
+    local label = args[2] or player.Name
+    task.spawn(function()
+        local resp = musicRequest("/admin/check", { user = lookupName })
+        if resp then
+            local st = "âŒ Not authorized"
+            if resp.is_main_account then st = "ðŸ‘‘ Main Account (always authorized)"
+            elseif resp.is_authorized then st = "âœ… Authorized" end
+            musicChat(string.format("ðŸ” %s: %s", label, st))
+            if resp.is_blacklisted then musicChat("ðŸš« (Blacklisted)") end
+        end
+    end)
+end
+
+----------------------------------------------------------------
+-- MUSIC BOT CHAT LISTENER (separate / prefix)
+----------------------------------------------------------------
+local musicCmdMap = {
+    play = MusicCommands.play,
+    pause = MusicCommands.pause,
+    resume = MusicCommands.resume,
+    ["continue"] = MusicCommands.continue,
+    skip = MusicCommands.skip,
+    stop = MusicCommands.musicstop,
+    volume = MusicCommands.volume,
+    status = MusicCommands.status,
+    nowplaying = MusicCommands.nowplaying,
+    np = MusicCommands.nowplaying,
+    queue = MusicCommands.queue,
+    stats = MusicCommands.stats,
+    history = MusicCommands.history,
+    auth = MusicCommands.auth,
+    unauth = MusicCommands.unauth,
+    blacklist = MusicCommands.musicblacklist,
+    unblacklist = MusicCommands.unblacklist,
+    cmds = MusicCommands.musiccmds,
+    checkauth = MusicCommands.checkauth,
+}
+
+local function SetupMusicListener(p)
+    getgenv().TrackConnection(p.Chatted:Connect(function(msg)
+        local mPrefix = getgenv().Settings.musicPrefix or "/"
+        if not msg or #msg == 0 then return end
+        if msg:sub(1, #mPrefix) ~= mPrefix then return end
+
+        local args = msg:split(" ")
+        if #args == 0 then return end
+        local cmdName = args[1]:sub(#mPrefix + 1):lower()
+        local handler = musicCmdMap[cmdName]
+        if not handler then return end
+
+        -- Cooldown
+        local now = os.time()
+        local gcd = getgenv().Settings.musicGlobalCooldown or 3
+        if MusicState.lastCommandTime[p.Name] and (now - MusicState.lastCommandTime[p.Name]) < gcd then return end
+        MusicState.lastCommandTime[p.Name] = now
+
+        local ok, err = pcall(function() handler(p, args, msg) end)
+        if not ok then warn("[MusicBot] Error: " .. tostring(err)) end
+    end))
+end
+
+for _, p in ipairs(Players:GetPlayers()) do SetupMusicListener(p) end
+getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p) SetupMusicListener(p) end))
+
+-- -----------------------------------------------------------
+
+--  GLOBAL BACKGROUND ALIASES
+-- -----------------------------------------------------------
+do
+    Commands.to    = Commands.walkto
+    Commands.tpto  = Commands.tp
+    Commands.b     = Commands.grab
+    Commands.fj    = Commands.loopclone
+    Commands.unfj  = Commands.unloopclone
+    Commands.re    = Commands.rejoin
+    Commands.rj    = Commands.rejoin
+    Commands.cd    = Commands.countdown
+    Commands.f     = Commands.follow
+    Commands.unf   = Commands.unall
+    Commands.d     = Commands.dance
+    Commands.dance1 = Commands.dance
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  AI TOOLS (Tool Gen & Zoom, Gui-less, Multi-Bot Scaled)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+do
+    local GenRemote = ReplicatedStorage:WaitForChild("event_generation", 10)
+    
+    local function notify(title, text, dur)
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("SendNotification", {Title=title, Text=text, Duration=dur or 4})
+        end)
+    end
+
+    _G.GenToolGenerating = false
+    _G.ZoomOn = false
+    _G.ZoomConn = nil
+    _G.DefZoom = nil
+
+    local function setZoom(on)
+        _G.ZoomOn = on
+        if on then
+            _G.DefZoom = LocalPlayer.CameraMaxZoomDistance
+            LocalPlayer.CameraMaxZoomDistance = 10000
+            if _G.ZoomConn then _G.ZoomConn:Disconnect() end
+            _G.ZoomConn = getgenv().TrackConnection(game:GetService("RunService").RenderStepped:Connect(function()
+                if LocalPlayer.CameraMaxZoomDistance < 9990 then 
+                    LocalPlayer.CameraMaxZoomDistance = 10000 
+                end
+            end))
+            notify("Zoom", "Zoom Out ON", 3)
+        else
+            if _G.ZoomConn then _G.ZoomConn:Disconnect(); _G.ZoomConn = nil end
+            LocalPlayer.CameraMaxZoomDistance = _G.DefZoom or 128
+            notify("Zoom", "Zoom Out OFF", 3)
+        end
+    end
+
+    local function generate(prompt, size)
+        if _G.GenToolGenerating then notify("Wait", "Already generatingâ€¦", 3); return end
+        prompt = (prompt or ""):match("^%s*(.-)%s*$")
+        if prompt == "" then notify("Error", "Enter a prompt", 3); return end
+        size = math.clamp(size or 50, 1, 300)
+        
+        _G.GenToolGenerating = true
+        notify("Generating", '"'..prompt..'" size '..size, 5)
+        
+        local ok, err = pcall(function() 
+            GenRemote:FireServer(prompt, Vector3.new(size, size, size)) 
+        end)
+        
+        _G.GenToolGenerating = false
+        if not ok then notify("Error", tostring(err), 5) end
+    end
+
+    Commands.gentool = function(args, speaker)
+        local shouldRun, newArgs = ParseBotTarget(args)
+        if not shouldRun then return end
+        
+        local rest = table.concat(newArgs, " ", 2)
+        if rest == "" then notify("!gentool", "Usage: prefix + gentool [size] [prompt]", 4); return end
+        
+        local sizeStr, prompt = rest:match("^(%d+)%s+(.+)$")
+        if sizeStr and prompt then
+            generate(prompt, tonumber(sizeStr))
+        else
+            notify("!gentool", "You must specify [size] and [prompt]!", 4)
+        end
+    end
+
+    Commands.zoom = function(args, speaker)
+        local shouldRun, _ = ParseBotTarget(args)
+        if not shouldRun then return end
+        setZoom(true)
+    end
+    
+    Commands.unzoom = function(args, speaker)
+        local shouldRun, _ = ParseBotTarget(args)
+        if not shouldRun then return end
+        setZoom(false)
+    end
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  DAYBREAK CLEANUP ENGINE (merged)
+--  Strips visual bloat on alt clients for max performance
+--  Keeps: HumanoidRootPart, Humanoid, Head, floors, chat, audio
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+local VISUAL_CLASSES = {
+    "SpecialMesh", "FileMesh", "CylinderMesh", "BlockMesh",
+    "Texture", "Decal", "SurfaceAppearance",
+    "ParticleEmitter", "Fire", "Smoke", "Sparkles",
+    "Beam", "Trail", "Explosion",
+    "PointLight", "SpotLight", "SurfaceLight",
+    "SurfaceGui", "BillboardGui",
+    "Highlight", "SelectionBox", "SelectionSphere",
+}
+local VISUAL_SET = {}
+for _, cls in ipairs(VISUAL_CLASSES) do VISUAL_SET[cls] = true end
+
+local STRIP_SET = { MeshPart = true, UnionOperation = true }
+
+local KEEP_IN_CHAR = {
+    HumanoidRootPart = true,
+    Humanoid = true,
+    Head = true,
+}
+
+local function IsAnyCharObj(obj)
+    for _, p in ipairs(Players:GetPlayers()) do
+        local c = p.Character
+        if c and (obj == c or obj:IsDescendantOf(c)) then return true end
+    end
+    return false
+end
+
+local function CleanLightingEffects()
+    for _, child in ipairs(Lighting:GetChildren()) do
+        if child:IsA("PostEffect") or child:IsA("Atmosphere") or child:IsA("Sky") then
+            pcall(function() child:Destroy() end)
+        end
+    end
+    pcall(function() Lighting.GlobalShadows = false end)
+    pcall(function() Lighting.Technology = Enum.Technology.Compatibility end)
+end
+
+local function CleanWorkspaceVisuals()
+    for _, desc in ipairs(workspace:GetDescendants()) do
+        if IsAnyCharObj(desc) then continue end
+        if desc == workspace.CurrentCamera or desc:IsDescendantOf(workspace.CurrentCamera) then continue end
+        if desc:IsA("Terrain") then continue end
+
+        if VISUAL_SET[desc.ClassName] then
+            pcall(function() desc:Destroy() end)
+        elseif STRIP_SET[desc.ClassName] then
+            pcall(function()
+                desc.Material = Enum.Material.SmoothPlastic
+                desc.Reflectance = 0
+                desc.TextureID = ""
+            end)
+            if desc.ClassName == "MeshPart" then
+                pcall(function() desc.RenderFidelity = Enum.RenderFidelity.Performance end)
+                pcall(function() desc.CollisionFidelity = Enum.CollisionFidelity.Box end)
+            end
+        elseif desc:IsA("Sound") and not desc:IsDescendantOf(game:GetService("SoundService")) then
+            pcall(function() desc.Volume = 0 end)
+        end
+    end
+end
+
+local function CleanOtherPlayerChars()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player == LocalPlayer then continue end
+        local char = player.Character
+        if not char then continue end
+
+        for _, child in ipairs(char:GetChildren()) do
+            if KEEP_IN_CHAR[child.Name] then
+                if child:IsA("BasePart") then
+                    pcall(function() child.Material = Enum.Material.SmoothPlastic; child.Transparency = 1 end)
+                end
+                for _, sub in ipairs(child:GetChildren()) do
+                    if sub:IsA("Decal") or sub:IsA("SpecialMesh") or sub:IsA("SurfaceAppearance")
+                        or sub:IsA("Texture") or sub:IsA("ParticleEmitter") or sub:IsA("BillboardGui") then
+                        pcall(function() sub:Destroy() end)
+                    end
+                end
+            elseif child:IsA("Humanoid") then
+                -- keep
+            elseif child:IsA("Accessory") or child:IsA("Shirt") or child:IsA("Pants")
+                or child:IsA("ShirtGraphic") or child:IsA("BodyColors") or child:IsA("CharacterMesh") then
+                pcall(function() child:Destroy() end)
+            elseif child:IsA("BasePart") then
+                pcall(function() child.Transparency = 1; child.Material = Enum.Material.SmoothPlastic end)
+                for _, sub in ipairs(child:GetChildren()) do
+                    if not sub:IsA("Motor6D") and not sub:IsA("Weld") then
+                        pcall(function() sub:Destroy() end)
+                    end
+                end
+            elseif not child:IsA("Script") and not child:IsA("LocalScript")
+                and not child:IsA("Animator") and not child:IsA("Motor6D") then
+                pcall(function() child:Destroy() end)
+            end
+        end
+
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("MeshPart") then
+                pcall(function() part.TextureID = ""; part.Transparency = 1 end)
+            end
+        end
+    end
+end
+
+local function CleanTerrain()
+    pcall(function()
+        local t = workspace:FindFirstChildOfClass("Terrain")
+        if t then
+            t.Decoration = false
+            t.WaterWaveSize = 0; t.WaterWaveSpeed = 0
+            t.WaterReflectance = 0; t.WaterTransparency = 0
+        end
+    end)
+end
+
+local function CleanGuis()
+    local pg = LocalPlayer:FindFirstChild("PlayerGui")
+    if not pg then return end
+    local keep = { Chat=true, DayBreakCommandGUI=true, BubbleChat=true, TopBarApp=true }
+    for _, gui in ipairs(pg:GetChildren()) do
+        if gui:IsA("ScreenGui") and not keep[gui.Name] then
+            local n = gui.Name:lower()
+            if not (n:find("chat") or n:find("topbar") or n:find("core") or n:find("roblox")) then
+                pcall(function() gui.Enabled = false end)
+            end
+        end
+    end
+end
+
+local function StartContinuousCleanup()
+    getgenv().TrackConnection(Players.PlayerAdded:Connect(function(player)
+        getgenv().TrackConnection(player.CharacterAdded:Connect(function()
+            task.wait(2)
+            CleanOtherPlayerChars()
+        end))
+    end))
+
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            getgenv().TrackConnection(p.CharacterAdded:Connect(function()
+                task.wait(2)
+                CleanOtherPlayerChars()
+            end))
+        end
+    end
+
+    getgenv().TrackConnection(workspace.DescendantAdded:Connect(function(desc)
+        if VISUAL_SET[desc.ClassName] and not IsAnyCharObj(desc) then
+            task.defer(function()
+                if desc.Parent and not IsAnyCharObj(desc) then
+                    pcall(function() desc:Destroy() end)
+                end
+            end)
+        end
+    end))
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  AUTO-SYNC ENGINE
+--  Measures ping & adjusts bot timing for music/movement sync
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local function GetPingMs()
+    local ok, ping = pcall(function()
+        return LocalPlayer:GetNetworkPing() * 1000
+    end)
+    return ok and ping or 100
+end
+
+local function StartAutoSync()
+    task.spawn(function()
+        while _G.DayBreakActive do
+            local ping = GetPingMs()
+            _G.DayBreakPing = ping
+            _G.DayBreakSyncOffset = ping / 1000
+
+            if ping > 200 then
+                _G.DayBreakTickRate = 0.15
+            elseif ping > 100 then
+                _G.DayBreakTickRate = 0.08
+            else
+                _G.DayBreakTickRate = 0.03
+            end
+
+            local memKB = gcinfo()
+
+            task.wait(5)
+        end
+    end)
+end
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  OPTIMIZATION & OVERLAY (main entry)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+local function OptimizeAndOverlay()
+    pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
+    pcall(function() if setfpscap then setfpscap(10) end end)
+
+    CleanLightingEffects()
+    CleanTerrain()
+
+    task.spawn(function()
+        CleanWorkspaceVisuals()
+        CleanOtherPlayerChars()
+        CleanGuis()
+        print("[DayBreak Cleanup] In-game optimization complete")
+    end)
+
+    StartContinuousCleanup()
+    StartAutoSync()
+
+    local myIndex = SafeIndex()
+    local SG = Instance.new("ScreenGui")
+    SG.IgnoreGuiInset = true
+    SG.ResetOnSpawn = false
+    SG.DisplayOrder = -1
+    SG.Name = "StealthOverlay"
+    local guiParent = LocalPlayer:FindFirstChild("PlayerGui")
+    if guiParent then SG.Parent = guiParent end
+
+    local Background = Instance.new("Frame")
+    Background.Size = UDim2.new(1, 0, 1, 0)
+    Background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Background.BorderSizePixel = 0
+    Background.Parent = SG
+
+    local InfoLabel = Instance.new("TextLabel")
+    InfoLabel.Size = UDim2.new(0.8, 0, 0.4, 0)
+    InfoLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    InfoLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    InfoLabel.BackgroundTransparency = 1
+    InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    InfoLabel.Font = Enum.Font.Code
+    InfoLabel.TextSize = 22
+    InfoLabel.TextWrapped = true
+    InfoLabel.TextXAlignment = Enum.TextXAlignment.Center
+    InfoLabel.TextYAlignment = Enum.TextYAlignment.Center
+    
+    InfoLabel.Text = string.format(
+        "ALT Control | Designed by DayBreak\n" ..
+        "Join Discord: https://discord.gg/ws5Zb2EzYA\n\n" ..
+        "USER: %s\n" ..
+        "BOT POSITION: %02d",
+        LocalPlayer.Name,
+        myIndex
+    )
+    InfoLabel.Parent = Background
+end
+
+if LocalPlayer.Name ~= getgenv().Settings.mainAccount then
+    OptimizeAndOverlay()
+    
+    if getgenv().Settings.announceOnLoad and isAltAccount and not isMainAccount then
+        task.spawn(function()
+            local idx = SafeIndex() or 1
+            local total = SafeTotal() or 1
+            task.wait(2.0 + ((idx - 1) * 0.25))
+            ChatSend(string.format("â˜€ï¸ DayBreak Bot #%d/%d Ready", idx, total))
+        end)
+    end
+end
+
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+--  18. INITIALIZE
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+InitAntiAFK()
+
+-- [VCB Monitor Removed]
+
+-- Auto Mic Unmute on Execution (bots only)
+if isAltAccount and not isMainAccount and getgenv().Settings.micAutoUnmute then
+    task.spawn(function()
+        local baseDelay = getgenv().Settings.micUnmuteDelay or 30
+        local idx = SafeIndex() or 1
+        -- Stagger unmute per bot index (2s gap between each bot)
+        -- Prevents all bots clicking the mic button simultaneously
+        local staggeredDelay = baseDelay + ((idx - 1) * 2)
+        task.wait(staggeredDelay)
+        if _G.DayBreakActive then
+            doMicUnmute()
+            print("[MicToggle] Auto-unmuted bot #" .. idx .. " after " .. staggeredDelay .. "s delay")
+        end
+    end)
+end
+
+-- Music Bot Ready Announcement (designated bot only)
+if isAltAccount and shouldMusicExecute() then
+    task.spawn(function()
+        task.wait(5)
+        musicChat("ðŸŽµ Ë¹Music Bot ReadyË¼ ðŸŽµ")
+        task.wait(1)
+        musicChat("Type /cmds for commands")
+    end)
+end
+
+print("DayBreak ALT Control | By @DayBreak")
