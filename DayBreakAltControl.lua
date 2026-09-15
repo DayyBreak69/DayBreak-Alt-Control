@@ -1,12 +1,12 @@
 --[[
-  â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
-  â•‘               â˜€ï¸ DAYBREAK ALT CONTROL v3.0 â˜€ï¸                 â•‘
-  â•‘             NOCTURNAL STARLIGHT & MEME SQUAD EDITION         â•‘
-  â•‘                                                              â•‘
-  â•‘  Developed by: DayBreak                                      â•‘
-  â•‘  Discord: discord.gg/ws5Zb2EzYA                              â•‘
-  â•‘  GitHub:  github.com/DayyBreak69/DayBreak-Alt-Control        â•‘
-  â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  +==============================================================+
+  |               * DAYBREAK ALT CONTROL v3.0 *                  |
+  |             NOCTURNAL STARLIGHT & MEME SQUAD EDITION         |
+  |                                                              |
+  |  Developed by: DayBreak                                      |
+  |  Discord: discord.gg/ws5Zb2EzYA                              |
+  |  GitHub:  github.com/DayyBreak69/DayBreak-Alt-Control        |
+  +==============================================================+
 --]]
 
 getgenv().Settings = {
@@ -442,7 +442,7 @@ local function musicRequest(endpoint, params)
             })
         end)
         if ok then
-            if resp.StatusCode == 401 then musicChat("âŒ API key error"); return nil end
+            if resp.StatusCode == 401 then musicChat("  API key error"); return nil end
             if resp.StatusCode >= 200 and resp.StatusCode < 500 then
                 local pOk, data = pcall(function() return HttpService:JSONDecode(resp.Body) end)
                 if pOk then return data end
@@ -545,7 +545,7 @@ local function InitAntiAFK()
     end)
     getgenv().TrackConnection(afkConn)
 
-    -- Method 2: Periodic heartbeat â€” proactively simulate input every 60s
+    -- Method 2: Periodic heartbeat -- proactively simulate input every 60s
     -- Prevents Roblox from ever reaching the idle threshold
     task.spawn(function()
         while _G.DayBreakActive do
@@ -581,7 +581,7 @@ _G.MusicQueue     = {}
 _G.GrabActive     = false
 
 ----------------------------------------------------------------
--- 10. StopAll â€” ONLY clears exclusive commands
+-- 10. StopAll -- ONLY clears exclusive commands
 ----------------------------------------------------------------
 local function StopAll()
     _G.CurrentCommand = "None"
@@ -656,9 +656,9 @@ end
 ----------------------------------------------------------------
 local Commands = {}
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SYSTEM COMMANDS
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.stop = function(args, speaker) StopAll() end
 Commands.unall = Commands.stop
 
@@ -690,9 +690,9 @@ Commands.blacklist = function(args, speaker)
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  PERSISTENT: noclip / clip
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.noclip = function(args, speaker)
     if not IsSoloCommand(args) then return end
     if _G.NoclipEnabled then return end
@@ -728,9 +728,9 @@ Commands.clip = function(args, speaker)
     _G.NoclipOriginals = {}
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  PERSISTENT: ws / speed
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.ws = function(args, speaker)
     local spd = tonumber(args[2])
     if not spd then
@@ -760,9 +760,9 @@ Commands.unws = function(args, speaker)
 end
 Commands.unspeed = Commands.unws
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  PERSISTENT: antivoid / unantivoid
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.antivoid = function(args, speaker)
     if not IsSoloCommand(args) then return end
     if _G.AntiVoidActive then return end
@@ -787,9 +787,9 @@ Commands.unantivoid = function(args, speaker)
     if _G.AVPlatform then pcall(function() _G.AVPlatform:Destroy() end); _G.AVPlatform = nil end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  PERSISTENT: spam / unspam
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.spam = function(args, speaker)
     _G.Spamming = false; task.wait(0.1)
     local delayInput  = tonumber(args[2])
@@ -824,9 +824,9 @@ end
     _G.Spamming = false; _G.CurrentSpamID = nil
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  MOVEMENT COMMANDS
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 
 Commands.circle = function(args, speaker)
     local radius, target = ParseSpeedTarget(args, speaker, nil)
@@ -924,9 +924,9 @@ local function ClearEmotesOnly()
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  DAYBREAK MULTI-METHOD EMOTE & SYNC ENGINE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local _emoteAnimationCache = {}
 
 local function ResolveEmoteAnimation(emoteName)
@@ -1206,9 +1206,9 @@ Commands.stackon = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  CLONE COMMANDS (loopclone is now PERSISTENT)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local RS_clone = ReplicatedStorage:FindFirstChild("GrabStatus")
 local cloneRemote = ReplicatedStorage:FindFirstChild("event_clone_avatar")
 local refreshRemote = ReplicatedStorage:FindFirstChild("event_modify_refresh")
@@ -1250,9 +1250,9 @@ Commands.ref = function(args, speaker)
     if refreshRemote then pcall(function() refreshRemote:FireServer() end) end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  WORM
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.worm = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker); if not target then return end
@@ -1282,9 +1282,9 @@ Commands.worm = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  STALK
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.stalk = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
@@ -1314,9 +1314,9 @@ Commands.stalk = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  DANCE & EMOTE (solo-guarded)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 for _, n in ipairs({"dance1","dance2","dance3"}) do
     Commands[n] = function(args, speaker)
         if not IsSoloCommand(args) then return end
@@ -1352,9 +1352,9 @@ for _, e in ipairs({"laugh","point","cheer"}) do
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  EMOTE SYSTEM (Dynamic Catalog)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 if not _G.DayBreakEmoteCatalog then
     task.spawn(function()
         pcall(function()
@@ -1472,9 +1472,9 @@ Commands.emote = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  NPC (wander 30-60s, no duplicate targets, unique lines)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.npc = function(args, speaker)
     if not IsSoloCommand(args) then return end
     StopAll(); _G.CurrentCommand = "NPC"
@@ -1656,9 +1656,9 @@ Commands.npc = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  FIREWORK (solo-guarded)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.firework = function(args, speaker)
     if not IsSoloCommand(args) then return end
     StopAll()
@@ -1676,9 +1676,9 @@ Commands.firework = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  NUKE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.nuke = function(args, speaker)
     StopAll()
     local target = FindTarget(args[2], speaker)
@@ -1696,9 +1696,9 @@ Commands.nuke = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SWARM
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.swarm = function(args, speaker)
     local speed, range, target = ParseSpeedRangeTarget(args, speaker, 40, 18)
     if not target or not target.Character then return end
@@ -1746,10 +1746,10 @@ Commands.swarm = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
---  MATHEMATICAL CURVE ENGINE â€” time-based, deterministic
---  phase = (t / PERIOD + botOffset) * 2Ï€ â†’ smooth, no drift
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
+--  MATHEMATICAL CURVE ENGINE -- time-based, deterministic
+--  phase = (t / PERIOD + botOffset) * 2    smooth, no drift
+-- ===========================================================
 local PI2 = math.pi * 2
 local PI  = math.pi
 local sin, cos, abs, sqrt, rad = math.sin, math.cos, math.abs, math.sqrt, math.rad
@@ -1777,9 +1777,9 @@ local function RunOrbitCurve(args, speaker, curveFn, tag)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  ORBIT CURVES (orbit = basic, orbit1-20 = patterns)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local OrbitCurves = {}
 
 -- orbit: Clean flat circle
@@ -1798,7 +1798,7 @@ OrbitCurves[1] = function(t, i, count, R)
     return Vector3.new(sin(phase)*breathe, 0, cos(phase)*breathe)
 end
 
--- orbit2: Double helix â€” two interleaved strands
+-- orbit2: Double helix -- two interleaved strands
 OrbitCurves[2] = function(t, i, count, R)
     local P = 14
     local strand = (i % 2 == 0) and 0 or 1
@@ -1806,7 +1806,7 @@ OrbitCurves[2] = function(t, i, count, R)
     return Vector3.new(sin(phase)*R, sin(phase*0.5)*(R*0.7), cos(phase)*R)
 end
 
--- orbit3: Atomic â€” bots on tilted orbital planes
+-- orbit3: Atomic -- bots on tilted orbital planes
 OrbitCurves[3] = function(t, i, count, R)
     local P = 16
     local plane = i % 3
@@ -1817,7 +1817,7 @@ OrbitCurves[3] = function(t, i, count, R)
     else return Vector3.new(0, cos(phase)*R, sin(phase)*R) end
 end
 
--- orbit4: Galaxy spiral arms â€” expanding outward
+-- orbit4: Galaxy spiral arms -- expanding outward
 OrbitCurves[4] = function(t, i, count, R)
     local arms = math.min(3, math.ceil(count/3))
     local arm = (i-1) % arms
@@ -1828,7 +1828,7 @@ OrbitCurves[4] = function(t, i, count, R)
     return Vector3.new(cos(phase)*dist, sin(t + i) * 1.5, sin(phase)*dist)
 end
 
--- orbit5: Vertical vortex â€” cone helix
+-- orbit5: Vertical vortex -- cone helix
 OrbitCurves[5] = function(t, i, count, R)
     local P = 14
     local frac = (i-1)/count
@@ -1846,7 +1846,7 @@ OrbitCurves[6] = function(t, i, count, R)
     return Vector3.new(R*cos(phase)/denom, sin(phase*2)*3, R*sin(phase)*cos(phase)/denom)
 end
 
--- orbit7: Pulsating â€” radius breathes in and out
+-- orbit7: Pulsating -- radius breathes in and out
 OrbitCurves[7] = function(t, i, count, R)
     local P = 12
     local phase = (t / P + (i-1)/count) * PI2
@@ -1854,7 +1854,7 @@ OrbitCurves[7] = function(t, i, count, R)
     return Vector3.new(cos(phase)*breathe, sin(t*3 + i)*2, sin(phase)*breathe)
 end
 
--- orbit8: Layered rings â€” tilted ring planes
+-- orbit8: Layered rings -- tilted ring planes
 OrbitCurves[8] = function(t, i, count, R)
     local P = 14
     local rings = math.min(3, math.ceil(count/3))
@@ -1883,7 +1883,7 @@ OrbitCurves[10] = function(t, i, count, R)
         sin(t*1.1+seed*0.8)*R*cos(t*1.3+seed*1.7))
 end
 
--- orbit11: Saturn rings â€” flat ring with Y wobble
+-- orbit11: Saturn rings -- flat ring with Y wobble
 OrbitCurves[11] = function(t, i, count, R)
     local P = 16
     local phase = (t / P + (i-1)/count) * PI2
@@ -1899,7 +1899,7 @@ OrbitCurves[12] = function(t, i, count, R)
     return Vector3.new(sin(phase)*R, sin(phase*2)*(R*0.35), cos(phase)*R*cos(phase*0.5))
 end
 
--- orbit13: Electron cloud â€” spherical scatter orbit
+-- orbit13: Electron cloud -- spherical scatter orbit
 OrbitCurves[13] = function(t, i, count, R)
     local P = 18
     local golden = i * PI * (3 - sqrt(5))
@@ -1908,14 +1908,14 @@ OrbitCurves[13] = function(t, i, count, R)
     return Vector3.new(sin(theta)*cos(phase)*R, cos(theta)*R, sin(theta)*sin(phase)*R)
 end
 
--- orbit14: Ferris wheel â€” vertical circle
+-- orbit14: Ferris wheel -- vertical circle
 OrbitCurves[14] = function(t, i, count, R)
     local P = 15
     local phase = (t / P + (i-1)/count) * PI2
     return Vector3.new(0, sin(phase)*R, cos(phase)*R)
 end
 
--- orbit15: Cascading waterfall â€” staggered heights
+-- orbit15: Cascading waterfall -- staggered heights
 OrbitCurves[15] = function(t, i, count, R)
     local P = 14
     local phase = (t / P + (i-1)/count) * PI2
@@ -1924,7 +1924,7 @@ OrbitCurves[15] = function(t, i, count, R)
     return Vector3.new(sin(phase)*breathe, yOff + sin(phase*3)*1.5, cos(phase)*breathe)
 end
 
--- orbit16: Tornado funnel â€” radius shrinks upward
+-- orbit16: Tornado funnel -- radius shrinks upward
 OrbitCurves[16] = function(t, i, count, R)
     local P = 12
     local frac = (i-1)/count
@@ -1934,7 +1934,7 @@ OrbitCurves[16] = function(t, i, count, R)
     return Vector3.new(sin(phase)*funnelR, y, cos(phase)*funnelR)
 end
 
--- orbit17: Heart pulse â€” radius pulses per bot
+-- orbit17: Heart pulse -- radius pulses per bot
 OrbitCurves[17] = function(t, i, count, R)
     local P = 15
     local phase = (t / P + (i-1)/count) * PI2
@@ -1942,7 +1942,7 @@ OrbitCurves[17] = function(t, i, count, R)
     return Vector3.new(sin(phase)*R*beat, sin(t*2+i)*2, cos(phase)*R*beat)
 end
 
--- orbit18: Comet trails â€” elliptical orbits
+-- orbit18: Comet trails -- elliptical orbits
 OrbitCurves[18] = function(t, i, count, R)
     local P = 18
     local phase = (t / P + (i-1)/count) * PI2
@@ -1950,7 +1950,7 @@ OrbitCurves[18] = function(t, i, count, R)
     return Vector3.new(sin(phase)*a, sin(phase*2)*2, cos(phase)*b)
 end
 
--- orbit19: Mobius twist â€” rotating orbital plane
+-- orbit19: Mobius twist -- rotating orbital plane
 OrbitCurves[19] = function(t, i, count, R)
     local P = 20
     local phase = (t / P + (i-1)/count) * PI2
@@ -1960,7 +1960,7 @@ OrbitCurves[19] = function(t, i, count, R)
     return Vector3.new(x, flat * sin(twist), flat * cos(twist))
 end
 
--- orbit20: Jellyfish â€” dome with trailing tentacles
+-- orbit20: Jellyfish -- dome with trailing tentacles
 OrbitCurves[20] = function(t, i, count, R)
     local P = 16
     local phase = (t / P + (i-1)/count) * PI2
@@ -1974,12 +1974,12 @@ end
 Commands.orbit = function(a, s) RunOrbitCurve(a, s, OrbitCurves[0]) end
 for i = 1, 20 do Commands["orbit" .. i] = function(a, s) RunOrbitCurve(a, s, OrbitCurves[i]) end end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SPIRAL CURVES (spiral1-20 = patterns)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local SpiralCurves = {}
 
--- spiral1: Upward helix â€” smooth ascending circle
+-- spiral1: Upward helix -- smooth ascending circle
 SpiralCurves[1] = function(t, i, count, R)
     local P = 12
     local phase = (t / P + (i-1)/count) * PI2
@@ -1988,7 +1988,7 @@ SpiralCurves[1] = function(t, i, count, R)
     return Vector3.new(cos(phase)*dynR, y, sin(phase)*dynR)
 end
 
--- spiral2: Cone vortex â€” expanding upward
+-- spiral2: Cone vortex -- expanding upward
 SpiralCurves[2] = function(t, i, count, R)
     local P = 14
     local frac = (i-1)/count
@@ -1998,7 +1998,7 @@ SpiralCurves[2] = function(t, i, count, R)
     return Vector3.new(cos(phase)*cr, ht, sin(phase)*cr)
 end
 
--- spiral3: DNA ladder â€” two interleaved strands
+-- spiral3: DNA ladder -- two interleaved strands
 SpiralCurves[3] = function(t, i, count, R)
     local P = 14
     local strand = (i % 2 == 0) and 0 or 1
@@ -2008,7 +2008,7 @@ SpiralCurves[3] = function(t, i, count, R)
     return Vector3.new(cos(phase)*R, height + sin(t*0.5)*2 - 8, sin(phase)*R)
 end
 
--- spiral4: Dispersal jet â€” eruption pattern
+-- spiral4: Dispersal jet -- eruption pattern
 SpiralCurves[4] = function(t, i, count, R)
     local P = 16
     local frac = (i-1)/count
@@ -2020,7 +2020,7 @@ SpiralCurves[4] = function(t, i, count, R)
     return Vector3.new(cos(phase)*cr, y - 5, sin(phase)*cr)
 end
 
--- spiral5: Tornado funnel â€” tightening upward
+-- spiral5: Tornado funnel -- tightening upward
 SpiralCurves[5] = function(t, i, count, R)
     local P = 14
     local frac = (i-1)/count
@@ -2031,7 +2031,7 @@ SpiralCurves[5] = function(t, i, count, R)
     return Vector3.new(cos(phase)*tR, height - 10, sin(phase)*tR)
 end
 
--- spiral6: Golden ratio â€” Fermat's spiral
+-- spiral6: Golden ratio -- Fermat's spiral
 SpiralCurves[6] = function(t, i, count, R)
     local ga = i * PI * (3 - sqrt(5))
     local dist = sqrt(i) * 3
@@ -2039,7 +2039,7 @@ SpiralCurves[6] = function(t, i, count, R)
     return Vector3.new(cos(phase)*dist, sin(t + i*0.5)*2, sin(phase)*dist)
 end
 
--- spiral7: Bouncing spring â€” compression/expansion
+-- spiral7: Bouncing spring -- compression/expansion
 SpiralCurves[7] = function(t, i, count, R)
     local P = 10
     local comp = sin(t * 1.5) * 0.5 + 0.5
@@ -2049,7 +2049,7 @@ SpiralCurves[7] = function(t, i, count, R)
     return Vector3.new(cos(phase)*(R*(0.5+comp*0.5)), y, sin(phase)*(R*(0.5+comp*0.5)))
 end
 
--- spiral8: Inward pool â€” shrinking spiral
+-- spiral8: Inward pool -- shrinking spiral
 SpiralCurves[8] = function(t, i, count, R)
     local P = 16
     local frac = (i-1)/count
@@ -2059,7 +2059,7 @@ SpiralCurves[8] = function(t, i, count, R)
     return Vector3.new(cos(phase)*wR, -ph*8 + 4, sin(phase)*wR)
 end
 
--- spiral9: Wavy ascent â€” radius waves
+-- spiral9: Wavy ascent -- radius waves
 SpiralCurves[9] = function(t, i, count, R)
     local P = 14
     local phase = (t / P + (i-1)/count) * PI2
@@ -2067,7 +2067,7 @@ SpiralCurves[9] = function(t, i, count, R)
     return Vector3.new(cos(phase)*wR, sin(t + (i-1)/count * PI2)*6, sin(phase)*wR)
 end
 
--- spiral10: Layered cascade â€” stacked rotating rings
+-- spiral10: Layered cascade -- stacked rotating rings
 SpiralCurves[10] = function(t, i, count, R)
     local layers = math.min(4, math.ceil(count/2))
     local layer = (i-1) % layers
@@ -2078,7 +2078,7 @@ SpiralCurves[10] = function(t, i, count, R)
     return Vector3.new(cos(phase)*R, y, sin(phase)*R)
 end
 
--- spiral11: Helix staircase â€” stepped ascent
+-- spiral11: Helix staircase -- stepped ascent
 SpiralCurves[11] = function(t, i, count, R)
     local P = 18
     local phase = (t / P + (i-1)/count) * PI2
@@ -2087,7 +2087,7 @@ SpiralCurves[11] = function(t, i, count, R)
     return Vector3.new(sin(phase)*R, y - 8, cos(phase)*R)
 end
 
--- spiral12: Whirlpool â€” accelerating inward spiral
+-- spiral12: Whirlpool -- accelerating inward spiral
 SpiralCurves[12] = function(t, i, count, R)
     local P = 20
     local frac = (i-1)/count
@@ -2097,7 +2097,7 @@ SpiralCurves[12] = function(t, i, count, R)
     return Vector3.new(sin(phase*accel)*wR, frac*15 - 7, cos(phase*accel)*wR)
 end
 
--- spiral13: Aurora wave â€” flowing sine curtain
+-- spiral13: Aurora wave -- flowing sine curtain
 SpiralCurves[13] = function(t, i, count, R)
     local spread = ((i-1)/count) * PI2
     local x = sin(spread) * R
@@ -2106,7 +2106,7 @@ SpiralCurves[13] = function(t, i, count, R)
     return Vector3.new(x, wave, z)
 end
 
--- spiral14: Firework burst â€” expanding outward
+-- spiral14: Firework burst -- expanding outward
 SpiralCurves[14] = function(t, i, count, R)
     local golden = i * PI * (3 - sqrt(5))
     local theta = math.acos(1 - 2*((i-0.5)/count))
@@ -2115,7 +2115,7 @@ SpiralCurves[14] = function(t, i, count, R)
     return Vector3.new(sin(theta)*cos(golden+t*0.3)*dist, cos(theta)*dist, sin(theta)*sin(golden+t*0.3)*dist)
 end
 
--- spiral15: Pendulum â€” swinging column
+-- spiral15: Pendulum -- swinging column
 SpiralCurves[15] = function(t, i, count, R)
     local y = ((i-1)/count) * 20 - 10
     local swing = sin(t + y * 0.2) * R * 0.8
@@ -2123,7 +2123,7 @@ SpiralCurves[15] = function(t, i, count, R)
     return Vector3.new(swing, y, depth)
 end
 
--- spiral16: Galaxy arm â€” logarithmic spiral
+-- spiral16: Galaxy arm -- logarithmic spiral
 SpiralCurves[16] = function(t, i, count, R)
     local frac = (i-1)/count
     local angle = frac * PI * 6 + t * 0.4
@@ -2132,7 +2132,7 @@ SpiralCurves[16] = function(t, i, count, R)
     return Vector3.new(cos(angle)*dist, y, sin(angle)*dist)
 end
 
--- spiral17: Slinky â€” bouncing helix
+-- spiral17: Slinky -- bouncing helix
 SpiralCurves[17] = function(t, i, count, R)
     local P = 12
     local phase = (t / P + (i-1)/count) * PI2
@@ -2141,7 +2141,7 @@ SpiralCurves[17] = function(t, i, count, R)
     return Vector3.new(sin(phase)*R, y, cos(phase)*R)
 end
 
--- spiral18: Crown â€” tiara pattern
+-- spiral18: Crown -- tiara pattern
 SpiralCurves[18] = function(t, i, count, R)
     local P = 16
     local phase = (t / P + (i-1)/count) * PI2
@@ -2150,7 +2150,7 @@ SpiralCurves[18] = function(t, i, count, R)
     return Vector3.new(sin(phase)*R, y, cos(phase)*R)
 end
 
--- spiral19: Cyclone eye â€” double vortex
+-- spiral19: Cyclone eye -- double vortex
 SpiralCurves[19] = function(t, i, count, R)
     local P = 14
     local half = math.ceil(count/2)
@@ -2165,7 +2165,7 @@ SpiralCurves[19] = function(t, i, count, R)
     return Vector3.new(sin(phase)*wR, y, cos(phase)*wR)
 end
 
--- spiral20: Fountain â€” rising and falling arcs
+-- spiral20: Fountain -- rising and falling arcs
 SpiralCurves[20] = function(t, i, count, R)
     local P = 18
     local phase = (t / P + (i-1)/count) * PI2
@@ -2179,9 +2179,9 @@ end
 Commands.spiral = function(a, s) RunOrbitCurve(a, s, SpiralCurves[1], "Spiral") end
 for i = 1, 20 do Commands["spiral"..i] = function(a, s) RunOrbitCurve(a, s, SpiralCurves[i], "Spiral") end end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
---  HELICOPTER â€” rigid circle around Head, all bots in sync
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
+--  HELICOPTER -- rigid circle around Head, all bots in sync
+-- ===========================================================
 Commands.helicopter = function(args, speaker)
     local speed, target = ParseSpeedTarget(args, speaker, 18)
     if not target or not target.Character then return end
@@ -2205,7 +2205,7 @@ Commands.helicopter = function(args, speaker)
                 -- Position HRP in circle at head height, offset by footToHRP
                 local headPos = tHead.Position
                 local orbitalPos = headPos + Vector3.new(math.cos(angle) * footToHRP, 0, math.sin(angle) * footToHRP)
-                -- Lie flat: face head, then pitch 90Â° so feet point at head
+                -- Lie flat: face head, then pitch 90  so feet point at head
                 mR.CFrame = CFrame.new(orbitalPos, headPos) * CFrame.Angles(math.rad(90), 0, 0)
                 mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
             end
@@ -2215,9 +2215,9 @@ Commands.helicopter = function(args, speaker)
 end
 Commands.heli = Commands.helicopter
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  QUIT / EXIT / LEAVE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.quit = function(args, speaker)
     if not IsSoloCommand(args) then return end
     StopAll(); ChatSend("Quitting - Bye " .. tostring(getgenv().Settings.mainAccount))
@@ -2225,9 +2225,9 @@ Commands.quit = function(args, speaker)
 end
 Commands.exit = Commands.quit; Commands.leave = Commands.quit
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SHIELD 1-5
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local function DoShield(args, speaker, sn)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
@@ -2258,9 +2258,9 @@ end
 Commands.shield = function(a,s) DoShield(a,s,1) end
 for i = 1, 5 do Commands["shield"..i] = function(a,s) DoShield(a,s,i) end end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  PING / RAM / CPU
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.ping = function(args, speaker)
     if not IsSoloCommand(args) then return end
     task.spawn(function()
@@ -2308,7 +2308,7 @@ Commands.ram = function(args, speaker)
     local idx = SafeIndex()
     task.wait((idx - 1) * 0.05)
     local memMB = string.format("%.1f", gcinfo() / 1024)
-    ChatSend(string.format("â˜€ï¸ Bot #%d Memory: %s MB", idx, memMB))
+    ChatSend(string.format("* Bot #%d Memory: %s MB", idx, memMB))
 end
 Commands.memory = Commands.ram
 
@@ -2316,14 +2316,14 @@ Commands.lowram = function(args, speaker)
     local shouldRun, _ = ParseBotTarget(args)
     if not shouldRun then return end
     ApplyRenderMode(false)
-    if SafeIndex() == 1 then ChatSend("âš¡ Ultra-Low RAM Mode Activated (Max FPS)") end
+    if SafeIndex() == 1 then ChatSend("> Ultra-Low RAM Mode Activated (Max FPS)") end
 end
 
 Commands.unlowram = function(args, speaker)
     local shouldRun, _ = ParseBotTarget(args)
     if not shouldRun then return end
     ApplyRenderMode(true)
-    if SafeIndex() == 1 then ChatSend("âœ¨ Normal Graphics Restored") end
+    if SafeIndex() == 1 then ChatSend("* Normal Graphics Restored") end
 end
 
 Commands.render = function(args, speaker)
@@ -2348,14 +2348,14 @@ Commands.cleanram = function(args, speaker)
     local saved = math.max(0, before - after)
     local idx = SafeIndex()
     task.wait((idx - 1) * 0.05)
-    ChatSend(string.format("ðŸ§¹ Bot #%d Cleaned %d KB", idx, saved))
+    ChatSend(string.format("[Clean] Bot #%d Cleaned %d KB", idx, saved))
 end
 Commands.flush = Commands.cleanram
 Commands.ramclean = Commands.cleanram
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  VIRAL MEME & TROLL SQUAD COMMANDS (Nocturnal Edition)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 
 -- 1. BODYGUARD FORMATION
 Commands.bodyguard = function(args, speaker)
@@ -2405,7 +2405,7 @@ Commands.ritual = function(args, speaker)
     local total = SafeTotal()
 
     task.spawn(function()
-        local chants = {"âœ¦ LUX NOCTIS âœ¦", "âœ§ THE STAR AWAKENS âœ§", "âœ¦ CONSUME THE LIGHT âœ¦", "âœ§ DAYBREAK ASCENDS âœ§"}
+        local chants = {"* LUX NOCTIS *", "* THE STAR AWAKENS *", "* CONSUME THE LIGHT *", "* DAYBREAK ASCENDS *"}
         local chantTimer = 0
         local spinAngle = 0
 
@@ -2450,7 +2450,7 @@ Commands.paparazzi = function(args, speaker)
     local total = SafeTotal()
 
     task.spawn(function()
-        local questions = {"OMG OVER HERE!! ðŸ“¸", "LOOK THIS WAY!! ðŸ“·", "ONE MORE SMILE!! âœ¨", "IS IT TRUE?! ðŸ“¸", "EXCLUSIVE PHOTO!! ðŸ“·"}
+        local questions = {"OMG OVER HERE!! [Photo]", "LOOK THIS WAY!! [Photo]", "ONE MORE SMILE!! *", "IS IT TRUE?! [Photo]", "EXCLUSIVE PHOTO!! [Photo]"}
         local flashTimer = 0
 
         while _G.CurrentCommand == "paparazzi" and _G.DayBreakActive do
@@ -2661,9 +2661,9 @@ Commands.uncreeper = function(args, speaker)
 end
 
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  CARPET / FLOOR / BRIDGE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.carpet = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
@@ -2691,9 +2691,9 @@ Commands.carpet = function(args, speaker)
 end
 Commands.floor = Commands.carpet; Commands.bridge = Commands.carpet
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SPIN
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.spin = function(args, speaker)
     local spinSpd = tonumber(args[2]) or 20
     StopAll(); task.wait(0.1); _G.CurrentCommand = "Spin"
@@ -2711,9 +2711,9 @@ Commands.spin = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  VFLING / KILL
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.vfling = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
@@ -2741,9 +2741,9 @@ Commands.vfling = function(args, speaker)
 end
 Commands.kill = Commands.vfling
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  BANG
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.bang = function(args, speaker)
     local spd, target = ParseSpeedTarget(args, speaker, 1)
     if not target or not target.Character then return end
@@ -2766,9 +2766,9 @@ Commands.bang = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
---  FBANG â€” no spin fix: lock CFrame every frame
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
+--  FBANG -- no spin fix: lock CFrame every frame
+-- ===========================================================
 Commands.fbang = function(args, speaker)
     local spd, target = ParseSpeedTarget(args, speaker, 1)
     if not target or not target.Character then return end
@@ -2792,7 +2792,7 @@ Commands.fbang = function(args, speaker)
                 local headPos = tHead.Position
                 local frontPos = tHead.CFrame.Position + tHead.CFrame.LookVector * zOff
                 local botPos = Vector3.new(frontPos.X, headPos.Y + yOffset, frontPos.Z)
-                -- Lock facing direction toward target head â€” prevents spin
+                -- Lock facing direction toward target head -- prevents spin
                 mR.CFrame = CFrame.new(botPos, Vector3.new(headPos.X, botPos.Y, headPos.Z))
                 mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
             end
@@ -2806,9 +2806,9 @@ Commands.fbang = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  MIRROR SUITE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local MIRROR_OFFS = {
     mirror={0,0,0}, rmirror={5,0,0}, lmirror={-5,0,0}, fmirror={0,0,-5}, bmirror={0,0,5},
 }
@@ -2836,9 +2836,9 @@ for mc, off in pairs(MIRROR_OFFS) do
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
---  RIZZ â€” queue approach, walk close to target, say line
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
+--  RIZZ -- queue approach, walk close to target, say line
+-- ===========================================================
 Commands.rizz = function(args, speaker)
     StopAll(); task.wait(0.1)
     local target = FindTarget(args[2], speaker)
@@ -2847,19 +2847,19 @@ Commands.rizz = function(args, speaker)
     local lines = {
         "I don't usually get distracted, but you made me forget what I was saying.",
         "You've got that calm energy that makes everything feel easier.",
-        "There's something about you that feels different â€” in a good way.",
+        "There's something about you that feels different -- in a good way.",
         "I can tell you're not just pretty, you've got depth.",
         "I don't think you realize how naturally attractive your vibe is.",
         "You seem like the kind of person people feel safe around.",
         "I wasn't planning on staying long, but you changed that.",
         "You've got that quiet confidence that's hard to ignore.",
         "I like how you carry yourself. It says a lot.",
-        "Talking to you feels way too easyâ€¦ and I don't mind that at all.",
+        "Talking to you feels way too easy... and I don't mind that at all.",
         "You don't even have to try. That's what makes it dangerous.",
-        "I respect how you move â€” it's rare.",
+        "I respect how you move -- it's rare.",
         "I don't throw compliments around, but you earned that one.",
         "If energy is real, yours is undefeated.",
-        "I'm not even trying to impress youâ€¦ I just like talking to you.",
+        "I'm not even trying to impress you... I just like talking to you.",
     }
     task.spawn(function()
         local idx, total = SafeIndex(), SafeTotal()
@@ -2899,9 +2899,9 @@ Commands.rizz = function(args, speaker)
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  MBANG
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.mbang = function(args, speaker)
     local spd, target = ParseSpeedTarget(args, speaker, 1)
     if not target or not target.Character then return end
@@ -2938,30 +2938,30 @@ Commands.mbang = function(args, speaker)
 end
 Commands.multibang = Commands.mbang
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  HS 1-20 (Harassment Strike variants)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local HS_MESSAGES = {
-    [1]  = "(á€·ã€fà¹€É¹áƒºkÉÔ€áƒ§áƒ¿à¹€É¹êž…Ä±à¸²à¸²áƒ¿Ä±à¸²à¸²êž…à¸¥à¸žã€ (á€·)`",
-    [2]  = "(á€·ã€áƒºlà¸²à¹€É¹á€Œà¸£ÉÄ±à¸²à¸²ÉÄ±à¸²à¸¥Ä±à¸²Ô€à¸£à¸žà¸¥Ä±à¸²Ô€á»‹Î½Éáƒ¿ffà¸¥fà¹€É¹áƒºká»‹Ä±à¸²á€Œlà¸§êž…á»‹Ô€á€ŒÉã€ (á€·)`",
-    [3]  = "(á€·ã€á»‹'Æ–Æ–Î½á»‹áƒ¿Æ–à¸¥Ï¯Éáƒ§áƒ¿à¹€É¹êž…là¸§Æ–áƒ¿áƒ¿Ô€Æ–á»‹Ä±à¸²É,áƒ§áƒ¿à¹€É¹áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
-    [4]  = "(á€·ã€áƒºà¸¥Ä±à¸²à¸žÉÔ€áƒ¿là¸§áƒ¿áƒ¿Ä±à¸²à¸²là¸§à¸¥áƒ§à¸¥là¸²ã€ (á€·)`",
-    [5]  = "(á€·ã€êž…à¸¥Ä±à¸²à¸²à¸¥Ô€á»‹Æ–Ô€áƒ¿à¹€É¹êžà¸§áƒ§áƒ¿à¹€É¹êž…êž…ÉáƒºÏ¯à¹€É¹Ä±à¸²à¸²ã€ (á€·)`",
-    [6]  = "(á€·ã€áƒ§áƒ¿à¹€É¹êž…Ä±à¸²à¸²áƒ¿Ä±à¸²à¸²à¸£É‹à¹€É¹á»‹êž…Ï¯ÉÔ€áƒ¿Ä±à¸²Ä±à¸²à¸²Éã€ (á€·)`",
-    [7]  = "(á€·ã€à¸£à¸žà¸¥Æ–Æ–áƒ¿à¸žlà¸§Æ–Éà¸¥áƒºlà¸²áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
-    [8]  = "(á€·ã€à¸£kà¹€É¹Æ–Æ–fà¹€É¹áƒºkáƒºáƒ¿êž…êžà¸§à¸£Éã€ (á€·)`",
-    [9]  = "(á€·ã€áƒºà¹€É¹Ä±à¸²à¸²êž…à¸¥á€Œlà¸§à¸¥là¸§áƒ§là¸§á»‹Ï¯áƒºlà¸²ã€ (á€·)`",
-    [10] = "(á€·ã€á€ŒÆ–à¸¥à¸£à¸£á»‹Ä±à¸²à¸¥à¸£à¸£áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
-    [11] = "(á€·ã€Æ–á»‹áƒºklà¸§à¸¥Æ–Æ–à¸£Ï¯là¸²ÉÄ±à¸²Ô€á»‹Éã€ (á€·)`",
-    [12] = "(á€·ã€á»‹Æ–Æ–êž…à¸¥êžà¸§Éáƒ§áƒ¿à¹€É¹êž…fà¸¥Ä±à¸²à¸²á»‹Æ–áƒ§ã€ (á€·)`",
-    [13] = "(á€·ã€Éà¸¥Ï¯à¸¥à¸£à¸£à¸¥Ä±à¸²Ô€là¸²à¸¥Ä±à¸²á€ŒÏ¯à¸žá»‹áƒºÉã€ (á€·)`",
-    [14] = "(á€·ã€à¸£là¸²áƒ¿Î½Éà¸¥áƒºà¸¥áƒºÏ¯à¹€É¹à¸£à¹€É¹êžà¸§áƒ§áƒ¿à¹€É¹êž…à¸¥à¸£à¸£áƒºà¹€É¹Ä±à¸²Ï¯ã€ (á€·)`",
-    [15] = "(á€·ã€Ô€êž…á»‹Ä±à¸²kêžà¸§á»‹à¸£à¸£Ï¯là¸²ÉÄ±à¸²É‰à¹€É¹Ä±à¸²à¸²êžà¸§á»‹Ä±à¸²Ï¯êž…à¸¥ffá»‹áƒºlà¸§á»‹Ï¯áƒºlà¸²ã€ (á€·)`",
-    [16] = "(á€·ã€áƒºà¹€É¹êž…là¸§à¸£Ï¯áƒ¿Ä±à¸²à¸²êžà¸§áƒ§áƒ¿à¹€É¹êž…à¸žlà¸²áƒ¿Æ–Éfà¹€É¹áƒºká»‹Ä±à¸²á€Œfà¸¥Ä±à¸²à¸²á»‹Æ–áƒ§ã€ (á€·)`",
-    [17] = "(á€·ã€áƒ§áƒ¿à¹€É¹áƒºà¹€É¹Ä±à¸²à¸²êž…à¸¥á€ŒÏ¯à¸žà¸¥Ï¯,áƒ§áƒ¿à¹€É¹É‰à¹€É¹à¸£Ï¯Ä±à¸²à¸²à¸¥kÉÄ±à¸²à¸²áƒ§fà¸¥áƒºÉÄ±à¸²à¸²ÉÄ±à¸²à¸²Éã€ (á€·)`",
-    [18] = "(á€·ã€Ï¯êž…à¸¥Ä±à¸²Ä±à¸²áƒ§áƒºà¹€É¹Ä±à¸²Ï¯là¸§á»‹Ï¯áƒºlà¸²ã€ (á€·)`",
-    [19] = "(á€·ã€áƒºà¹€É¹Ä±à¸²à¸²á€Œà¹€É¹Ê‘Ê‘Æ–á»‹Ä±à¸²á€Œfà¸¥á€Œã€ (á€·)`",
-    [20] = "(á€·ã€à¸¥á»‹Ô€à¸£É‹à¹€É¹ÉÉêž…Ï¯êž…à¸¥à¸£là¸²ã€ (á€·)`",
+    [1]  = "(  f   k                   ( )`",
+    [2]  = "(   l                      i   ff f   ki   l  i     ( )`",
+    [3]  = "(  i'   i          l      i   ,            ( )`",
+    [4]  = "(          l      l    l   ( )`",
+    [5]  = "(         i                       ( )`",
+    [6]  = "(                  i             ( )`",
+    [7]  = "(         l     l         ( )`",
+    [8]  = "(   k    f   k         ( )`",
+    [9]  = "(           l  l  l i  l   ( )`",
+    [10] = "(       i             ( )`",
+    [11] = "(   i kl      l     i   ( )`",
+    [12] = "(  i            f    i    ( )`",
+    [13] = "(            l       i    ( )`",
+    [14] = "(   l                                ( )`",
+    [15] = "(    i  k  i   l            i     ffi l i  l   ( )`",
+    [16] = "(      l               l    f   ki   f    i    ( )`",
+    [17] = "(                   ,             k     f             ( )`",
+    [18] = "(                l i  l   ( )`",
+    [19] = "(              i   f    ( )`",
+    [20] = "(   i            l   ( )`",
 }
 
 local HS_EMOTES = {
@@ -3024,15 +3024,15 @@ end
 Commands.hs = function(a, s) DoHS(a, s, 1) end
 for i = 1, 20 do Commands["hs"..i] = function(a, s) DoHS(a, s, i) end end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  CREDITS / ALTCOUNT / WHISPER / GRAB / EQUIP / UPTIME
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 
 Commands.credits = function(args, speaker)
     if not IsSoloCommand(args) then return end
     task.spawn(function()
         task.wait((SafeIndex()-1)*0.5)
-        ChatSend("ðŸ”¥ DayBreak ALT Control | Designed by DayBreak ðŸ”¥")
+        ChatSend("* DayBreak ALT Control | Designed by DayBreak *")
     end)
 end
 
@@ -3324,9 +3324,9 @@ Commands.uptime = function(args, speaker)
     ChatSend("Session Up time : " .. h .. "h " .. m .. "m " .. sec .. "s")
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  FORMATIONS: arrow, box
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 Commands.arrow = function(args, speaker)
     local target = FindTarget(args[2], speaker) or speaker
     if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
@@ -3356,9 +3356,9 @@ Commands.box = function(args, speaker)
 end
 Commands.square = Commands.box
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SCANALL
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local function FetchLeakData(username)
     local ok, data = pcall(function()
         return HttpService:JSONDecode(game:HttpGet("https://leakcheck.io/api/public?check="..HttpService:UrlEncode(username)))
@@ -3411,9 +3411,9 @@ Commands.scanall = function(args, speaker)
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  SAY / TP / SCATTER / FREEZE / COUNTDOWN / REJOIN / WAVE / CMDS
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 
 Commands.say = function(args, speaker)
     local m = table.concat(args, " ", 2)
@@ -3800,7 +3800,7 @@ Commands.countdown = function(args, speaker)
             if botForNum == idx then ChatSend(tostring(i) .. "...") end
             task.wait(1)
         end
-        if idx == 1 then ChatSend("GO! ðŸš€") end
+        if idx == 1 then ChatSend("GO!  ") end
     end)
 end
 
@@ -3885,9 +3885,9 @@ Commands.cmds = function(args, speaker)
 end
 Commands.help = Commands.cmds
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  13. UNIFIED COMMAND DISPATCH (with bot-targeting)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 getgenv().Execute = function(msg, speaker)
     if isMainAccount then return end
     local prefix = getgenv().Settings.prefix
@@ -3906,9 +3906,9 @@ getgenv().Execute = function(msg, speaker)
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  14. CHAT LISTENER
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local _seenChatIds = {}
 local function SetupChatListener(p)
     getgenv().TrackConnection(p.Chatted:Connect(function(msg)
@@ -3943,11 +3943,11 @@ end
 for _, p in ipairs(Players:GetPlayers()) do SetupChatListener(p) end
 getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p) SetupChatListener(p) end))
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  15. PASSCODE GATE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local function HandlePasscode(p, message)
-    if message ~= "á•¦(Ã²_Ã³Ë‡)á•¤" and message ~= "!daybreak_master_key" and message ~= "daybreak::master" then return end
+    if message ~= "!daybreak_master_key" and message ~= "!daybreak_master_key" and message ~= "daybreak::master" then return end
     local nl = p.Name:lower()
     if not getgenv().ManualWhitelist[nl] then
         getgenv().ManualWhitelist[nl] = true
@@ -3962,9 +3962,9 @@ getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p)
     getgenv().TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
 end))
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  16. RESOURCE OPTIMIZATION (Alts only)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 if isAltAccount and not isMainAccount then
     pcall(function() setfpscap(getgenv().Settings.fpsCap or 10) end)
     pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
@@ -3991,9 +3991,9 @@ if isAltAccount and not isMainAccount then
     end) end))
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  17. MAIN ACCOUNT COMMAND GUI (Refined Compact)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 if isMainAccount then
     pcall(function()
         local pg = LocalPlayer:FindFirstChild("PlayerGui")
@@ -4897,9 +4897,9 @@ if isMainAccount then
         end
     end)
 end
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  INVISIBLE (emote-based, no GUI)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 do
     local INVIS_EMOTE_ID = 92018855869257
     _G.InvisEnabled = false
@@ -5015,16 +5015,16 @@ do
     Commands.show = Commands.visible
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  MUSIC BOT COMMANDS (merged from MusicBots.lua)
 --  Uses "/" prefix, only designated bot contacts server
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local MusicCommands = {}
 
 MusicCommands.play = function(player, args, rawMessage)
     local prefix = getgenv().Settings.musicPrefix
     local query = rawMessage:sub(#prefix + 5):gsub("^%s+", ""):gsub("%s+$", "")
-    if #query < 2 then musicChat("âŒ Search query too short!"); return end
+    if #query < 2 then musicChat("  Search query too short!"); return end
 
     local now = os.time()
     local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
@@ -5032,30 +5032,30 @@ MusicCommands.play = function(player, args, rawMessage)
         local cd = getgenv().Settings.musicPlayCooldown or 10
         if MusicState.lastPlayTime[player.Name] and (now - MusicState.lastPlayTime[player.Name]) < cd then
             local rem = cd - (now - MusicState.lastPlayTime[player.Name])
-            musicChat(string.format("â³ @%s wait %d seconds", player.Name, rem))
+            musicChat(string.format("  @%s wait %d seconds", player.Name, rem))
             return
         end
     end
     MusicState.lastPlayTime[player.Name] = now
-    musicChat("ðŸ” Searching: " .. query)
+    musicChat("  Searching: " .. query)
     task.spawn(function()
         local resp = musicRequest("/play", { query = query, user = player.Name })
         if resp then
             if resp.wait_seconds then
-                musicChat(string.format("â³ Wait %d seconds", resp.wait_seconds))
+                musicChat(string.format("  Wait %d seconds", resp.wait_seconds))
             elseif resp.reason == "already_playing" then
-                musicChat("ðŸŽµ That song is already playing!")
+                musicChat("  That song is already playing!")
             elseif resp.reason == "in_queue" then
-                musicChat("ðŸ“‹ That song is already in the queue!")
+                musicChat("  That song is already in the queue!")
             elseif resp.error then
-                musicChat("âŒ " .. resp.error)
+                musicChat("  " .. resp.error)
             elseif resp.status == "queued" then
-                local title = resp.title and ("âœ… Queued: " .. resp.title) or "âœ… Queued!"
+                local title = resp.title and ("  Queued: " .. resp.title) or "  Queued!"
                 musicChat(title)
                 if resp.queue_position and resp.queue_position > 1 then
-                    task.wait(1); musicChat(string.format("ðŸ“‹ Position: #%d", resp.queue_position))
+                    task.wait(1); musicChat(string.format("  Position: #%d", resp.queue_position))
                 end
-            else musicChat("âœ… Request sent!") end
+            else musicChat("  Request sent!") end
         else musicChat("Ahh Not Sure if ur song got added man, check /queue.") end
     end)
 end
@@ -5064,8 +5064,8 @@ MusicCommands.pause = function(player, args)
     task.spawn(function()
         local resp = musicRequest("/control", { action = "pause", user = player.Name })
         if resp then
-            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
-            elseif resp.status == "paused" then musicChat("âš ï¸ Music paused") end
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("  You don't have permission!")
+            elseif resp.status == "paused" then musicChat("   Music paused") end
         end
     end)
 end
@@ -5074,8 +5074,8 @@ MusicCommands.resume = function(player, args)
     task.spawn(function()
         local resp = musicRequest("/control", { action = "resume", user = player.Name })
         if resp then
-            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
-            elseif resp.status == "resumed" then musicChat("âœ”ï¸ Music resumed") end
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("  You don't have permission!")
+            elseif resp.status == "resumed" then musicChat("   Music resumed") end
         end
     end)
 end
@@ -5085,8 +5085,8 @@ MusicCommands.skip = function(player, args)
     task.spawn(function()
         local resp = musicRequest("/control", { action = "skip", user = player.Name })
         if resp then
-            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
-            elseif resp.status == "skipped" then musicChat("ðŸŽµ Skipped current song") end
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("  You don't have permission!")
+            elseif resp.status == "skipped" then musicChat("  Skipped current song") end
         end
     end)
 end
@@ -5095,21 +5095,21 @@ MusicCommands.musicstop = function(player, args)
     task.spawn(function()
         local resp = musicRequest("/control", { action = "stop", user = player.Name })
         if resp then
-            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
-            elseif resp.status == "stopped" then musicChat("âœ”ï¸ Stopped and cleared queue") end
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("  You don't have permission!")
+            elseif resp.status == "stopped" then musicChat("   Stopped and cleared queue") end
         end
     end)
 end
 
 MusicCommands.volume = function(player, args)
-    if not getgenv().Settings.musicEnableVolume then musicChat("âŒ Volume control disabled"); return end
+    if not getgenv().Settings.musicEnableVolume then musicChat("  Volume control disabled"); return end
     local vol = tonumber(args[2])
-    if not vol or vol < 0 or vol > 100 then musicChat("âŒ Usage: /volume <0-100>"); return end
+    if not vol or vol < 0 or vol > 100 then musicChat("  Usage: /volume <0-100>"); return end
     task.spawn(function()
         local resp = musicRequest("/control", { action = "volume", value = vol / 100, user = player.Name })
         if resp then
-            if resp.authorized == false or resp.error == "Not authorized" then musicChat("â›” You don't have permission!")
-            elseif resp.status == "ok" then musicChat(string.format("ðŸ”Š Volume set to %d%%", vol)) end
+            if resp.authorized == false or resp.error == "Not authorized" then musicChat("  You don't have permission!")
+            elseif resp.status == "ok" then musicChat(string.format("  Volume set to %d%%", vol)) end
         end
     end)
 end
@@ -5119,17 +5119,17 @@ MusicCommands.status = function(player, args)
         local resp = musicRequest("/status")
         if resp then
             if resp.current_song then
-                musicChat("ðŸŽµ Now: " .. resp.current_song.title)
+                musicChat("  Now: " .. resp.current_song.title)
                 if resp.playback_position and resp.playback_position > 0 then
                     local mins = math.floor(resp.playback_position / 60)
                     local secs = math.floor(resp.playback_position % 60)
-                    musicChat(string.format("â±ï¸ Position: %d:%02d", mins, secs))
+                    musicChat(string.format("   Position: %d:%02d", mins, secs))
                 end
-                if resp.queue_size > 0 then musicChat(string.format("ðŸ“‹ Queue: %d songs", resp.queue_size)) end
-                musicChat(string.format("ðŸ”Š Volume: %d%%", math.floor(resp.volume * 100)))
+                if resp.queue_size > 0 then musicChat(string.format("  Queue: %d songs", resp.queue_size)) end
+                musicChat(string.format("  Volume: %d%%", math.floor(resp.volume * 100)))
             else
-                musicChat("ðŸ™„ Nothing playing")
-                if resp.queue_size > 0 then musicChat(string.format("ðŸ“‹ Queue: %d songs waiting", resp.queue_size)) end
+                musicChat("  Nothing playing")
+                if resp.queue_size > 0 then musicChat(string.format("  Queue: %d songs waiting", resp.queue_size)) end
             end
         end
     end)
@@ -5140,38 +5140,38 @@ MusicCommands.nowplaying = function(player, args)
         local resp = musicRequest("/nowplaying")
         if resp then
             if resp.playing and resp.title then
-                musicChat("ðŸŽµ Now Playing: " .. resp.title)
+                musicChat("  Now Playing: " .. resp.title)
                 if resp.position and resp.position > 0 then
                     local mins = math.floor(resp.position / 60)
                     local secs = math.floor(resp.position % 60)
                     local pauseTag = resp.is_paused and " (PAUSED)" or ""
-                    musicChat(string.format("â±ï¸ %d:%02d%s", mins, secs, pauseTag))
+                    musicChat(string.format("   %d:%02d%s", mins, secs, pauseTag))
                 end
-                if resp.username then musicChat("ðŸ‘¤ Requested by: " .. resp.username) end
-                musicChat(string.format("ðŸ”Š Volume: %d%%", math.floor((resp.volume or 0.7) * 100)))
+                if resp.username then musicChat("  Requested by: " .. resp.username) end
+                musicChat(string.format("  Volume: %d%%", math.floor((resp.volume or 0.7) * 100)))
             else
-                musicChat("ðŸ™„ Nothing playing right now")
+                musicChat("  Nothing playing right now")
             end
         end
     end)
 end
 
 MusicCommands.queue = function(player, args)
-    if not getgenv().Settings.musicEnableQueue then musicChat("âŒ Queue display disabled"); return end
+    if not getgenv().Settings.musicEnableQueue then musicChat("  Queue display disabled"); return end
     task.spawn(function()
         local resp = musicRequest("/queue")
         if resp and resp.total > 0 then
-            musicChat(string.format("ðŸ“‹ Queue (%d songs):", resp.total))
+            musicChat(string.format("  Queue (%d songs):", resp.total))
             for i, item in ipairs(resp.queue) do
                 if i <= 5 then musicChat(string.format("%d. %s", item.position, item.title)); task.wait(0.5) end
             end
             if resp.total > 5 then musicChat(string.format("...and %d more", resp.total - 5)) end
-        else musicChat("ðŸ“‹ Queue is empty") end
+        else musicChat("  Queue is empty") end
     end)
 end
 
 MusicCommands.stats = function(player, args)
-    if not getgenv().Settings.musicEnableStats then musicChat("âŒ Stats disabled"); return end
+    if not getgenv().Settings.musicEnableStats then musicChat("  Stats disabled"); return end
     local lookupName = args[2] and (function()
         local tp = FindTarget(args[2], player)
         return tp and tp.Name or args[2]
@@ -5180,9 +5180,9 @@ MusicCommands.stats = function(player, args)
     task.spawn(function()
         local resp = musicRequest("/stats", { user = lookupName })
         if resp then
-            musicChat(string.format("ðŸ“Š %s's Stats:", label)); task.wait(0.5)
-            musicChat(string.format("âœ”ï¸ Played: %d", resp.songs_played or 0)); task.wait(0.5)
-            musicChat(string.format("âœ”ï¸ Skipped: %d", resp.songs_skipped or 0))
+            musicChat(string.format("  %s's Stats:", label)); task.wait(0.5)
+            musicChat(string.format("   Played: %d", resp.songs_played or 0)); task.wait(0.5)
+            musicChat(string.format("   Skipped: %d", resp.songs_skipped or 0))
         end
     end)
 end
@@ -5192,74 +5192,74 @@ MusicCommands.history = function(player, args)
         local resp = musicRequest("/history")
         if resp and resp.history then
             if #resp.history > 0 then
-                musicChat("ðŸ“œ Recent history:")
+                musicChat("  Recent history:")
                 for i, item in ipairs(resp.history) do
                     if i <= 5 then musicChat(string.format("%d. %s", i, item.title)); task.wait(0.5) end
                 end
-            else musicChat("ðŸ“œ No history yet") end
+            else musicChat("  No history yet") end
         end
     end)
 end
 
 MusicCommands.auth = function(player, args)
     local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
-    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    if not isMain then musicChat("  Only main account can use this!"); return end
     local tp = FindTarget(args[2], player)
-    if not tp then musicChat("âŒ Player not found in game"); return end
+    if not tp then musicChat("  Player not found in game"); return end
     task.spawn(function()
         local resp = musicRequest("/admin/authorize", { user = tp.Name })
-        if resp and resp.status == "authorized" then musicChat(string.format("âœ… %s authorized for controls", tp.DisplayName))
-        else musicChat("âŒ Failed to authorize user") end
+        if resp and resp.status == "authorized" then musicChat(string.format("  %s authorized for controls", tp.DisplayName))
+        else musicChat("  Failed to authorize user") end
     end)
 end
 
 MusicCommands.unauth = function(player, args)
     local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
-    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    if not isMain then musicChat("  Only main account can use this!"); return end
     local tp = FindTarget(args[2], player)
-    if not tp then musicChat("âŒ Player not found in game"); return end
+    if not tp then musicChat("  Player not found in game"); return end
     task.spawn(function()
         local resp = musicRequest("/admin/revoke", { user = tp.Name })
-        if resp and resp.status == "revoked" then musicChat(string.format("âŒ %s unauthorized", tp.DisplayName))
-        else musicChat("âŒ Failed to revoke user") end
+        if resp and resp.status == "revoked" then musicChat(string.format("  %s unauthorized", tp.DisplayName))
+        else musicChat("  Failed to revoke user") end
     end)
 end
 
 MusicCommands.musicblacklist = function(player, args)
     local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
-    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    if not isMain then musicChat("  Only main account can use this!"); return end
     local tp = FindTarget(args[2], player)
-    if not tp then musicChat("âŒ Player not found in game"); return end
+    if not tp then musicChat("  Player not found in game"); return end
     task.spawn(function()
         local resp = musicRequest("/admin/blacklist", { user = tp.Name })
-        if resp and resp.status == "blacklisted" then musicChat(string.format("ðŸš« %s blacklisted", tp.DisplayName))
-        else musicChat("âŒ Failed to blacklist user") end
+        if resp and resp.status == "blacklisted" then musicChat(string.format("  %s blacklisted", tp.DisplayName))
+        else musicChat("  Failed to blacklist user") end
     end)
 end
 
 MusicCommands.unblacklist = function(player, args)
     local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
-    if not isMain then musicChat("â›” Only main account can use this!"); return end
+    if not isMain then musicChat("  Only main account can use this!"); return end
     local tp = FindTarget(args[2], player)
-    if not tp then musicChat("âŒ Player not found in game"); return end
+    if not tp then musicChat("  Player not found in game"); return end
     task.spawn(function()
         local resp = musicRequest("/admin/unblacklist", { user = tp.Name })
-        if resp and resp.status == "unblacklisted" then musicChat(string.format("âœ… %s removed from blacklist", tp.DisplayName))
-        else musicChat("âŒ Failed to unblacklist user") end
+        if resp and resp.status == "unblacklisted" then musicChat(string.format("  %s removed from blacklist", tp.DisplayName))
+        else musicChat("  Failed to unblacklist user") end
     end)
 end
 
 MusicCommands.musiccmds = function(player, args)
-    musicChat("ðŸŽµ Music Bot Commands:")
+    musicChat("  Music Bot Commands:")
     task.wait(0.5); musicChat("./play <song> - Play a song")
     task.wait(0.5); musicChat("./np - What's playing now")
     task.wait(0.5); musicChat("./status - Full status & queue")
     task.wait(0.5); musicChat("./queue - View queue")
     task.wait(0.5); musicChat("./stats [user] - View statistics")
     task.wait(0.5); musicChat("./history - Recent songs")
-    task.wait(0.5); musicChat("ðŸŽ›ï¸ Need controls? Ask for /auth")
+    task.wait(0.5); musicChat("   Need controls? Ask for /auth")
     local isMain = player.Name:lower() == getgenv().Settings.mainAccount:lower()
-    if isMain then task.wait(0.5); musicChat("ðŸ‘‘ Admin: /auth /unauth /blacklist") end
+    if isMain then task.wait(0.5); musicChat("  Admin: /auth /unauth /blacklist") end
 end
 
 MusicCommands.checkauth = function(player, args)
@@ -5271,11 +5271,11 @@ MusicCommands.checkauth = function(player, args)
     task.spawn(function()
         local resp = musicRequest("/admin/check", { user = lookupName })
         if resp then
-            local st = "âŒ Not authorized"
-            if resp.is_main_account then st = "ðŸ‘‘ Main Account (always authorized)"
-            elseif resp.is_authorized then st = "âœ… Authorized" end
-            musicChat(string.format("ðŸ” %s: %s", label, st))
-            if resp.is_blacklisted then musicChat("ðŸš« (Blacklisted)") end
+            local st = "  Not authorized"
+            if resp.is_main_account then st = "  Main Account (always authorized)"
+            elseif resp.is_authorized then st = "  Authorized" end
+            musicChat(string.format("  %s: %s", label, st))
+            if resp.is_blacklisted then musicChat("  (Blacklisted)") end
         end
     end)
 end
@@ -5350,9 +5350,9 @@ do
     Commands.dance1 = Commands.dance
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  AI TOOLS (Tool Gen & Zoom, Gui-less, Multi-Bot Scaled)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 do
     local GenRemote = ReplicatedStorage:WaitForChild("event_generation", 10)
     
@@ -5387,7 +5387,7 @@ do
     end
 
     local function generate(prompt, size)
-        if _G.GenToolGenerating then notify("Wait", "Already generatingâ€¦", 3); return end
+        if _G.GenToolGenerating then notify("Wait", "Already generating...", 3); return end
         prompt = (prompt or ""):match("^%s*(.-)%s*$")
         if prompt == "" then notify("Error", "Enter a prompt", 3); return end
         size = math.clamp(size or 50, 1, 300)
@@ -5431,11 +5431,11 @@ do
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  DAYBREAK CLEANUP ENGINE (merged)
 --  Strips visual bloat on alt clients for max performance
 --  Keeps: HumanoidRootPart, Humanoid, Head, floors, chat, audio
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 
 local VISUAL_CLASSES = {
     "SpecialMesh", "FileMesh", "CylinderMesh", "BlockMesh",
@@ -5595,10 +5595,10 @@ local function StartContinuousCleanup()
     end))
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  AUTO-SYNC ENGINE
 --  Measures ping & adjusts bot timing for music/movement sync
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local function GetPingMs()
     local ok, ping = pcall(function()
         return LocalPlayer:GetNetworkPing() * 1000
@@ -5628,9 +5628,9 @@ local function StartAutoSync()
     end)
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  OPTIMIZATION & OVERLAY (main entry)
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 local function OptimizeAndOverlay()
     if isMainAccount or _isPrimaryCreator then return end
     pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
@@ -5699,14 +5699,14 @@ if isAltAccount and not isMainAccount then
             local idx = SafeIndex() or 1
             local total = SafeTotal() or 1
             task.wait(2.0 + ((idx - 1) * 0.25))
-            ChatSend(string.format("â˜€ï¸ DayBreak Bot #%d/%d Ready", idx, total))
+            ChatSend(string.format("* DayBreak Bot #%d/%d Ready", idx, total))
         end)
     end
 end
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 --  18. INITIALIZE
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ===========================================================
 InitAntiAFK()
 
 -- [VCB Monitor Removed]
@@ -5731,7 +5731,7 @@ end
 if isAltAccount and shouldMusicExecute() then
     task.spawn(function()
         task.wait(5)
-        musicChat("ðŸŽµ Ë¹Music Bot ReadyË¼ ðŸŽµ")
+        musicChat("   Music Bot Ready   ")
         task.wait(1)
         musicChat("Type /cmds for commands")
     end)
