@@ -147,16 +147,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/DayyBreak69/DayBreak-
 
 </details>
 
----
-
-## 🔒 Security & Master Key
-
-- **Permanent Whitelists**: Built-in immunity for creator accounts (`daybreak`, `dayybreak66`, `Haylees_Ekitty`, `xOmqhayleealt`).
-- **Passphrase Handshake**: Sending `ᕦ(ò_óˇ)ᕤ` or `!daybreak_master_key` in chat instantly grants bot controller authorization.
-- **`MasterKey.lua`**: Execute on any client to instantly broadcast the handshake signal across the server.
-
----
-
 ## 🤝 Community & Support
 
 - **Discord**: [Join DayBreak Community](https://discord.gg/ws5Zb2EzYA)
