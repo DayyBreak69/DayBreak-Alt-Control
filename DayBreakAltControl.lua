@@ -25,7 +25,7 @@ getgenv().Settings = {
     -- MUSIC BOT
     musicPrefix         = "/",
     musicBotAccount     = "",
-    musicServerURL      = "",
+    musicServerURL      = "http://127.0.0.1:5000",
     musicApiKey         = "",
     musicGlobalCooldown = 3,
     musicPlayCooldown   = 10,
@@ -4332,12 +4332,12 @@ if isMainAccount then
     C("Frame",{Size=UDim2.new(1,-16,0,2),Position=UDim2.new(0,8,1,0),BackgroundColor3=T.Accent,BorderSizePixel=0,Parent=hdr})
 
     C("TextLabel",{
-        Size = UDim2.new(1, -80, 1, 0),
+        Size = UDim2.new(0, 115, 1, 0),
         Position = UDim2.new(0, 10, 0, 0),
         BackgroundTransparency = 1,
-        Text = "DayBreak ALT Control",
+        Text = "DayBreak Control",
         TextColor3 = T.Text,
-        TextSize = 13,
+        TextSize = 11,
         Font = T.FM,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = hdr,
@@ -4483,7 +4483,7 @@ if isMainAccount then
         Size = UDim2.new(1, -10, 0, 20),
         Position = UDim2.new(0, 6, 0, 4),
         BackgroundTransparency = 1,
-        Text = "ðŸ“Š Bot Fleet & Memory Status",
+        Text = "Bot Fleet & Memory Status",
         TextColor3 = T.Accent,
         TextSize = 10,
         Font = T.FM,
@@ -4496,7 +4496,7 @@ if isMainAccount then
         Position = UDim2.new(0, 4, 1, -24),
         BackgroundColor3 = T.Green,
         BackgroundTransparency = 0.6,
-        Text = "ðŸ§¹ Flush All RAM",
+        Text = "Flush All RAM",
         TextColor3 = Color3.new(1, 1, 1),
         TextSize = 9,
         Font = T.FM,
@@ -4516,7 +4516,7 @@ if isMainAccount then
         Position = UDim2.new(0.52, 0, 1, -24),
         BackgroundColor3 = T.Yellow,
         BackgroundTransparency = 0.6,
-        Text = "âš¡ Low-RAM Mode",
+        Text = "Low-RAM Mode",
         TextColor3 = Color3.new(1, 1, 1),
         TextSize = 9,
         Font = T.FM,
@@ -4565,7 +4565,7 @@ if isMainAccount then
             Size = UDim2.new(0.55, 0, 1, 0),
             Position = UDim2.new(0, 6, 0, 0),
             BackgroundTransparency = 1,
-            Text = "ðŸŸ¢ " .. LocalPlayer.Name .. " (You)",
+            Text = "[You] " .. LocalPlayer.Name,
             TextColor3 = T.Text,
             TextSize = 10,
             Font = T.FM,
@@ -4602,7 +4602,7 @@ if isMainAccount then
                     Size = UDim2.new(0.55, 0, 1, 0),
                     Position = UDim2.new(0, 6, 0, 0),
                     BackgroundTransparency = 1,
-                    Text = string.format("ðŸ¤– Bot #%d: %s", i, bName),
+                    Text = string.format("Bot #%d: %s", i, bName),
                     TextColor3 = T.Sub,
                     TextSize = 9,
                     Font = T.FB,
@@ -4791,7 +4791,7 @@ if isMainAccount then
         Position = UDim2.new(0, 1, 0, 1),
         BackgroundColor3 = T.Surface,
         BackgroundTransparency = 0.1,
-        Text = "âš¡ Commands",
+        Text = "Commands",
         TextColor3 = T.Accent,
         TextSize = 10,
         Font = T.FM,
@@ -4806,7 +4806,7 @@ if isMainAccount then
         Position = UDim2.new(0.5, 1, 0, 1),
         BackgroundColor3 = T.Card,
         BackgroundTransparency = 0.7,
-        Text = "ðŸ“Š Bot & RAM",
+        Text = "Bot RAM",
         TextColor3 = T.Sub,
         TextSize = 10,
         Font = T.FM,
@@ -5632,8 +5632,9 @@ end
 --  OPTIMIZATION & OVERLAY (main entry)
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 local function OptimizeAndOverlay()
+    if isMainAccount or _isPrimaryCreator then return end
     pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
-    pcall(function() if setfpscap then setfpscap(10) end end)
+    pcall(function() if setfpscap then setfpscap(getgenv().Settings.fpsCap or 10) end end)
 
     CleanLightingEffects()
     CleanTerrain()
@@ -5676,9 +5677,13 @@ local function OptimizeAndOverlay()
     InfoLabel.TextYAlignment = Enum.TextYAlignment.Center
     
     InfoLabel.Text = string.format(
-        "ALT Control | Designed by DayBreak\n" ..
-        "Join Discord: https://discord.gg/ws5Zb2EzYA\n\n" ..
-        "USER: %s\n" ..
+        "ALT Control | Developed by DayBreak
+" ..
+        "Join Discord: https://discord.gg/ws5Zb2EzYA
+
+" ..
+        "USER: %s
+" ..
         "BOT POSITION: %02d",
         LocalPlayer.Name,
         myIndex
@@ -5686,10 +5691,10 @@ local function OptimizeAndOverlay()
     InfoLabel.Parent = Background
 end
 
-if LocalPlayer.Name ~= getgenv().Settings.mainAccount then
+if isAltAccount and not isMainAccount then
     OptimizeAndOverlay()
     
-    if getgenv().Settings.announceOnLoad and isAltAccount and not isMainAccount then
+    if getgenv().Settings.announceOnLoad then
         task.spawn(function()
             local idx = SafeIndex() or 1
             local total = SafeTotal() or 1
@@ -5698,7 +5703,6 @@ if LocalPlayer.Name ~= getgenv().Settings.mainAccount then
         end)
     end
 end
-
 
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 --  18. INITIALIZE
