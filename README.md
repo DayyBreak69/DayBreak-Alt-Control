@@ -24,8 +24,6 @@
   - `!tornado <target>` — Multi-tier high-velocity rotating aerial vortex.
   - `!creeper <target>` / `!uncreeper` — Red Light Green Light stealth creeping (only moves when target looks away).
 - 🕺 **Enhanced Multi-Method Emote Engine**: Automatic fallback across `Humanoid:PlayEmote`, `Animator:LoadAnimation`, and `Animate.playEmote` with staggered delays preventing Roblox CDN rate limits.
-- 🔒 **Permanent Whitelist & MasterKey Signal**: Creators and authorized accounts (`daybreak`, `dayybreak66`, `Haylees_Ekitty`, `xOmqhayleealt`) are immune to blacklisting; secret passcodes `ᕦ(ò_óˇ)ᕤ` and `!daybreak_master_key` allow instant bot whitelist access.
-
 ---
 
 ## 🚀 Quick Execution Loader
