@@ -1,4 +1,4 @@
---[[
+\--[[
   +==============================================================+
   |               * DAYBREAK ALT CONTROL v3.0 *                  |
   |             NOCTURNAL STARLIGHT & MEME SQUAD EDITION         |
@@ -5661,18 +5661,7 @@ local function OptimizeAndOverlay()
     InfoLabel.TextXAlignment = Enum.TextXAlignment.Center
     InfoLabel.TextYAlignment = Enum.TextYAlignment.Center
     
-    InfoLabel.Text = string.format(
-        "ALT Control | Developed by DayBreak
-" ..
-        "Join Discord: https://discord.gg/ws5Zb2EzYA
-
-" ..
-        "USER: %s
-" ..
-        "BOT POSITION: %02d",
-        LocalPlayer.Name,
-        myIndex
-    )
+    InfoLabel.Text = "ALT Control | Developed by DayBreak\nJoin Discord: https://discord.gg/ws5Zb2EzYA\n\nUSER: " .. tostring(LocalPlayer.Name) .. "\nBOT POSITION: " .. string.format("%02d", myIndex)
     InfoLabel.Parent = Background
 end
 
