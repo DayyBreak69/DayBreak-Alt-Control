@@ -1,4 +1,4 @@
-\--[[
+--[[
   +==============================================================+
   |               * DAYBREAK ALT CONTROL v3.0 *                  |
   |             NOCTURNAL STARLIGHT & MEME SQUAD EDITION         |
