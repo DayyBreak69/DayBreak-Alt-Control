@@ -9,5 +9,4 @@ getgenv().Settings = {
     }
 }
 
-local url = "https://raw.githubusercontent.com/DayyBreak69/DayBreak-Alt-Control/main/DayBreakAltControl.lua?t=" .. tostring(os.time())
-loadstring(game:HttpGet(url))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/DayyBreak69/DayBreak-Alt-Control/main/DayBreakAltControl.lua"))()
