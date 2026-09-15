@@ -320,14 +320,13 @@ local function doMicUnmute()
         if not isMicMuted() then return end -- Already unmuted
         local micFrame = findMicFrame()
         if not micFrame then
-            -- Mic frame not loaded yet, wait and retry
             task.wait(2)
-            continue
+        else
+            doMicToggle()
+            task.wait(0.5)
+            if not isMicMuted() then return end
+            task.wait(1)
         end
-        doMicToggle()
-        task.wait(0.5)
-        if not isMicMuted() then return end -- Success
-        task.wait(1) -- Wait before retry
     end
     warn("[MicToggle] Failed to unmute after 3 attempts")
 end
@@ -1074,7 +1073,7 @@ Commands.wonder = function(args, speaker)
                 h:MoveTo(r.Position + Vector3.new(rng:NextNumber(-30,30), 0, rng:NextNumber(-30,30)))
                 local done, t, cn = false, 0, nil
                 cn = h.MoveToFinished:Connect(function() done = true end)
-                repeat task.wait(0.1); t += 0.1 until done or _G.CurrentCommand ~= "Wonder" or t > 10
+                repeat task.wait(0.1); t = t + 0.1 until done or _G.CurrentCommand ~= "Wonder" or t > 10
                 if cn then cn:Disconnect() end
             end
             task.wait(math.random(1, 2))
@@ -1590,7 +1589,7 @@ Commands.npc = function(args, speaker)
                     myH:MoveTo(myR.Position + Vector3.new(rng:NextNumber(-30,30), 0, rng:NextNumber(-30,30)))
                     local done, t, cn = false, 0, nil
                     cn = myH.MoveToFinished:Connect(function() done = true end)
-                    repeat task.wait(0.1); t += 0.1 until done or _G.CurrentCommand ~= "NPC" or t > 10
+                    repeat task.wait(0.1); t = t + 0.1 until done or _G.CurrentCommand ~= "NPC" or t > 10
                     if cn then cn:Disconnect() end
                     task.wait(math.random(2, 5))
                 end
@@ -1624,7 +1623,7 @@ Commands.npc = function(args, speaker)
                         myH:MoveTo(frontPos)
                         local arrived, t, cn = false, 0, nil
                         cn = myH.MoveToFinished:Connect(function() arrived = true end)
-                        repeat task.wait(0.1); t += 0.1 until arrived or t > 8 or _G.CurrentCommand ~= "NPC"
+                        repeat task.wait(0.1); t = t + 0.1 until arrived or t > 8 or _G.CurrentCommand ~= "NPC"
                         if cn then cn:Disconnect() end
 
                         if _G.CurrentCommand == "NPC" and tR.Parent then
@@ -1643,7 +1642,7 @@ Commands.npc = function(args, speaker)
                             end
                             local d2, t2, cn2 = false, 0, nil
                             cn2 = myH.MoveToFinished:Connect(function() d2 = true end)
-                            repeat task.wait(0.1); t2 += 0.1 until d2 or t2 > 6 or _G.CurrentCommand ~= "NPC"
+                            repeat task.wait(0.1); t2 = t2 + 0.1 until d2 or t2 > 6 or _G.CurrentCommand ~= "NPC"
                             if cn2 then cn2:Disconnect() end
                         end
                     end
@@ -2371,21 +2370,21 @@ Commands.bodyguard = function(args, speaker)
 
     task.spawn(function()
         while _G.CurrentCommand == "bodyguard" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
-                task.wait(0.2)
-                continue
-            end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local radius = 6 + (total * 0.3)
-                local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
-                local offsetX = math.cos(angle) * radius
-                local offsetZ = math.sin(angle) * radius
-                local targetPos = tHrp.Position + Vector3.new(offsetX, 0, offsetZ)
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local radius = 6 + (total * 0.3)
+                    local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
+                    local offsetX = math.cos(angle) * radius
+                    local offsetZ = math.sin(angle) * radius
+                    local targetPos = tHrp.Position + Vector3.new(offsetX, 0, offsetZ)
 
-                local targetLook = targetPos + (targetPos - tHrp.Position).Unit * 10
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(targetLook.X, targetPos.Y, targetLook.Z))
+                    local targetLook = targetPos + (targetPos - tHrp.Position).Unit * 10
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(targetLook.X, targetPos.Y, targetLook.Z))
+                end
+            else
+                task.wait(0.2)
             end
             task.wait(0.03)
         end
@@ -2410,34 +2409,30 @@ Commands.ritual = function(args, speaker)
         local spinAngle = 0
 
         while _G.CurrentCommand == "ritual" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
-                task.wait(0.2)
-                continue
-            end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                spinAngle = (spinAngle + 0.04) % (math.pi * 2)
-                local radius = 8
-                local angle = spinAngle + (((idx - 1) / math.max(1, total)) * math.pi * 2)
-                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
-            end
-
-            chantTimer = chantTimer + 0.03
-            if chantTimer >= 4 then
-                chantTimer = 0
-                if idx == 1 then
-                    local chant = chants[math.random(1, #chants)]
-                    ChatSend(chant)
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    spinAngle = (spinAngle + 0.04) % (math.pi * 2)
+                    local radius = 8
+                    local angle = spinAngle + (((idx - 1) / math.max(1, total)) * math.pi * 2)
+                    local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
                 end
+                chantTimer = chantTimer + 1
+                if chantTimer >= 60 and idx == 1 then
+                    chantTimer = 0
+                    ChatSend(chants[math.random(1, #chants)])
+                end
+            else
+                task.wait(0.2)
             end
             task.wait(0.03)
         end
     end)
 end
 
--- 3. PAPARAZZI / FLASH MOB
+-- 3. PAPARAZZI FLASH MOB
 Commands.paparazzi = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
@@ -2450,36 +2445,35 @@ Commands.paparazzi = function(args, speaker)
     local total = SafeTotal()
 
     task.spawn(function()
-        local questions = {"OMG OVER HERE!! [Photo]", "LOOK THIS WAY!! [Photo]", "ONE MORE SMILE!! *", "IS IT TRUE?! [Photo]", "EXCLUSIVE PHOTO!! [Photo]"}
+        local lines = {"[Photo] Look over here!", "[Photo] Give us a smile!", "[Photo] Who are you wearing?", "[Photo] Exclusive interview!"}
         local flashTimer = 0
 
         while _G.CurrentCommand == "paparazzi" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local dist = 5 + (idx * 0.8)
+                    local angle = ((idx - 1) / math.max(1, total)) * math.pi
+                    local facing = tHrp.CFrame.LookVector
+                    local right = tHrp.CFrame.RightVector
+                    local targetPos = tHrp.Position + (facing * (dist * 0.7)) + (right * (math.sin(angle) * 6))
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, tHrp.Position)
+                end
+                flashTimer = flashTimer + 1
+                if flashTimer >= 40 and idx == ((tick() % total) + 1) then
+                    flashTimer = 0
+                    ChatSend(lines[math.random(1, #lines)])
+                end
+            else
                 task.wait(0.2)
-                continue
             end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local radius = 5 + (math.sin(os.clock() * 3 + idx) * 1.5)
-                local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2 + (math.sin(os.clock() + idx) * 0.3)
-                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
-            end
-
-            flashTimer = flashTimer + 0.03
-            if flashTimer >= (8 + (idx * 2.0)) then
-                flashTimer = 0
-                local q = questions[math.random(1, #questions)]
-                task.wait((idx - 1) * 0.25)
-                ChatSend(string.format("[Bot #%d] %s", idx, q))
-            end
-            task.wait(0.03)
+            task.wait(0.04)
         end
     end)
 end
 
--- 4. COFFIN DANCE / PALLBEARERS
+-- 4. COFFIN DANCE
 Commands.coffin = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
@@ -2492,28 +2486,25 @@ Commands.coffin = function(args, speaker)
     local total = SafeTotal()
 
     task.spawn(function()
-        local step = 0
+        local tOffset = 0
         while _G.CurrentCommand == "coffin" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local side = (idx % 2 == 0) and 1 or -1
+                    local row = math.floor((idx - 1) / 2)
+                    local right = tHrp.CFrame.RightVector
+                    local back = -tHrp.CFrame.LookVector
+                    tOffset = (tOffset + 0.1) % (math.pi * 2)
+                    local bob = math.sin(tOffset + idx) * 0.8
+                    local targetPos = tHrp.Position + (right * (side * 4)) + (back * (row * 3)) + Vector3.new(0, bob, 0)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + tHrp.CFrame.LookVector)
+                end
+            else
                 task.wait(0.2)
-                continue
             end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                step = step + 0.08
-                local side = (idx % 2 == 0) and 1 or -1
-                local row = math.floor((idx - 1) / 2)
-                local sideOffset = side * 4
-                local backOffset = -row * 3.5
-
-                local bobHeight = math.abs(math.sin(step + (row * 0.5))) * 1.8
-                local forwardLook = tHrp.CFrame.LookVector
-                local rightLook = tHrp.CFrame.RightVector
-                local targetPos = tHrp.Position + (rightLook * sideOffset) + (forwardLook * backOffset) + Vector3.new(0, bobHeight, 0)
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + forwardLook)
-            end
-            task.wait(0.03)
+            task.wait(0.04)
         end
     end)
 end
@@ -2530,25 +2521,27 @@ Commands.conga = function(args, speaker)
     local idx = SafeIndex()
 
     task.spawn(function()
+        local animStep = 0
         while _G.CurrentCommand == "conga" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    animStep = (animStep + 0.12) % (math.pi * 2)
+                    local hop = math.abs(math.sin(animStep + (idx * 0.4))) * 1.2
+                    local back = -tHrp.CFrame.LookVector
+                    local targetPos = tHrp.Position + (back * (idx * 3.5)) + Vector3.new(0, hop, 0)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + tHrp.CFrame.LookVector)
+                end
+            else
                 task.wait(0.2)
-                continue
-            end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local dist = idx * 3.2
-                local sway = math.sin(os.clock() * 4 + (idx * 0.8)) * 1.5
-                local targetPos = tHrp.Position - (tHrp.CFrame.LookVector * dist) + (tHrp.CFrame.RightVector * sway)
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + tHrp.CFrame.LookVector)
             end
             task.wait(0.03)
         end
     end)
 end
 
--- 6. MENACING STARE / VOID GAZE
+-- 6. OMINOUS STARE (Silent Intimidation)
 Commands.stare = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
@@ -2562,19 +2555,18 @@ Commands.stare = function(args, speaker)
 
     task.spawn(function()
         while _G.CurrentCommand == "stare" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
+                    local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * 7, 0, math.sin(angle) * 7)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+                end
+            else
                 task.wait(0.2)
-                continue
             end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local radius = 7
-                local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
-                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
-            end
-            task.wait(0.03)
+            task.wait(0.05)
         end
     end)
 end
@@ -2592,29 +2584,28 @@ Commands.tornado = function(args, speaker)
     local total = SafeTotal()
 
     task.spawn(function()
-        local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
-        local height = (idx - 1) * 1.5
-
+        local spin = 0
         while _G.CurrentCommand == "tornado" and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    spin = (spin + 0.15) % (math.pi * 2)
+                    local height = (idx / math.max(1, total)) * 14
+                    local radius = 3 + (height * 0.4)
+                    local angle = spin + (((idx - 1) / math.max(1, total)) * math.pi * 2)
+                    local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+                end
+            else
                 task.wait(0.2)
-                continue
-            end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                angle = (angle + 0.12) % (math.pi * 2)
-                local radius = 4 + (height * 0.5)
-                local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
-                myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
             end
             task.wait(0.02)
         end
     end)
 end
 
--- 8. CREEPER STEALTH (Red Light Green Light)
-_G.CreeperActive = false
+-- 8. CREEPER (Red Light Green Light Stealth)
 Commands.creeper = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
@@ -2623,41 +2614,37 @@ Commands.creeper = function(args, speaker)
 
     StopAll()
     _G.CurrentCommand = "creeper"
-    _G.CreeperActive = true
     local idx = SafeIndex()
 
     task.spawn(function()
-        while _G.CurrentCommand == "creeper" and _G.CreeperActive and _G.DayBreakActive do
-            if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
-                task.wait(0.2)
-                continue
-            end
-            local tHrp = target.Character.HumanoidRootPart
-            local myChar = LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local myHrp = myChar.HumanoidRootPart
-                local toTarget = (tHrp.Position - myHrp.Position)
-                local targetLook = tHrp.CFrame.LookVector
-                local dot = targetLook:Dot((-toTarget).Unit)
+        while _G.CurrentCommand == "creeper" and _G.DayBreakActive do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local myHrp = myChar.HumanoidRootPart
+                    local toBot = (myHrp.Position - tHrp.Position).Unit
+                    local facing = tHrp.CFrame.LookVector
+                    local dot = toBot:Dot(facing)
 
-                local targetIsLooking = dot > 0.1
-                if not targetIsLooking then
-                    local stepDist = 0.5 + (idx * 0.05)
-                    local newPos = myHrp.Position + (toTarget.Unit * stepDist)
-                    if (newPos - tHrp.Position).Magnitude > 3 then
-                        myHrp.CFrame = CFrame.lookAt(newPos, Vector3.new(tHrp.Position.X, newPos.Y, tHrp.Position.Z))
+                    if dot < 0.2 then
+                        local stepDir = (tHrp.Position - myHrp.Position).Unit
+                        local newPos = myHrp.Position + (stepDir * 0.6)
+                        if (newPos - tHrp.Position).Magnitude > 3 then
+                            myHrp.CFrame = CFrame.lookAt(newPos, tHrp.Position)
+                        end
                     end
                 end
+            else
+                task.wait(0.2)
             end
-            task.wait(0.05)
+            task.wait(0.04)
         end
     end)
 end
-
 Commands.uncreeper = function(args, speaker)
-    _G.CreeperActive = false
     StopAll()
-    if SafeIndex() == 1 then ChatSend("Creeper mode deactivated") end
+    if SafeIndex() == 1 then ChatSend("[DayBreak] Stealth mode deactivated") end
 end
 
 
@@ -2702,7 +2689,7 @@ Commands.spin = function(args, speaker)
         if h then h.AutoRotate = false end
         while _G.CurrentCommand == "Spin" do
             local r = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if r then rot += spinSpd; r.CFrame = CFrame.new(r.Position) * CFrame.Angles(0, math.rad(rot), 0)
+            if r then rot = rot + spinSpd; r.CFrame = CFrame.new(r.Position) * CFrame.Angles(0, math.rad(rot), 0)
                 r.Velocity = Vector3.zero; r.RotVelocity = Vector3.zero end
             RunService.Heartbeat:Wait()
         end
@@ -2756,8 +2743,8 @@ Commands.bang = function(args, speaker)
             local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
             if mR and tR then
                 if h and h.Sit then h.Sit = false end
-                if inc then step += stepInc; if step >= 1 then inc = false end
-                else step -= stepInc; if step <= 0 then inc = true end end
+                if inc then step = step + stepInc; if step >= 1 then inc = false end
+                else step = step - stepInc; if step <= 0 then inc = true end end
                 mR.CFrame = tR.CFrame * CFrame.new(0, 0, 0.8 + step * 1.2)
                 mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
             end
@@ -2784,8 +2771,8 @@ Commands.fbang = function(args, speaker)
             if mR and tHead then
                 local h = LocalPlayer.Character:FindFirstChild("Humanoid")
                 if h and h.Sit then h.Sit = false end
-                if inc then step += stepInc; if step >= 1 then inc = false end
-                else step -= stepInc; if step <= 0 then inc = true end end
+                if inc then step = step + stepInc; if step >= 1 then inc = false end
+                else step = step - stepInc; if step <= 0 then inc = true end end
                 local zOff = 0.5 + step * 1.5
                 local isR15 = LocalPlayer.Character:FindFirstChild("LowerTorso") ~= nil
                 local yOffset = isR15 and 0.75 or 0
@@ -2915,8 +2902,8 @@ Commands.mbang = function(args, speaker)
             local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
             if mR and tR then
                 local idx, total = SafeIndex(), SafeTotal()
-                if inc then step += stepInc; if step >= 1 then inc = false end
-                else step -= stepInc; if step <= 0 then inc = true end end
+                if inc then step = step + stepInc; if step >= 1 then inc = false end
+                else step = step - stepInc; if step <= 0 then inc = true end end
                 local cf = tR.CFrame
                 if idx==1 then
                     local isR15 = LocalPlayer.Character:FindFirstChild("LowerTorso") ~= nil
@@ -2927,7 +2914,7 @@ Commands.mbang = function(args, speaker)
                 elseif idx==3 then cf = tR.CFrame*CFrame.new(0.8+step*1.2,0,0)*CFrame.Angles(0,math.rad(-90),0)
                 elseif idx==4 then cf = tR.CFrame*CFrame.new(-(0.8+step*1.2),0,0)*CFrame.Angles(0,math.rad(90),0)
                 elseif idx==5 then cf = tR.CFrame*CFrame.new(0,1+step*1.5,0)*CFrame.Angles(math.rad(-90),0,0)
-                else oa += 0.05; local si=idx-5; local ts=math.max(total-5,1); local sp=(si/ts)*(math.pi*2)
+                else oa = oa + 0.05; local si=idx-5; local ts=math.max(total-5,1); local sp=(si/ts)*(math.pi*2)
                     cf = CFrame.new(tR.Position+Vector3.new(math.cos(oa+sp)*8,0,math.sin(oa+sp)*8), tR.Position) end
                 if h and h.Sit then h.Sit = false end
                 mR.CFrame = cf; mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
@@ -3270,7 +3257,7 @@ Commands.grab = function(args, speaker)
         local start, lc, ok = tick(), 0, false; local GR = ReplicatedStorage:FindFirstChild("GrabRequest")
         while _G.GrabActive and (tick()-start) < 15 do
             if GR then pcall(function() GR:FireServer(target.UserId, "cute") end) end
-            if (mR.Position - tR.Position).Magnitude < 1.7 then lc += 1 else lc = 0 end
+            if (mR.Position - tR.Position).Magnitude < 1.7 then lc = lc + 1 else lc = 0 end
             if lc >= 5 then ok = true; break end; task.wait(0.2)
         end
         mR.CFrame = iR.CFrame * CFrame.new(0,0,3); task.wait(0.5)
@@ -5079,7 +5066,7 @@ MusicCommands.resume = function(player, args)
         end
     end)
 end
-MusicCommands.continue = function(p, a) MusicCommands.resume(p, a) end
+-- Music continue alias
 
 MusicCommands.skip = function(player, args)
     task.spawn(function()
@@ -5287,7 +5274,7 @@ local musicCmdMap = {
     play = MusicCommands.play,
     pause = MusicCommands.pause,
     resume = MusicCommands.resume,
-    ["continue"] = MusicCommands.continue,
+    ["continue"] = MusicCommands.resume,
     skip = MusicCommands.skip,
     stop = MusicCommands.musicstop,
     volume = MusicCommands.volume,
@@ -5477,66 +5464,64 @@ end
 
 local function CleanWorkspaceVisuals()
     for _, desc in ipairs(workspace:GetDescendants()) do
-        if IsAnyCharObj(desc) then continue end
-        if desc == workspace.CurrentCamera or desc:IsDescendantOf(workspace.CurrentCamera) then continue end
-        if desc:IsA("Terrain") then continue end
-
-        if VISUAL_SET[desc.ClassName] then
-            pcall(function() desc:Destroy() end)
-        elseif STRIP_SET[desc.ClassName] then
-            pcall(function()
-                desc.Material = Enum.Material.SmoothPlastic
-                desc.Reflectance = 0
-                desc.TextureID = ""
-            end)
-            if desc.ClassName == "MeshPart" then
-                pcall(function() desc.RenderFidelity = Enum.RenderFidelity.Performance end)
-                pcall(function() desc.CollisionFidelity = Enum.CollisionFidelity.Box end)
+        if not IsAnyCharObj(desc) and desc ~= workspace.CurrentCamera and not desc:IsDescendantOf(workspace.CurrentCamera) and not desc:IsA("Terrain") then
+            if VISUAL_SET[desc.ClassName] then
+                pcall(function() desc:Destroy() end)
+            elseif STRIP_SET[desc.ClassName] then
+                pcall(function()
+                    desc.Material = Enum.Material.SmoothPlastic
+                    desc.Reflectance = 0
+                    desc.TextureID = ""
+                end)
+                if desc.ClassName == "MeshPart" then
+                    pcall(function() desc.RenderFidelity = Enum.RenderFidelity.Performance end)
+                    pcall(function() desc.CollisionFidelity = Enum.CollisionFidelity.Box end)
+                end
+            elseif desc:IsA("Sound") and not desc:IsDescendantOf(game:GetService("SoundService")) then
+                pcall(function() desc.Volume = 0 end)
             end
-        elseif desc:IsA("Sound") and not desc:IsDescendantOf(game:GetService("SoundService")) then
-            pcall(function() desc.Volume = 0 end)
         end
     end
 end
 
 local function CleanOtherPlayerChars()
     for _, player in ipairs(Players:GetPlayers()) do
-        if player == LocalPlayer then continue end
-        local char = player.Character
-        if not char then continue end
+        if player ~= LocalPlayer and player.Character then
+            local char = player.Character
 
-        for _, child in ipairs(char:GetChildren()) do
-            if KEEP_IN_CHAR[child.Name] then
-                if child:IsA("BasePart") then
-                    pcall(function() child.Material = Enum.Material.SmoothPlastic; child.Transparency = 1 end)
-                end
-                for _, sub in ipairs(child:GetChildren()) do
-                    if sub:IsA("Decal") or sub:IsA("SpecialMesh") or sub:IsA("SurfaceAppearance")
-                        or sub:IsA("Texture") or sub:IsA("ParticleEmitter") or sub:IsA("BillboardGui") then
-                        pcall(function() sub:Destroy() end)
+            for _, child in ipairs(char:GetChildren()) do
+                if KEEP_IN_CHAR[child.Name] then
+                    if child:IsA("BasePart") then
+                        pcall(function() child.Material = Enum.Material.SmoothPlastic; child.Transparency = 1 end)
                     end
-                end
-            elseif child:IsA("Humanoid") then
-                -- keep
-            elseif child:IsA("Accessory") or child:IsA("Shirt") or child:IsA("Pants")
-                or child:IsA("ShirtGraphic") or child:IsA("BodyColors") or child:IsA("CharacterMesh") then
-                pcall(function() child:Destroy() end)
-            elseif child:IsA("BasePart") then
-                pcall(function() child.Transparency = 1; child.Material = Enum.Material.SmoothPlastic end)
-                for _, sub in ipairs(child:GetChildren()) do
-                    if not sub:IsA("Motor6D") and not sub:IsA("Weld") then
-                        pcall(function() sub:Destroy() end)
+                    for _, sub in ipairs(child:GetChildren()) do
+                        if sub:IsA("Decal") or sub:IsA("SpecialMesh") or sub:IsA("SurfaceAppearance")
+                            or sub:IsA("Texture") or sub:IsA("ParticleEmitter") or sub:IsA("BillboardGui") then
+                            pcall(function() sub:Destroy() end)
+                        end
                     end
+                elseif child:IsA("Humanoid") then
+                    -- keep
+                elseif child:IsA("Accessory") or child:IsA("Shirt") or child:IsA("Pants")
+                    or child:IsA("ShirtGraphic") or child:IsA("BodyColors") or child:IsA("CharacterMesh") then
+                    pcall(function() child:Destroy() end)
+                elseif child:IsA("BasePart") then
+                    pcall(function() child.Transparency = 1; child.Material = Enum.Material.SmoothPlastic end)
+                    for _, sub in ipairs(child:GetChildren()) do
+                        if not sub:IsA("Motor6D") and not sub:IsA("Weld") then
+                            pcall(function() sub:Destroy() end)
+                        end
+                    end
+                elseif not child:IsA("Script") and not child:IsA("LocalScript")
+                    and not child:IsA("Animator") and not child:IsA("Motor6D") then
+                    pcall(function() child:Destroy() end)
                 end
-            elseif not child:IsA("Script") and not child:IsA("LocalScript")
-                and not child:IsA("Animator") and not child:IsA("Motor6D") then
-                pcall(function() child:Destroy() end)
             end
-        end
 
-        for _, part in ipairs(char:GetDescendants()) do
-            if part:IsA("MeshPart") then
-                pcall(function() part.TextureID = ""; part.Transparency = 1 end)
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("MeshPart") then
+                    pcall(function() part.TextureID = ""; part.Transparency = 1 end)
+                end
             end
         end
     end
