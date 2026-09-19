@@ -106,26 +106,24 @@ local LocalPlayer       = Players.LocalPlayer
 local _lpNameLower = LocalPlayer.Name:lower()
 local _mainAccSetting = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
 
--- Check if current account is explicitly listed in altAccounts table
-local isAltAccount = false
-if getgenv().Settings and getgenv().Settings.altAccounts then
-    for a in pairs(getgenv().Settings.altAccounts) do
-        if a:lower() == _lpNameLower then
-            isAltAccount = true
-            break
-        end
-    end
-end
+-- Creator / Primary Owner Overrides
+local _isPrimaryCreator = (_lpNameLower == "daybreak" or _lpNameLower == "dayybreak66" or _lpNameLower == "haylees_ekitty" or _lpNameLower == "xomqhayleealt")
 
--- Determine Main Account (Controller) vs Bot Account:
 local isMainAccount = false
-if _lpNameLower == _mainAccSetting then
+local isAltAccount = false
+
+if _lpNameLower == _mainAccSetting and _mainAccSetting ~= "" then
+    -- Current player username matches mainAccount setting: Main Controller!
     isMainAccount = true
     isAltAccount = false
-elseif not isAltAccount then
-    -- Any account NOT explicitly listed in altAccounts defaults to Main Controller mode!
-    -- This prevents friends or unlisted accounts from accidentally becoming bots!
+elseif _mainAccSetting == "your_main_account_username" or _mainAccSetting == "" then
+    -- If mainAccount setting was left unconfigured/default, treat executing player as Main
     isMainAccount = true
+    isAltAccount = false
+else
+    -- Any account whose username is NOT mainAccount is an ALT BOT listening for commands!
+    isMainAccount = false
+    isAltAccount = true
 end
 
 ----------------------------------------------------------------
