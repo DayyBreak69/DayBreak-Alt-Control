@@ -2694,9 +2694,16 @@ local VFXColors = {
     pink    = {Fill = Color3.fromRGB(236, 72, 153),  Outline = Color3.fromRGB(244, 114, 182)},
 }
 
-getgenv().DayBreakVFX = getgenv().DayBreakVFX or { Highlights = false, Lasers = false, Trails = false, Target = nil, Rainbow = false, CurrentPalette = 'purple', ActiveObjects = {} }
+if type(getgenv().DayBreakVFX) ~= "table" then
+    getgenv().DayBreakVFX = {}
+end
 local VFX = getgenv().DayBreakVFX
+VFX.Highlights = false
+VFX.Lasers = false
+VFX.Trails = false
+VFX.Rainbow = false
 VFX.CurrentPalette = "purple"
+VFX.ActiveObjects = VFX.ActiveObjects or {}
 
 -- Update VFX.Update to use VFXColors Palette
 local original_VFX_Update = VFX.Update
@@ -3004,14 +3011,7 @@ Commands.unnpc = function(args, speaker)
 end
 
 -- ===========================================================
-getgenv().DayBreakVFX = getgenv().DayBreakVFX or {
-    Highlights = false,
-    Lasers = false,
-    Trails = false,
-    Target = nil,
-    Rainbow = false,
-    ActiveObjects = {}
-}
+if type(getgenv().DayBreakVFX) ~= "table" then getgenv().DayBreakVFX = {} end
 
 local VFX = getgenv().DayBreakVFX
 
