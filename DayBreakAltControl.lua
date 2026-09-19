@@ -24,17 +24,6 @@ local defaultSettings = {
         ["AltAccount3"] = true,
     },
 
-    -- MUSIC BOT
-    musicPrefix         = "/",
-    musicBotAccount     = "",
-    musicServerURL      = "http://127.0.0.1:5000",
-    musicApiKey         = "",
-    musicGlobalCooldown = 3,
-    musicPlayCooldown   = 10,
-    musicEnableQueue    = true,
-    musicEnableStats    = true,
-    musicEnableVolume   = true,
-
     -- ANNOUNCEMENTS
     announceOnLoad      = true,
 
@@ -2640,6 +2629,319 @@ end
 Commands.creeper = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
+
+-- ===========================================================
+--  MAIN & CO-HOST VISUAL EFFECTS (VFX) ENGINE
+-- ===========================================================
+getgenv().DayBreakVFX = getgenv().DayBreakVFX or {
+    Highlights = false,
+    Lasers = false,
+    Trails = false,
+    Target = nil,
+    Rainbow = false,
+    ActiveObjects = {}
+}
+
+local VFX = getgenv().DayBreakVFX
+
+local function IsBotPlayer(plr)
+    if not plr or plr == LocalPlayer then return false end
+    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
+    local name = plr.Name:lower()
+    if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
+    return false
+end
+
+local function GetActiveBots()
+    local bots = {}
+    for _, p in ipairs(game:GetService("Players"):GetPlayers()) do
+        if IsBotPlayer(p) and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            table.insert(bots, p)
+        end
+    end
+    return bots
+end
+
+function VFX.Clear()
+    for _, obj in ipairs(VFX.ActiveObjects or {}) do
+        pcall(function() obj:Destroy() end)
+    end
+    VFX.ActiveObjects = {}
+end
+
+function VFX.Update()
+    local _lpName = LocalPlayer.Name:lower()
+    local isHost = isMainAccount or _isPrimaryCreator or (getgenv().CoHosts and getgenv().CoHosts[_lpName])
+    if not isHost then return end
+
+    VFX.Clear()
+
+    local bots = GetActiveBots()
+    local myChar = LocalPlayer.Character
+    local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
+
+    -- 1. Bot Highlights
+    if VFX.Highlights then
+        for _, bot in ipairs(bots) do
+            if bot.Character then
+                local hl = Instance.new("Highlight")
+                hl.Name = "DayBreakBotHL"
+                hl.Adornee = bot.Character
+                hl.FillColor = VFX.Rainbow and Color3.fromHSV((tick() % 5) / 5, 0.9, 1) or Color3.fromRGB(139, 92, 246)
+                hl.OutlineColor = Color3.fromRGB(6, 182, 212)
+                hl.FillTransparency = 0.4
+                hl.OutlineTransparency = 0
+                hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                hl.Parent = bot.Character
+                table.insert(VFX.ActiveObjects, hl)
+            end
+        end
+    end
+
+    -- 2. Laser Grid Beams
+    if VFX.Lasers and myHrp then
+        local controllerAttach = Instance.new("Attachment")
+        controllerAttach.Name = "DayBreakVFXAttach"
+        controllerAttach.Parent = myHrp
+        table.insert(VFX.ActiveObjects, controllerAttach)
+
+        for _, bot in ipairs(bots) do
+            local bHrp = bot.Character and bot.Character:FindFirstChild("HumanoidRootPart")
+            if bHrp then
+                local botAttach = Instance.new("Attachment")
+                botAttach.Name = "DayBreakVFXBotAttach"
+                botAttach.Parent = bHrp
+                table.insert(VFX.ActiveObjects, botAttach)
+
+                local beam = Instance.new("Beam")
+                beam.Name = "DayBreakLaser"
+                beam.Attachment0 = controllerAttach
+                beam.Attachment1 = botAttach
+                beam.Color = ColorSequence.new(
+                    VFX.Rainbow and Color3.fromHSV((tick() % 5) / 5, 1, 1) or Color3.fromRGB(139, 92, 246),
+                    Color3.fromRGB(6, 182, 212)
+                )
+                beam.Width0 = 0.35
+                beam.Width1 = 0.35
+                beam.TextureSpeed = 3
+                beam.FaceCamera = true
+                beam.Parent = workspace
+                table.insert(VFX.ActiveObjects, beam)
+            end
+        end
+    end
+
+    -- 3. Cosmic Trails
+    if VFX.Trails then
+        for _, bot in ipairs(bots) do
+            local bHrp = bot.Character and bot.Character:FindFirstChild("HumanoidRootPart")
+            if bHrp then
+                local a0 = Instance.new("Attachment")
+                a0.Position = Vector3.new(0, 1, 0)
+                a0.Parent = bHrp
+                local a1 = Instance.new("Attachment")
+                a1.Position = Vector3.new(0, -1, 0)
+                a1.Parent = bHrp
+                table.insert(VFX.ActiveObjects, a0)
+                table.insert(VFX.ActiveObjects, a1)
+
+                local trail = Instance.new("Trail")
+                trail.Attachment0 = a0
+                trail.Attachment1 = a1
+                trail.Lifetime = 0.8
+                trail.Color = ColorSequence.new(Color3.fromRGB(139, 92, 246), Color3.fromRGB(6, 182, 212))
+                trail.Transparency = NumberSequence.new(0.2, 1)
+                trail.Parent = bHrp
+                table.insert(VFX.ActiveObjects, trail)
+            end
+        end
+    end
+
+    -- 4. Target Lock Beacon
+    if VFX.Target and VFX.Target.Character then
+        local tHrp = VFX.Target.Character:FindFirstChild("HumanoidRootPart")
+        if tHrp then
+            local targetHl = Instance.new("Highlight")
+            targetHl.Name = "DayBreakTargetHL"
+            targetHl.Adornee = VFX.Target.Character
+            targetHl.FillColor = Color3.fromRGB(239, 68, 68)
+            targetHl.OutlineColor = Color3.fromRGB(255, 255, 255)
+            targetHl.FillTransparency = 0.3
+            targetHl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            targetHl.Parent = VFX.Target.Character
+            table.insert(VFX.ActiveObjects, targetHl)
+        end
+    end
+end
+
+-- VFX Render Loop
+task.spawn(function()
+    while _G.DayBreakActive do
+        if VFX.Highlights or VFX.Lasers or VFX.Trails or VFX.Target then
+            pcall(VFX.Update)
+        end
+        task.wait(0.15)
+    end
+end)
+
+Commands.vfx = function(args, speaker)
+    local mode = args[2] and tostring(args[2]):lower() or ""
+    local val = args[3] and tostring(args[3]):lower() or ""
+
+    if mode == "highlight" or mode == "hl" then
+        VFX.Highlights = (val == "off" or val == "false" or val == "0") and false or not VFX.Highlights
+        if VFX.Highlights then VFX.Update() else VFX.Clear() end
+        ChatSend("* VFX Highlights: " .. (VFX.Highlights and "ON" or "OFF"))
+    elseif mode == "laser" or mode == "lasers" or mode == "beam" then
+        VFX.Lasers = (val == "off" or val == "false" or val == "0") and false or not VFX.Lasers
+        if VFX.Lasers then VFX.Update() else VFX.Clear() end
+        ChatSend("> VFX Lasers: " .. (VFX.Lasers and "ON" or "OFF"))
+    elseif mode == "trail" or mode == "trails" then
+        VFX.Trails = (val == "off" or val == "false" or val == "0") and false or not VFX.Trails
+        if VFX.Trails then VFX.Update() else VFX.Clear() end
+        ChatSend("  VFX Trails: " .. (VFX.Trails and "ON" or "OFF"))
+    elseif mode == "rainbow" then
+        VFX.Rainbow = not VFX.Rainbow
+        ChatSend("  VFX Rainbow Mode: " .. (VFX.Rainbow and "ON" or "OFF"))
+    elseif mode == "target" then
+        local t = FindTarget(args[3], speaker)
+        if t then
+            VFX.Target = t
+            VFX.Update()
+            ChatSend("  VFX Target Locked: " .. t.Name)
+        else
+            VFX.Target = nil
+            VFX.Update()
+            ChatSend("  VFX Target Cleared")
+        end
+    elseif mode == "off" or mode == "clear" or mode == "stop" then
+        VFX.Highlights = false
+        VFX.Lasers = false
+        VFX.Trails = false
+        VFX.Target = nil
+        VFX.Clear()
+        ChatSend("  All VFX Disabled")
+    else
+        ChatSend("* VFX Commands: !vfx [highlight/laser/trail/target/rainbow/off]")
+    end
+end
+
+-- ===========================================================
+--  SMART FORMATIONS ENGINE
+-- ===========================================================
+Commands.line = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker) or speaker
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "line"
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "line" and _G.DayBreakActive do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local right = tHrp.CFrame.RightVector
+                    local offset = ((idx - 1) - (SafeTotal() / 2)) * 3.5
+                    local targetPos = tHrp.Position + (right * offset) - (tHrp.CFrame.LookVector * 4)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + tHrp.CFrame.LookVector)
+                end
+            end
+            task.wait(0.04)
+        end
+    end)
+end
+
+Commands.circle = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker) or speaker
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "circle"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "circle" and _G.DayBreakActive do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local radius = 6 + (total * 0.4)
+                    local angle = ((idx - 1) / math.max(1, total)) * math.pi * 2
+                    local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+                end
+            end
+            task.wait(0.04)
+        end
+    end)
+end
+
+Commands.wall = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker) or speaker
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "wall"
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "wall" and _G.DayBreakActive do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local right = tHrp.CFrame.RightVector
+                    local offset = ((idx - 1) - (SafeTotal() / 2)) * 3.2
+                    local targetPos = tHrp.Position + (right * offset) + (tHrp.CFrame.LookVector * 5)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, targetPos + tHrp.CFrame.LookVector)
+                end
+            end
+            task.wait(0.04)
+        end
+    end)
+end
+
+Commands.orbit = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker) or speaker
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "orbit"
+    local idx = SafeIndex()
+    local total = SafeTotal()
+
+    task.spawn(function()
+        local spin = 0
+        while _G.CurrentCommand == "orbit" and _G.DayBreakActive do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    spin = (spin + 0.05) % (math.pi * 2)
+                    local radius = 7
+                    local angle = spin + (((idx - 1) / math.max(1, total)) * math.pi * 2)
+                    local targetPos = tHrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+                    myChar.HumanoidRootPart.CFrame = CFrame.lookAt(targetPos, Vector3.new(tHrp.Position.X, targetPos.Y, tHrp.Position.Z))
+                end
+            end
+            task.wait(0.03)
+        end
+    end)
+end
+
+
     local target = FindTarget(newArgs[2], speaker)
     if not target or not target.Character then return end
 
@@ -4076,7 +4378,19 @@ if isMainAccount then
     -- COMMAND DATA (Professional Descriptions)
     ----------------------------------------------------------------
     local SECTIONS = {
-        {
+                {
+            name = "Visual Effects (VFX)",
+            color = Color3.fromRGB(160, 100, 255),
+            cmds = {
+                {cmd="vfx highlight",desc="Toggle glowing bot outlines",     ha=false},
+                {cmd="vfx laser",    desc="Toggle laser grid to bots",       ha=false},
+                {cmd="vfx trail",    desc="Toggle cosmic motion trails",     ha=false},
+                {cmd="vfx target",   desc="Target lock 3D ring on player",   al="Target", ha=true},
+                {cmd="vfx rainbow",  desc="Toggle rainbow VFX color cycle",  ha=false},
+                {cmd="vfx off",      desc="Disable all visual effects",      ha=false},
+            },
+        },
+{
             name = "Movement",
             color = Color3.fromRGB(120, 180, 255),
             cmds = {
