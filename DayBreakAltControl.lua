@@ -2694,6 +2694,8 @@ local VFXColors = {
     pink    = {Fill = Color3.fromRGB(236, 72, 153),  Outline = Color3.fromRGB(244, 114, 182)},
 }
 
+getgenv().DayBreakVFX = getgenv().DayBreakVFX or { Highlights = false, Lasers = false, Trails = false, Target = nil, Rainbow = false, CurrentPalette = 'purple', ActiveObjects = {} }
+local VFX = getgenv().DayBreakVFX
 VFX.CurrentPalette = "purple"
 
 -- Update VFX.Update to use VFXColors Palette
