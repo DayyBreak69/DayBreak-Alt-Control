@@ -2629,9 +2629,376 @@ end
 Commands.creeper = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
+    local target = FindTarget(newArgs[2], speaker)
+    if not target or not target.Character then return end
+
+    StopAll()
+    _G.CurrentCommand = "creeper"
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "creeper" and _G.DayBreakActive do
+            if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local tHrp = target.Character.HumanoidRootPart
+                local myChar = LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    local myHrp = myChar.HumanoidRootPart
+                    local toBot = (myHrp.Position - tHrp.Position).Unit
+                    local facing = tHrp.CFrame.LookVector
+                    local dot = toBot:Dot(facing)
+
+                    if dot < 0.2 then
+                        local stepDir = (tHrp.Position - myHrp.Position).Unit
+                        local newPos = myHrp.Position + (stepDir * 0.6)
+                        if (newPos - tHrp.Position).Magnitude > 3 then
+                            myHrp.CFrame = CFrame.lookAt(newPos, tHrp.Position)
+                        end
+                    end
+                end
+            else
+                task.wait(0.2)
+            end
+            task.wait(0.04)
+        end
+    end)
+end
 
 -- ===========================================================
---  MAIN & CO-HOST VISUAL EFFECTS (VFX) ENGINE
+--  ULTIMATE ENGINE: VFX PALETTES, SOUND FX & BOT CHECKBOXES
+-- ===========================================================
+getgenv().DayBreakSFX = getgenv().DayBreakSFX or { Enabled = true }
+getgenv().SelectedBots = getgenv().SelectedBots or {}
+
+local function PlaySFX(soundId)
+    if not getgenv().DayBreakSFX.Enabled then return end
+    pcall(function()
+        local sound = Instance.new("Sound")
+        sound.SoundId = soundId or "rbxassetid://6895079853" -- Cyber click sound
+        sound.Volume = 0.5
+        sound.Parent = game:GetService("SoundService")
+        sound:Play()
+        game:GetService("Debris"):AddItem(sound, 1.5)
+    end)
+end
+getgenv().PlaySFX = PlaySFX
+
+-- VFX Color Presets
+local VFXColors = {
+    purple  = {Fill = Color3.fromRGB(139, 92, 246),  Outline = Color3.fromRGB(6, 182, 212)},
+    cyan    = {Fill = Color3.fromRGB(6, 182, 212),   Outline = Color3.fromRGB(59, 130, 246)},
+    gold    = {Fill = Color3.fromRGB(245, 158, 11),  Outline = Color3.fromRGB(251, 191, 36)},
+    red     = {Fill = Color3.fromRGB(239, 68, 68),   Outline = Color3.fromRGB(248, 113, 113)},
+    green   = {Fill = Color3.fromRGB(16, 185, 129),  Outline = Color3.fromRGB(52, 211, 153)},
+    pink    = {Fill = Color3.fromRGB(236, 72, 153),  Outline = Color3.fromRGB(244, 114, 182)},
+}
+
+VFX.CurrentPalette = "purple"
+
+-- Update VFX.Update to use VFXColors Palette
+local original_VFX_Update = VFX.Update
+VFX.Update = function()
+    local _lpName = LocalPlayer.Name:lower()
+    local isHost = isMainAccount or _isPrimaryCreator or (getgenv().CoHosts and getgenv().CoHosts[_lpName])
+    if not isHost then return end
+
+    VFX.Clear()
+
+    local bots = GetActiveBots()
+    local myChar = LocalPlayer.Character
+    local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
+
+    local pal = VFXColors[VFX.CurrentPalette] or VFXColors["purple"]
+
+    -- 1. Bot Highlights
+    if VFX.Highlights then
+        for _, bot in ipairs(bots) do
+            if bot.Character then
+                local hl = Instance.new("Highlight")
+                hl.Name = "DayBreakBotHL"
+                hl.Adornee = bot.Character
+                hl.FillColor = VFX.Rainbow and Color3.fromHSV((tick() % 5) / 5, 0.9, 1) or pal.Fill
+                hl.OutlineColor = VFX.Rainbow and Color3.fromHSV(((tick() + 1) % 5) / 5, 0.9, 1) or pal.Outline
+                hl.FillTransparency = 0.4
+                hl.OutlineTransparency = 0
+                hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                hl.Parent = bot.Character
+                table.insert(VFX.ActiveObjects, hl)
+            end
+        end
+    end
+
+    -- 2. Laser Grid Beams
+    if VFX.Lasers and myHrp then
+        local controllerAttach = Instance.new("Attachment")
+        controllerAttach.Name = "DayBreakVFXAttach"
+        controllerAttach.Parent = myHrp
+        table.insert(VFX.ActiveObjects, controllerAttach)
+
+        for _, bot in ipairs(bots) do
+            local bHrp = bot.Character and bot.Character:FindFirstChild("HumanoidRootPart")
+            if bHrp then
+                local botAttach = Instance.new("Attachment")
+                botAttach.Name = "DayBreakVFXBotAttach"
+                botAttach.Parent = bHrp
+                table.insert(VFX.ActiveObjects, botAttach)
+
+                local beam = Instance.new("Beam")
+                beam.Name = "DayBreakLaser"
+                beam.Attachment0 = controllerAttach
+                beam.Attachment1 = botAttach
+                beam.Color = ColorSequence.new(
+                    VFX.Rainbow and Color3.fromHSV((tick() % 5) / 5, 1, 1) or pal.Fill,
+                    VFX.Rainbow and Color3.fromHSV(((tick() + 1) % 5) / 5, 1, 1) or pal.Outline
+                )
+                beam.Width0 = 0.35
+                beam.Width1 = 0.35
+                beam.TextureSpeed = 3
+                beam.FaceCamera = true
+                beam.Parent = workspace
+                table.insert(VFX.ActiveObjects, beam)
+            end
+        end
+    end
+
+    -- 3. Cosmic Trails
+    if VFX.Trails then
+        for _, bot in ipairs(bots) do
+            local bHrp = bot.Character and bot.Character:FindFirstChild("HumanoidRootPart")
+            if bHrp then
+                local a0 = Instance.new("Attachment")
+                a0.Position = Vector3.new(0, 1, 0)
+                a0.Parent = bHrp
+                local a1 = Instance.new("Attachment")
+                a1.Position = Vector3.new(0, -1, 0)
+                a1.Parent = bHrp
+                table.insert(VFX.ActiveObjects, a0)
+                table.insert(VFX.ActiveObjects, a1)
+
+                local trail = Instance.new("Trail")
+                trail.Attachment0 = a0
+                trail.Attachment1 = a1
+                trail.Lifetime = 0.8
+                trail.Color = ColorSequence.new(pal.Fill, pal.Outline)
+                trail.Transparency = NumberSequence.new(0.2, 1)
+                trail.Parent = bHrp
+                table.insert(VFX.ActiveObjects, trail)
+            end
+        end
+    end
+
+    -- 4. Target Lock Beacon
+    if VFX.Target and VFX.Target.Character then
+        local tHrp = VFX.Target.Character:FindFirstChild("HumanoidRootPart")
+        if tHrp then
+            local targetHl = Instance.new("Highlight")
+            targetHl.Name = "DayBreakTargetHL"
+            targetHl.Adornee = VFX.Target.Character
+            targetHl.FillColor = Color3.fromRGB(239, 68, 68)
+            targetHl.OutlineColor = Color3.fromRGB(255, 255, 255)
+            targetHl.FillTransparency = 0.3
+            targetHl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            targetHl.Parent = VFX.Target.Character
+            table.insert(VFX.ActiveObjects, targetHl)
+        end
+    end
+end
+
+-- Updated VFX Command with Palette Support
+local orig_vfx_cmd = Commands.vfx
+Commands.vfx = function(args, speaker)
+    local mode = args[2] and tostring(args[2]):lower() or ""
+    local val = args[3] and tostring(args[3]):lower() or ""
+
+    if mode == "color" or mode == "theme" or mode == "palette" then
+        if VFXColors[val] then
+            VFX.CurrentPalette = val
+            VFX.Rainbow = false
+            VFX.Update()
+            ChatSend("  VFX Color Set To: " .. val:upper())
+        else
+            ChatSend("  Available Colors: purple, cyan, gold, red, green, pink, rainbow")
+        end
+    else
+        orig_vfx_cmd(args, speaker)
+    end
+end
+
+-- ===========================================================
+--  REWORKED SMART NPC PLAYER-SEEKING INTERACTION ENGINE (70+ PHRASES)
+-- ===========================================================
+local NPCPhrases = {
+    -- Original Classic Phrases
+    "My trust issues have trust issues.",
+    "I don't fall in love. I trip into mild attachment.",
+    "I'm not a red flag. I'm a limited-edition warning label.",
+    "We don't need couples therapy. We need a user manual.",
+    "Love is temporary. Taxes are forever.",
+    "My bank account and I are in a toxic relationship.",
+    "Looking for something serious. Like, 'split rent' serious.",
+    "My love language is sending memes instead of addressing problems.",
+    "I'm not emotionally unavailable. I'm emotionally buffering.",
+    "Therapist says I need stability. So here I am.",
+    "I'm not toxic. I just come with extended lore.",
+    "I bring two things to the table: trust issues and snacks.",
+    "If you can't handle me at my worst, that's honestly fair.",
+    "I'm not lost. I'm on an unplanned adventure.",
+    "My vibe? Controlled chaos with a splash of overthinking.",
+
+    -- Personal Targeted Callouts (Injects Player Name)
+    "Hey {name}, what's up?",
+    "Yo {name}, watch out!",
+    "Excuse me {name}, have you seen my coffee?",
+    "Greetings {name}! Beautiful day in the server, isn't it?",
+    "{name}, nice outfit you got on!",
+    "Hey {name}, are you the squad leader?",
+    "Yo {name}, don't mind me, just walking by!",
+    "{name}, do you know what time it is?",
+    "Hey {name}, I think someone was looking for you!",
+    "Yo {name}, 10/10 fit right there.",
+    "Hold on {name}, let me get a quick selfie!",
+    "Hey {name}, can I ask you a quick question?",
+    "{name}, you look suspiciously like an admin...",
+    "Yo {name}, stay safe out there!",
+    "Hey {name}, rate my walking animation 1 to 10!",
+    "Excuse me {name}, is this the way to spawn?",
+    "{name}, stay frosty!",
+    "Hey {name}, did you drop your main account?",
+    "Yo {name}, nice moves!",
+    "Hey {name}, legends say DayBreak is watching!",
+    "Greetings {name}, hope you're having a great day!",
+    "{name}, you can't see me, right?",
+    "Hey {name}, 100% real human right here!",
+    "Yo {name}, don't look behind you...",
+    "Hey {name}, watch out for flying alts!",
+    "{name}, pass me the AUX cord!",
+    "Hey {name}, speedrunning life right now!",
+    "Yo {name}, carry me to victory!",
+    "{name}, do you believe in alt controllers?",
+    "Hey {name}, rate the squad 10 out of 10!",
+    
+    -- General Ambient NPC Banter
+    "I'm just an NPC doing NPC things...",
+    "Did anyone remember to turn off the stove?",
+    "My walking animation is top tier.",
+    "Just taking my daily 10,000 steps!",
+    "Wait, is this a simulation?",
+    "I used to be an adventurer like you...",
+    "Beep boop... I mean, hello fellow human!",
+    "Press E to talk to NPC.",
+    "Searching for quest objectives...",
+    "My pathfinding AI is doing its absolute best!",
+    "Don't mind me, just completing side quests.",
+    "Does this server have good wifi?",
+    "I think I left my main in another game...",
+    "DayBreak v3.0 running at peak performance!",
+    "Who called the alt squad?",
+    "NPC mode: ACTIVATED!",
+    "Walking... walking... and more walking!",
+    "I should have taken a left at Albuquerque.",
+    "100% organic, non-GMO Roblox character!",
+    "Is anyone taking notes on this?",
+    "Loading high-res textures... please wait.",
+    "I'm not lost, I'm exploring!",
+    "Security check: pass!",
+    "Keep calm and carry on walking.",
+    "Did someone say DayBreak Alt Control?",
+    "VFX glowing in full HD!",
+    "Standing guard... or maybe just strolling.",
+    "No lag detected in this sector!",
+    "My stamina bar is infinite!",
+    "Out here living my best digital life.",
+    "Check out the smooth 60 FPS motion!",
+    "Is it time to emote yet?",
+    "Hydration check! Stay hydrated gamers.",
+    "Alt fleet reporting for duty!",
+    "Just patrolling the perimeter.",
+    "Everything is going according to plan!",
+    "Smooth walking path calculated.",
+    "Hello server! Hope everyone is having fun.",
+    "Nocturnal Starlight edition in full effect!",
+    "System check: All systems operational!"
+}
+
+Commands.npc = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
+
+    StopAll()
+    _G.CurrentCommand = "npc"
+    local idx = SafeIndex()
+
+    task.spawn(function()
+        local PlayersService = game:GetService("Players")
+        
+        while _G.CurrentCommand == "npc" and _G.DayBreakActive do
+            local myChar = LocalPlayer.Character
+            local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
+            local myHum = myChar and myChar:FindFirstChildOfClass("Humanoid")
+
+            if myHrp and myHum then
+                -- Find candidate players to visit (exclude bots & self)
+                local candidates = {}
+                for _, p in ipairs(PlayersService:GetPlayers()) do
+                    if p ~= LocalPlayer and not IsBotPlayer(p) and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                        local dist = (p.Character.HumanoidRootPart.Position - myHrp.Position).Magnitude
+                        if dist < 120 then
+                            table.insert(candidates, p)
+                        end
+                    end
+                end
+
+                if #candidates > 0 then
+                    -- Pick a random nearby candidate player
+                    local targetPlayer = candidates[math.random(1, #candidates)]
+                    local tHrp = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+                    if tHrp then
+                        -- Walk up to within 5 studs of the target player
+                        local stopDist = 5
+                        local walkPos = tHrp.Position + (Vector3.new(math.sin(idx), 0, math.cos(idx)).Unit * stopDist)
+                        myHum:MoveTo(walkPos)
+
+                        -- Wait until arrived or timeout
+                        local startT = tick()
+                        while _G.CurrentCommand == "npc" and (myHrp.Position - walkPos).Magnitude > 3.5 and (tick() - startT) < 6 do
+                            task.wait(0.2)
+                        end
+
+                        -- Turn to face the player
+                        if myHrp and tHrp then
+                            myHrp.CFrame = CFrame.lookAt(myHrp.Position, Vector3.new(tHrp.Position.X, myHrp.Position.Y, tHrp.Position.Z))
+                        end
+
+                        -- Chat randomized NPC phrase with name injection
+                        local phrase = NPCPhrases[math.random(1, #NPCPhrases)]
+                        local pName = targetPlayer.DisplayName or targetPlayer.Name
+                        phrase = phrase:gsub("{name}", pName)
+
+                        task.wait(0.3 + (idx * 0.1))
+                        ChatSend(phrase)
+                    end
+                else
+                    -- No nearby players, wander randomly nearby
+                    local offset = Vector3.new(math.random(-15, 15), 0, math.random(-15, 15))
+                    myHum:MoveTo(myHrp.Position + offset)
+                end
+            end
+
+            -- Pause before seeking next player
+            task.wait(3.5 + (math.random() * 2.5))
+        end
+    end)
+end
+
+Commands.unnpc = function(args, speaker)
+    local shouldRun, _ = ParseBotTarget(args)
+    if not shouldRun then return end
+    if _G.CurrentCommand == "npc" then
+        StopAll()
+        ChatSend("  NPC Wandering Stopped")
+    end
+end
+
 -- ===========================================================
 getgenv().DayBreakVFX = getgenv().DayBreakVFX or {
     Highlights = false,
@@ -2941,7 +3308,10 @@ Commands.orbit = function(args, speaker)
     end)
 end
 
-
+-- 8. CREEPER (Red Light Green Light Stealth)
+Commands.creeper = function(args, speaker)
+    local shouldRun, newArgs = ParseBotTarget(args)
+    if not shouldRun then return end
     local target = FindTarget(newArgs[2], speaker)
     if not target or not target.Character then return end
 
@@ -4775,7 +5145,7 @@ if isMainAccount then
         while _G.DayBreakActive do RefreshBotCache(); BCL.Text = "Bots:" .. _bc.total; task.wait(3) end
     end)
 
-    local minBtn = C("TextButton",{
+        local minBtn = C("TextButton",{
         Size = UDim2.new(0, 22, 0, 22),
         Position = UDim2.new(1, -52, 0, 6),
         BackgroundColor3 = T.Surface,
