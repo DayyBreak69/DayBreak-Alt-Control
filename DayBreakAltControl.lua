@@ -2300,8 +2300,8 @@ end
 
 Commands.ram = function(args, speaker)
     local idx = SafeIndex()
-    task.wait((idx - 1) * 0.05)
     local memMB = string.format("%.1f", gcinfo() / 1024)
+    LocalPlayer:SetAttribute("DayBreakRAM", memMB .. " MB")
     ChatSend(string.format("* Bot #%d Memory: %s MB", idx, memMB))
 end
 Commands.memory = Commands.ram
@@ -2341,7 +2341,8 @@ Commands.cleanram = function(args, speaker)
     local after = gcinfo()
     local saved = math.max(0, before - after)
     local idx = SafeIndex()
-    task.wait((idx - 1) * 0.05)
+    local memMB = string.format("%.1f", gcinfo() / 1024)
+    LocalPlayer:SetAttribute("DayBreakRAM", memMB .. " MB")
     ChatSend(string.format("[Clean] Bot #%d Cleaned %d KB", idx, saved))
 end
 Commands.flush = Commands.cleanram
@@ -4609,7 +4610,13 @@ if isMainAccount then
         end
 
         local bots = GetOnlineBotNames()
-        local myMem = string.format("%.1f MB", gcinfo() / 1024)
+        local myMemVal = gcinfo() / 1024
+        local myMem = string.format("%.1f MB", myMemVal)
+        LocalPlayer:SetAttribute("DayBreakRAM", myMem)
+        LocalPlayer:SetAttribute("DayBreakRAMVal", myMemVal)
+
+        local totalMem = myMemVal
+        local activeBotCount = 0
 
         -- My Account Card
         local myCard = C("Frame",{
@@ -4623,7 +4630,7 @@ if isMainAccount then
         St(myCard, T.BorderGlow, 0.8)
 
         C("TextLabel",{
-            Size = UDim2.new(0.55, 0, 1, 0),
+            Size = UDim2.new(0.5, 0, 1, 0),
             Position = UDim2.new(0, 6, 0, 0),
             BackgroundTransparency = 1,
             Text = "[You] " .. LocalPlayer.Name,
@@ -4635,8 +4642,8 @@ if isMainAccount then
         })
 
         C("TextLabel",{
-            Size = UDim2.new(0.4, -6, 1, 0),
-            Position = UDim2.new(0.6, 0, 0, 0),
+            Size = UDim2.new(0.45, -6, 1, 0),
+            Position = UDim2.new(0.55, 0, 0, 0),
             BackgroundTransparency = 1,
             Text = myMem,
             TextColor3 = T.Green,
@@ -4646,9 +4653,30 @@ if isMainAccount then
             Parent = myCard,
         })
 
-        -- Each connected Alt Bot Card
+        -- Each connected Alt Bot Card with LIVE RAM USAGE
         for i, bName in ipairs(bots) do
             if bName ~= LocalPlayer.Name:lower() then
+                activeBotCount = activeBotCount + 1
+                local targetPlayer = nil
+                for _, p in ipairs(Players:GetPlayers()) do
+                    if p.Name:lower() == bName then
+                        targetPlayer = p
+                        break
+                    end
+                end
+
+                local bRamStr = "Measuring..."
+                local bRamVal = 0
+                if targetPlayer then
+                    local attrRam = targetPlayer:GetAttribute("DayBreakRAM")
+                    local attrVal = targetPlayer:GetAttribute("DayBreakRAMVal")
+                    if attrRam then
+                        bRamStr = tostring(attrRam)
+                        bRamVal = tonumber(attrVal) or 0
+                    end
+                end
+                totalMem = totalMem + bRamVal
+
                 local bCard = C("Frame",{
                     Size = UDim2.new(1, 0, 0, 32),
                     BackgroundColor3 = T.Card,
@@ -4659,8 +4687,9 @@ if isMainAccount then
                 Cn(bCard, UDim.new(0, 5))
                 St(bCard, T.Border, 0.6)
 
+                -- Bot Name
                 C("TextLabel",{
-                    Size = UDim2.new(0.55, 0, 1, 0),
+                    Size = UDim2.new(0.42, 0, 1, 0),
                     Position = UDim2.new(0, 6, 0, 0),
                     BackgroundTransparency = 1,
                     Text = string.format("Bot #%d: %s", i, bName),
@@ -4671,9 +4700,23 @@ if isMainAccount then
                     Parent = bCard,
                 })
 
+                -- Live Bot RAM Display
+                C("TextLabel",{
+                    Size = UDim2.new(0.3, 0, 1, 0),
+                    Position = UDim2.new(0.42, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = bRamStr,
+                    TextColor3 = Color3.fromRGB(100, 240, 160),
+                    TextSize = 9,
+                    Font = T.FC,
+                    TextXAlignment = Enum.TextXAlignment.Right,
+                    Parent = bCard,
+                })
+
+                -- Purge Button
                 local flushOneBtn = C("TextButton",{
-                    Size = UDim2.new(0, 48, 0, 18),
-                    Position = UDim2.new(1, -54, 0.5, -9),
+                    Size = UDim2.new(0, 44, 0, 18),
+                    Position = UDim2.new(1, -50, 0.5, -9),
                     BackgroundColor3 = T.Surface,
                     BackgroundTransparency = 0.2,
                     Text = "Purge",
@@ -4691,6 +4734,11 @@ if isMainAccount then
                     task.delay(0.2, function() Tw(flushOneBtn, {BackgroundColor3 = T.Surface, TextColor3 = T.Green}, 0.2) end)
                 end)
             end
+        end
+
+        -- Update Summary Header Label with Combined RAM
+        if ramSummaryLbl then
+            ramSummaryLbl.Text = string.format("Active Bots: %d | Combined RAM: %.1f MB", activeBotCount, totalMem)
         end
     end
 
