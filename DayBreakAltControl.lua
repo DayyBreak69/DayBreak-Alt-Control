@@ -91,6 +91,36 @@ do
 end
 
 ----------------------------------------------------------------
+-- CO-HOST & PERMISSION SYSTEM
+----------------------------------------------------------------
+getgenv().CoHosts = getgenv().CoHosts or {}
+
+Commands.addhost = function(args, speaker)
+    if not isMainAccount and not _isPrimaryCreator then return end
+    local target = FindTarget(args[2], speaker)
+    if target then
+        getgenv().CoHosts[target.Name:lower()] = true
+        ChatSend("  Added Co-Host: " .. target.Name)
+    end
+end
+
+Commands.removehost = function(args, speaker)
+    if not isMainAccount and not _isPrimaryCreator then return end
+    local target = FindTarget(args[2], speaker)
+    if target then
+        getgenv().CoHosts[target.Name:lower()] = nil
+        ChatSend("  Removed Co-Host: " .. target.Name)
+    end
+end
+Commands.unhost = Commands.removehost
+
+Commands.hosts = function(args, speaker)
+    local list = {}
+    for h in pairs(getgenv().CoHosts) do table.insert(list, h) end
+    ChatSend("  Co-Hosts: " .. (#list > 0 and table.concat(list, ", ") or "None"))
+end
+
+----------------------------------------------------------------
 -- 2. SERVICES & SMART ROLE RESOLUTION
 ----------------------------------------------------------------
 local Players           = game:GetService("Players")
@@ -2270,6 +2300,11 @@ local _originalMaterials = {}
 local function ApplyRenderMode(enable3D)
     _lowRamEnabled = not enable3D
     pcall(function()
+        pcall(function()
+            if RunService.Set3dRenderingEnabled then
+                RunService:Set3dRenderingEnabled(enable3D)
+            end
+        end)
         local lighting = game:GetService("Lighting")
         lighting.GlobalShadows = enable3D
         if not enable3D then
@@ -4197,6 +4232,9 @@ if isMainAccount then
             color = Color3.fromRGB(200, 200, 215),
             cmds = {
                 {cmd="cmds",      desc="Toggles command UI",             ha=false},
+                {cmd="addhost",   desc="Grants co-host bot controller permissions", al="Target", ha=true},
+                {cmd="removehost",desc="Revokes co-host permissions",             al="Target", ha=true},
+                {cmd="hosts",     desc="Lists active co-hosts",                   ha=false},
                 {cmd="whitelist", desc="Whitelists target player",       al="Target",ha=true},
                 {cmd="blacklist", desc="Removes player whitelist",       al="Target",ha=true},
                 {cmd="ws",        desc="Sets bot walkspeed",             al="[bot] Value",ha=true},
@@ -4618,23 +4656,26 @@ if isMainAccount then
         local totalMem = myMemVal
         local activeBotCount = 0
 
-        -- My Account Card
+        -- My Account Card (Host)
         local myCard = C("Frame",{
-            Size = UDim2.new(1, 0, 0, 32),
+            Size = UDim2.new(1, 0, 0, 36),
             BackgroundColor3 = T.Card,
-            BackgroundTransparency = 0.25,
+            BackgroundTransparency = 0.2,
             BorderSizePixel = 0,
             Parent = botCardsContainer,
         })
         Cn(myCard, UDim.new(0, 5))
         St(myCard, T.BorderGlow, 0.8)
 
+        local myFps = LocalPlayer:GetAttribute("DayBreakFPS") or 60
+        local myPing = LocalPlayer:GetAttribute("DayBreakPing") or 0
+
         C("TextLabel",{
-            Size = UDim2.new(0.5, 0, 1, 0),
+            Size = UDim2.new(0.4, 0, 1, 0),
             Position = UDim2.new(0, 6, 0, 0),
             BackgroundTransparency = 1,
-            Text = "[You] " .. LocalPlayer.Name,
-            TextColor3 = T.Text,
+            Text = "  [Host] " .. LocalPlayer.Name,
+            TextColor3 = T.Accent,
             TextSize = 10,
             Font = T.FM,
             TextXAlignment = Enum.TextXAlignment.Left,
@@ -4642,18 +4683,18 @@ if isMainAccount then
         })
 
         C("TextLabel",{
-            Size = UDim2.new(0.45, -6, 1, 0),
-            Position = UDim2.new(0.55, 0, 0, 0),
+            Size = UDim2.new(0.55, -6, 1, 0),
+            Position = UDim2.new(0.45, 0, 0, 0),
             BackgroundTransparency = 1,
-            Text = myMem,
+            Text = string.format("%s  |  %d FPS  |  %d ms", myMem, myFps, myPing),
             TextColor3 = T.Green,
-            TextSize = 10,
+            TextSize = 9,
             Font = T.FC,
             TextXAlignment = Enum.TextXAlignment.Right,
             Parent = myCard,
         })
 
-        -- Each connected Alt Bot Card with LIVE RAM USAGE
+        -- Each connected Alt Bot Card with LIVE RAM, FPS, PING & VC STATUS
         for i, bName in ipairs(bots) do
             if bName ~= LocalPlayer.Name:lower() then
                 activeBotCount = activeBotCount + 1
@@ -4665,20 +4706,23 @@ if isMainAccount then
                     end
                 end
 
-                local bRamStr = "Measuring..."
+                local bRamStr = "-- MB"
                 local bRamVal = 0
+                local bFps = 0
+                local bPing = 0
+                local bVc = "N/A"
+
                 if targetPlayer then
-                    local attrRam = targetPlayer:GetAttribute("DayBreakRAM")
-                    local attrVal = targetPlayer:GetAttribute("DayBreakRAMVal")
-                    if attrRam then
-                        bRamStr = tostring(attrRam)
-                        bRamVal = tonumber(attrVal) or 0
-                    end
+                    bRamStr = tostring(targetPlayer:GetAttribute("DayBreakRAM") or "-- MB")
+                    bRamVal = tonumber(targetPlayer:GetAttribute("DayBreakRAMVal")) or 0
+                    bFps = tonumber(targetPlayer:GetAttribute("DayBreakFPS")) or 0
+                    bPing = tonumber(targetPlayer:GetAttribute("DayBreakPing")) or 0
+                    bVc = tostring(targetPlayer:GetAttribute("DayBreakVC") or "N/A")
                 end
                 totalMem = totalMem + bRamVal
 
                 local bCard = C("Frame",{
-                    Size = UDim2.new(1, 0, 0, 32),
+                    Size = UDim2.new(1, 0, 0, 36),
                     BackgroundColor3 = T.Card,
                     BackgroundTransparency = 0.35,
                     BorderSizePixel = 0,
@@ -4687,27 +4731,39 @@ if isMainAccount then
                 Cn(bCard, UDim.new(0, 5))
                 St(bCard, T.Border, 0.6)
 
-                -- Bot Name
+                -- Bot Name & VC Status
                 C("TextLabel",{
-                    Size = UDim2.new(0.42, 0, 1, 0),
-                    Position = UDim2.new(0, 6, 0, 0),
+                    Size = UDim2.new(0.45, 0, 0, 18),
+                    Position = UDim2.new(0, 6, 0, 2),
                     BackgroundTransparency = 1,
-                    Text = string.format("Bot #%d: %s", i, bName),
-                    TextColor3 = T.Sub,
+                    Text = string.format("#%d: %s", i, bName),
+                    TextColor3 = T.Text,
                     TextSize = 9,
+                    Font = T.FM,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = bCard,
+                })
+
+                C("TextLabel",{
+                    Size = UDim2.new(0.45, 0, 0, 14),
+                    Position = UDim2.new(0, 6, 0, 18),
+                    BackgroundTransparency = 1,
+                    Text = "VC: " .. bVc,
+                    TextColor3 = T.Sub,
+                    TextSize = 8,
                     Font = T.FB,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     Parent = bCard,
                 })
 
-                -- Live Bot RAM Display
+                -- Live RAM, FPS, Ping Metrics
                 C("TextLabel",{
-                    Size = UDim2.new(0.3, 0, 1, 0),
-                    Position = UDim2.new(0.42, 0, 0, 0),
+                    Size = UDim2.new(0.35, 0, 1, 0),
+                    Position = UDim2.new(0.45, 0, 0, 0),
                     BackgroundTransparency = 1,
-                    Text = bRamStr,
-                    TextColor3 = Color3.fromRGB(100, 240, 160),
-                    TextSize = 9,
+                    Text = string.format("%s | %d FPS | %dms", bRamStr, bFps, bPing),
+                    TextColor3 = Color3.fromRGB(100, 240, 180),
+                    TextSize = 8,
                     Font = T.FC,
                     TextXAlignment = Enum.TextXAlignment.Right,
                     Parent = bCard,
@@ -4715,8 +4771,8 @@ if isMainAccount then
 
                 -- Purge Button
                 local flushOneBtn = C("TextButton",{
-                    Size = UDim2.new(0, 44, 0, 18),
-                    Position = UDim2.new(1, -50, 0.5, -9),
+                    Size = UDim2.new(0, 40, 0, 20),
+                    Position = UDim2.new(1, -46, 0.5, -10),
                     BackgroundColor3 = T.Surface,
                     BackgroundTransparency = 0.2,
                     Text = "Purge",
@@ -4736,9 +4792,9 @@ if isMainAccount then
             end
         end
 
-        -- Update Summary Header Label with Combined RAM
+        -- Update Summary Header Label
         if ramSummaryLbl then
-            ramSummaryLbl.Text = string.format("Active Bots: %d | Combined RAM: %.1f MB", activeBotCount, totalMem)
+            ramSummaryLbl.Text = string.format("Fleet: %d Alts | Combined: %.1f MB", activeBotCount, totalMem)
         end
     end
 
@@ -4881,105 +4937,48 @@ if isMainAccount then
     end)
 
     ----------------------------------------------------------------
-    -- DUAL TAB SWITCHER (Commands / Bot RAM)
+    -- QUICK ACTION TOOLBAR (Bring, Stop, LowRAM, Flush, Unemote)
     ----------------------------------------------------------------
-    local tabBar = C("Frame",{
-        Name = "TabBar",
-        Size = UDim2.new(1, -16, 0, 24),
-        Position = UDim2.new(0, 8, 1, -64),
-        BackgroundColor3 = T.Card,
-        BackgroundTransparency = 0.4,
-        BorderSizePixel = 0,
-        Parent = MF,
-    })
-    Cn(tabBar, UDim.new(0, 5))
-    St(tabBar, T.Border, 0.6)
-
-    local tabCmdsBtn = C("TextButton",{
-        Size = UDim2.new(0.5, -2, 1, -2),
-        Position = UDim2.new(0, 1, 0, 1),
-        BackgroundColor3 = T.Surface,
-        BackgroundTransparency = 0.1,
-        Text = "Commands",
-        TextColor3 = T.Accent,
-        TextSize = 10,
-        Font = T.FM,
-        AutoButtonColor = false,
-        BorderSizePixel = 0,
-        Parent = tabBar,
-    })
-    Cn(tabCmdsBtn, UDim.new(0, 4))
-
-    local tabRamBtn = C("TextButton",{
-        Size = UDim2.new(0.5, -2, 1, -2),
-        Position = UDim2.new(0.5, 1, 0, 1),
-        BackgroundColor3 = T.Card,
-        BackgroundTransparency = 0.7,
-        Text = "Bot RAM",
-        TextColor3 = T.Sub,
-        TextSize = 10,
-        Font = T.FM,
-        AutoButtonColor = false,
-        BorderSizePixel = 0,
-        Parent = tabBar,
-    })
-    Cn(tabRamBtn, UDim.new(0, 4))
-
-    tabCmdsBtn.MouseButton1Click:Connect(function()
-        listPage.Visible = true
-        ramPage.Visible = false
-        SF.Visible = true
-        tabCmdsBtn.BackgroundColor3 = T.Surface
-        tabCmdsBtn.TextColor3 = T.Accent
-        tabCmdsBtn.BackgroundTransparency = 0.1
-        tabRamBtn.BackgroundColor3 = T.Card
-        tabRamBtn.TextColor3 = T.Sub
-        tabRamBtn.BackgroundTransparency = 0.7
-    end)
-
-    tabRamBtn.MouseButton1Click:Connect(function()
-        listPage.Visible = false
-        ramPage.Visible = true
-        SF.Visible = false
-        tabRamBtn.BackgroundColor3 = T.Surface
-        tabRamBtn.TextColor3 = T.Green
-        tabRamBtn.BackgroundTransparency = 0.1
-        tabCmdsBtn.BackgroundColor3 = T.Card
-        tabCmdsBtn.TextColor3 = T.Sub
-        tabCmdsBtn.BackgroundTransparency = 0.7
-        RefreshRamMonitor()
-    end)
-
-    ----------------------------------------------------------------
-    -- GLOBAL STOP BUTTON
-    ----------------------------------------------------------------
-    local stopBtn = C("TextButton",{
-        Name = "GlobalStopBtn",
+    local toolbarFrame = C("Frame",{
+        Name = "QuickToolbar",
         Size = UDim2.new(1, -16, 0, 28),
         Position = UDim2.new(0, 8, 1, -36),
-        BackgroundColor3 = T.Red,
-        BackgroundTransparency = 0.45,
-        Text = "[ STOP ALL ACTION ]",
-        TextColor3 = Color3.new(1, 1, 1),
-        TextSize = 10,
-        Font = T.FM,
-        AutoButtonColor = false,
+        BackgroundTransparency = 1,
         BorderSizePixel = 0,
         Parent = MF,
     })
-    Cn(stopBtn, UDim.new(0, 4))
-    stopBtn.MouseEnter:Connect(function() Tw(stopBtn, {BackgroundTransparency=0.1}, 0.1) end)
-    stopBtn.MouseLeave:Connect(function() Tw(stopBtn, {BackgroundTransparency=0.45}, 0.1) end)
-    stopBtn.MouseButton1Click:Connect(function()
-        ChatSend(getgenv().Settings.prefix .. "stop")
-        local curC = stopBtn.BackgroundColor3
-        Tw(stopBtn, {BackgroundColor3 = T.Green}, 0.1)
-        task.delay(0.2, function() Tw(stopBtn, {BackgroundColor3 = curC}, 0.2) end)
-    end)
 
-    ----------------------------------------------------------------
-    -- MINIMIZE / CLOSE / RESTORE
-    ----------------------------------------------------------------
+    local function MakeQuickBtn(name, text, bgCol, pos, sizeW, cmdStr)
+        local qb = C("TextButton",{
+            Name = name,
+            Size = UDim2.new(sizeW, -2, 1, 0),
+            Position = pos,
+            BackgroundColor3 = bgCol,
+            BackgroundTransparency = 0.3,
+            Text = text,
+            TextColor3 = Color3.new(1, 1, 1),
+            TextSize = 9,
+            Font = T.FM,
+            AutoButtonColor = false,
+            BorderSizePixel = 0,
+            Parent = toolbarFrame,
+        })
+        Cn(qb, UDim.new(0, 4))
+        qb.MouseEnter:Connect(function() Tw(qb, {BackgroundTransparency=0.1}, 0.1) end)
+        qb.MouseLeave:Connect(function() Tw(qb, {BackgroundTransparency=0.3}, 0.1) end)
+        qb.MouseButton1Click:Connect(function()
+            ChatSend(getgenv().Settings.prefix .. cmdStr)
+            Tw(qb, {BackgroundColor3 = T.Green}, 0.1)
+            task.delay(0.2, function() Tw(qb, {BackgroundColor3 = bgCol}, 0.2) end)
+        end)
+        return qb
+    end
+
+    MakeQuickBtn("QbBring", "BRING", T.Accent, UDim2.new(0, 0, 0, 0), 0.2, "bring")
+    MakeQuickBtn("QbStop", "STOP ALL", T.Red, UDim2.new(0.2, 0, 0, 0), 0.25, "stop")
+    MakeQuickBtn("QbLowRam", "LOW RAM", T.Yellow, UDim2.new(0.45, 0, 0, 0), 0.2, "lowram")
+    MakeQuickBtn("QbFlush", "PURGE", T.Green, UDim2.new(0.65, 0, 0, 0), 0.17, "cleanram")
+    MakeQuickBtn("QbUnemote", "UNEMOTE", T.Surface, UDim2.new(0.82, 0, 0, 0), 0.18, "unemote")
     local function MinimizeGUI()
         Tw(MF, {Size = UDim2.new(0, 0, 0, 0)}, 0.25, Enum.EasingStyle.Back)
         task.delay(0.25, function()
