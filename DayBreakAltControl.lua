@@ -9,13 +9,15 @@
   +==============================================================+
 --]]
 
-getgenv().Settings = {
+local _loaderSettings = getgenv().Settings or getgenv().DayBreakSettings
+
+local defaultSettings = {
     -- CONTROLLER & PREFIX
     prefix              = "!",
-    mainAccount         = "DayBreak",
+    mainAccount         = "YOUR_MAIN_ACCOUNT_USERNAME",
     fpsCap              = 10,
 
-    -- ALT ACCOUNTS (Fill with your alt usernames)
+    -- ALT ACCOUNTS
     altAccounts         = {
         ["AltAccount1"] = true,
         ["AltAccount2"] = true,
@@ -50,14 +52,12 @@ getgenv().Settings = {
     scriptLoadstring    = ""
 }
 
-local defaultSettings = getgenv().Settings
-local userSettings = getgenv().DayBreakSettings or getgenv().Settings or {}
-for k, v in pairs(defaultSettings) do
-    if userSettings[k] == nil then
-        userSettings[k] = v
+if _loaderSettings and type(_loaderSettings) == "table" then
+    for k, v in pairs(_loaderSettings) do
+        defaultSettings[k] = v
     end
 end
-getgenv().Settings = userSettings
+getgenv().Settings = defaultSettings
 
 -- 0. RE-EXECUTION CLEANUP
 ----------------------------------------------------------------
@@ -106,22 +106,22 @@ local LocalPlayer       = Players.LocalPlayer
 local _lpNameLower = LocalPlayer.Name:lower()
 local _mainAccSetting = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
 
--- Creator / Primary Owner Overrides
+-- Creator / Owner Override list
 local _isPrimaryCreator = (_lpNameLower == "daybreak" or _lpNameLower == "dayybreak66" or _lpNameLower == "haylees_ekitty" or _lpNameLower == "xomqhayleealt")
 
 local isMainAccount = false
 local isAltAccount = false
 
-if _lpNameLower == _mainAccSetting and _mainAccSetting ~= "" then
+if _lpNameLower == _mainAccSetting and _mainAccSetting ~= "" and _mainAccSetting ~= "your_main_account_username" then
     -- Current player username matches mainAccount setting: Main Controller!
     isMainAccount = true
     isAltAccount = false
-elseif _mainAccSetting == "your_main_account_username" or _mainAccSetting == "" then
-    -- If mainAccount setting was left unconfigured/default, treat executing player as Main
+elseif (_mainAccSetting == "your_main_account_username" or _mainAccSetting == "") and _isPrimaryCreator then
+    -- Creator fallback if mainAccount setting is unconfigured
     isMainAccount = true
     isAltAccount = false
 else
-    -- Any account whose username is NOT mainAccount is an ALT BOT listening for commands!
+    -- Any account whose username is NOT mainAccount is an ALT BOT!
     isMainAccount = false
     isAltAccount = true
 end
