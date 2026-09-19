@@ -4438,15 +4438,33 @@ if isMainAccount then
     })
 
     -- Header Controls & Title
-    local Title = C("TextLabel",{
-        Size = UDim2.new(0, 130, 0, 20),
-        Position = UDim2.new(0, 12, 1, -24),
+    C("ImageLabel",{
+        Size = UDim2.new(0, 14, 0, 14),
+        Position = UDim2.new(0, 10, 1, -22),
         BackgroundTransparency = 1,
-        Text = "✦ DAYBREAK ✦",
+        Image = "rbxassetid://10723415766",
+        ImageColor3 = T.Accent,
+        Parent = bannerFrame,
+    })
+
+    local Title = C("TextLabel",{
+        Size = UDim2.new(0, 95, 0, 20),
+        Position = UDim2.new(0, 28, 1, -25),
+        BackgroundTransparency = 1,
+        Text = "DAYBREAK",
         TextColor3 = T.Text,
         TextSize = 12,
         Font = T.FB,
         TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = bannerFrame,
+    })
+
+    C("ImageLabel",{
+        Size = UDim2.new(0, 14, 0, 14),
+        Position = UDim2.new(0, 115, 1, -22),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://10723415766",
+        ImageColor3 = T.Accent,
         Parent = bannerFrame,
     })
 
@@ -4537,30 +4555,66 @@ if isMainAccount then
         Position = UDim2.new(0, 0, 0, 0),
         BackgroundColor3 = T.Elevated,
         BackgroundTransparency = 0.1,
-        Text = "✦ Commands",
-        TextColor3 = T.Text,
-        TextSize = 11,
-        Font = T.FB,
+        Text = "",
         BorderSizePixel = 0,
         Parent = tabFrame,
     })
     Cn(tabCmdsBtn, UDim.new(0, 5))
     local tabCmdsStroke = C("UIStroke",{Color = T.BorderGlow, Thickness = 1.2, Parent = tabCmdsBtn})
 
+    local tabCmdsIcon = C("ImageLabel",{
+        Size = UDim2.new(0, 13, 0, 13),
+        Position = UDim2.new(0, 10, 0.5, -6.5),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://10723415766",
+        ImageColor3 = T.Accent,
+        Parent = tabCmdsBtn,
+    })
+
+    local tabCmdsLbl = C("TextLabel",{
+        Size = UDim2.new(1, -30, 1, 0),
+        Position = UDim2.new(0, 28, 0, 0),
+        BackgroundTransparency = 1,
+        Text = "Commands",
+        TextColor3 = T.Text,
+        TextSize = 10,
+        Font = T.FB,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = tabCmdsBtn,
+    })
+
     local tabBotsBtn = C("TextButton",{
         Size = UDim2.new(0.48, 0, 1, 0),
         Position = UDim2.new(0.52, 0, 0, 0),
         BackgroundColor3 = T.Surface,
         BackgroundTransparency = 0.6,
-        Text = "🤖 Bots & RAM",
-        TextColor3 = T.Dim,
-        TextSize = 11,
-        Font = T.FB,
+        Text = "",
         BorderSizePixel = 0,
         Parent = tabFrame,
     })
     Cn(tabBotsBtn, UDim.new(0, 5))
     local tabBotsStroke = C("UIStroke",{Color = T.Border, Thickness = 0.8, Parent = tabBotsBtn})
+
+    local tabBotsIcon = C("ImageLabel",{
+        Size = UDim2.new(0, 13, 0, 13),
+        Position = UDim2.new(0, 10, 0.5, -6.5),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://10723415766",
+        ImageColor3 = T.Green,
+        Parent = tabBotsBtn,
+    })
+
+    local tabBotsLbl = C("TextLabel",{
+        Size = UDim2.new(1, -30, 1, 0),
+        Position = UDim2.new(0, 28, 0, 0),
+        BackgroundTransparency = 1,
+        Text = "Bots & RAM",
+        TextColor3 = T.Dim,
+        TextSize = 10,
+        Font = T.FB,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = tabBotsBtn,
+    })
 
     ----------------------------------------------------------------
     -- CONTENT PAGES (Commands List & Bot / RAM Fleet Monitor)
