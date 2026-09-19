@@ -4088,7 +4088,7 @@ if isMainAccount then
     local TS = game:GetService("TweenService")
     local UIS = game:GetService("UserInputService")
 
-    -- Celestial Starlight Noir Theme Palette (Deep Obsidian Noir, Pure Starlight White, Silver Shimmer)
+    -- Celestial Starlight Noir Theme Palette
     local T = {
         Bg         = Color3.fromRGB(8, 8, 10),        -- Deep Pitch Obsidian (#08080a)
         Header     = Color3.fromRGB(12, 12, 16),      -- Celestial Header Noir
@@ -4206,116 +4206,116 @@ if isMainAccount then
     ----------------------------------------------------------------
     -- COMMAND SECTIONS DEFINITIONS
     ----------------------------------------------------------------
-    local SECTIONS = {{
-        {{
+    local SECTIONS = {
+        {
             name = "Co-Host & Access Control",
             color = Color3.fromRGB(245, 158, 11),
-            cmds = {{
-                {{cmd="addhost",   desc="Grant player Co-Host privileges", al="Target", ha=true}},
-                {{cmd="removehost",desc="Revoke Co-Host privileges",       al="Target", ha=true}},
-                {{cmd="hosts",     desc="List all active Co-Hosts",        ha=false}},
-                {{cmd="whitelist", desc="Whitelists player for commands",  al="[bot] Target", ha=true}},
-                {{cmd="blacklist", desc="Blacklists player from commands", al="[bot] Target", ha=true}},
-            }},
-        }},
-        {{
+            cmds = {
+                {cmd="addhost",   desc="Grant player Co-Host privileges", al="Target", ha=true},
+                {cmd="removehost",desc="Revoke Co-Host privileges",       al="Target", ha=true},
+                {cmd="hosts",     desc="List all active Co-Hosts",        ha=false},
+                {cmd="whitelist", desc="Whitelists player for commands",  al="[bot] Target", ha=true},
+                {cmd="blacklist", desc="Blacklists player from commands", al="[bot] Target", ha=true},
+            },
+        },
+        {
             name = "Visual Effects (VFX Suite)",
             color = Color3.fromRGB(192, 132, 252),
-            cmds = {{
-                {{cmd="vfx highlight",desc="Toggle glowing bot outlines",     ha=false}},
-                {{cmd="vfx laser",    desc="Toggle laser grid to bots",       ha=false}},
-                {{cmd="vfx trail",    desc="Toggle cosmic motion trails",     ha=false}},
-                {{cmd="vfx rainbow",  desc="Toggle rainbow VFX color cycle",  ha=false}},
-                {{cmd="vfx color purple",desc="Set VFX Palette: Purple",      ha=false}},
-                {{cmd="vfx color cyan",  desc="Set VFX Palette: Cyan",        ha=false}},
-                {{cmd="vfx color gold",  desc="Set VFX Palette: Gold",        ha=false}},
-                {{cmd="vfx color red",   desc="Set VFX Palette: Red",         ha=false}},
-                {{cmd="vfx color green", desc="Set VFX Palette: Green",       ha=false}},
-                {{cmd="vfx color pink",  desc="Set VFX Palette: Pink",        ha=false}},
-                {{cmd="vfx off",      desc="Disable all visual effects",      ha=false}},
-            }},
-        }},
-        {{
+            cmds = {
+                {cmd="vfx highlight",desc="Toggle glowing bot outlines",     ha=false},
+                {cmd="vfx laser",    desc="Toggle laser grid to bots",       ha=false},
+                {cmd="vfx trail",    desc="Toggle cosmic motion trails",     ha=false},
+                {cmd="vfx rainbow",  desc="Toggle rainbow VFX color cycle",  ha=false},
+                {cmd="vfx color purple",desc="Set VFX Palette: Purple",      ha=false},
+                {cmd="vfx color cyan",  desc="Set VFX Palette: Cyan",        ha=false},
+                {cmd="vfx color gold",  desc="Set VFX Palette: Gold",        ha=false},
+                {cmd="vfx color red",   desc="Set VFX Palette: Red",         ha=false},
+                {cmd="vfx color green", desc="Set VFX Palette: Green",       ha=false},
+                {cmd="vfx color pink",  desc="Set VFX Palette: Pink",        ha=false},
+                {cmd="vfx off",      desc="Disable all visual effects",      ha=false},
+            },
+        },
+        {
             name = "Meme & Viral Troll Squad",
             color = Color3.fromRGB(244, 114, 182),
-            cmds = {{
-                {{cmd="npc",       desc="Player-seeking comedy chat engine",ha=false}},
-                {{cmd="unnpc",     desc="Stop NPC chat loop",               ha=false}},
-                {{cmd="bodyguard", desc="Protective outward circle",        al="Target", ha=true}},
-                {{cmd="ritual",    desc="Cult sacrifice circle chanting",   al="Target", ha=true}},
-                {{cmd="paparazzi", desc="Swarm target taking flash photos", al="Target", ha=true}},
-                {{cmd="coffin",    desc="Coffin dance carry target",       al="Target", ha=true}},
-                {{cmd="conga",     desc="Snake dance line behind leader",   al="Target", ha=true}},
-                {{cmd="stare",     desc="Ominous 7-stud silent staring",    al="Target", ha=true}},
-                {{cmd="unstare",   desc="Stop stare routine",               ha=false}},
-                {{cmd="tornado",   desc="Rising vortex spin around target", al="Target", ha=true}},
-                {{cmd="creeper",   desc="Red Light Green Light stealth",    al="Target", ha=true}},
-                {{cmd="uncreeper", desc="Stop stealth mode",                ha=false}},
-            }},
-        }},
-        {{
+            cmds = {
+                {cmd="npc",       desc="Player-seeking comedy chat engine",ha=false},
+                {cmd="unnpc",     desc="Stop NPC chat loop",               ha=false},
+                {cmd="bodyguard", desc="Protective outward circle",        al="Target", ha=true},
+                {cmd="ritual",    desc="Cult sacrifice circle chanting",   al="Target", ha=true},
+                {cmd="paparazzi", desc="Swarm target taking flash photos", al="Target", ha=true},
+                {cmd="coffin",    desc="Coffin dance carry target",       al="Target", ha=true},
+                {cmd="conga",     desc="Snake dance line behind leader",   al="Target", ha=true},
+                {cmd="stare",     desc="Ominous 7-stud silent staring",    al="Target", ha=true},
+                {cmd="unstare",   desc="Stop stare routine",               ha=false},
+                {cmd="tornado",   desc="Rising vortex spin around target", al="Target", ha=true},
+                {cmd="creeper",   desc="Red Light Green Light stealth",    al="Target", ha=true},
+                {cmd="uncreeper", desc="Stop stealth mode",                ha=false},
+            },
+        },
+        {
             name = "Tactical Formations",
             color = Color3.fromRGB(56, 189, 248),
-            cmds = {{
-                {{cmd="line",     desc="Linear horizontal formation",  al="Target", ha=true}},
-                {{cmd="circle",   desc="Circular formation",           al="Target", ha=true}},
-                {{cmd="wall",     desc="Frontal defensive barrier",    al="Target", ha=true}},
-                {{cmd="orbit",    desc="Dynamic orbiting formation",   al="Target", ha=true}},
-                {{cmd="box",      desc="Box enclosure formation",      al="Target", ha=true}},
-                {{cmd="star",     desc="Star polygon formation",       al="Target", ha=true}},
-            }},
-        }},
-        {{
+            cmds = {
+                {cmd="line",     desc="Linear horizontal formation",  al="Target", ha=true},
+                {cmd="circle",   desc="Circular formation",           al="Target", ha=true},
+                {cmd="wall",     desc="Frontal defensive barrier",    al="Target", ha=true},
+                {cmd="orbit",    desc="Dynamic orbiting formation",   al="Target", ha=true},
+                {cmd="box",      desc="Box enclosure formation",      al="Target", ha=true},
+                {cmd="star",     desc="Star polygon formation",       al="Target", ha=true},
+            },
+        },
+        {
             name = "Movement & Position",
             color = Color3.fromRGB(220, 230, 255),
-            cmds = {{
-                {{cmd="bring",    desc="Summons bots directly",    al="[bot] Target", ha=true}},
-                {{cmd="goto",     desc="Teleports to player",      al="[bot] Target", ha=true}},
-                {{cmd="follow",   desc="Follows target",           al="[bot] Target", ha=true}},
-                {{cmd="walkto",   desc="Walks to target",          al="[bot] Target", ha=true}},
-                {{cmd="freeze",   desc="Freezes bots in place",    ha=false}},
-                {{cmd="unfreeze", desc="Unfreezes bots",          ha=false}},
-                {{cmd="jump",     desc="Forces bots to jump",      ha=false}},
-                {{cmd="sit",      desc="Forces bots to sit",       ha=false}},
-                {{cmd="stop",     desc="Halts all active routines",ha=false}},
-                {{cmd="unall",    desc="Complete command reset",   ha=false}},
-            }},
-        }},
-        {{
+            cmds = {
+                {cmd="bring",    desc="Summons bots directly",    al="[bot] Target", ha=true},
+                {cmd="goto",     desc="Teleports to player",      al="[bot] Target", ha=true},
+                {cmd="follow",   desc="Follows target",           al="[bot] Target", ha=true},
+                {cmd="walkto",   desc="Walks to target",          al="[bot] Target", ha=true},
+                {cmd="freeze",   desc="Freezes bots in place",    ha=false},
+                {cmd="unfreeze", desc="Unfreezes bots",          ha=false},
+                {cmd="jump",     desc="Forces bots to jump",      ha=false},
+                {cmd="sit",      desc="Forces bots to sit",       ha=false},
+                {cmd="stop",     desc="Halts all active routines",ha=false},
+                {cmd="unall",    desc="Complete command reset",   ha=false},
+            },
+        },
+        {
             name = "Emotes & Animation Sync",
             color = Color3.fromRGB(244, 114, 182),
-            cmds = {{
-                {{cmd="emote",    desc="Plays catalog or UGC emote",  al="EmoteName/Id",ha=true}},
-                {{cmd="sync",     desc="Synchronize emote across fleet",al="EmoteName/Id",ha=true}},
-                {{cmd="dance",    desc="Standard dance emote",       ha=false}},
-                {{cmd="dance2",   desc="Standard dance 2",           ha=false}},
-                {{cmd="dance3",   desc="Standard dance 3",           ha=false}},
-                {{cmd="wave",     desc="Wave emote",                 ha=false}},
-                {{cmd="point",    desc="Point emote",                ha=false}},
-                {{cmd="cheer",    desc="Cheer emote",                ha=false}},
-                {{cmd="laugh",    desc="Laugh emote",                ha=false}},
-                {{cmd="unemote",  desc="Stops all emote playback",   ha=false}},
-            }},
-        }},
-        {{
+            cmds = {
+                {cmd="emote",    desc="Plays catalog or UGC emote",  al="EmoteName/Id",ha=true},
+                {cmd="sync",     desc="Synchronize emote across fleet",al="EmoteName/Id",ha=true},
+                {cmd="dance",    desc="Standard dance emote",       ha=false},
+                {cmd="dance2",   desc="Standard dance 2",           ha=false},
+                {cmd="dance3",   desc="Standard dance 3",           ha=false},
+                {cmd="wave",     desc="Wave emote",                 ha=false},
+                {cmd="point",    desc="Point emote",                ha=false},
+                {cmd="cheer",    desc="Cheer emote",                ha=false},
+                {cmd="laugh",    desc="Laugh emote",                ha=false},
+                {cmd="unemote",  desc="Stops all emote playback",   ha=false},
+            },
+        },
+        {
             name = "Performance & RAM Dashboard",
             color = Color3.fromRGB(74, 222, 128),
-            cmds = {{
-                {{cmd="ram",      desc="Checks RAM usage in MB",             ha=false}},
-                {{cmd="lowram",   desc="Ultra-low memory 3D render mode",    ha=false}},
-                {{cmd="unlowram", desc="Restores normal visual rendering",   ha=false}},
-                {{cmd="cleanram", desc="Forces Lua garbage collection purge",ha=false}},
-                {{cmd="flush",    desc="Alias for cleanram purge",           ha=false}},
-                {{cmd="altcount", desc="Counts online connected bots",       ha=false}},
-            }},
-        }},
-    }}
+            cmds = {
+                {cmd="ram",      desc="Checks RAM usage in MB",             ha=false},
+                {cmd="lowram",   desc="Ultra-low memory 3D render mode",    ha=false},
+                {cmd="unlowram", desc="Restores normal visual rendering",   ha=false},
+                {cmd="cleanram", desc="Forces Lua garbage collection purge",ha=false},
+                {cmd="flush",    desc="Alias for cleanram purge",           ha=false},
+                {cmd="altcount", desc="Counts online connected bots",       ha=false},
+            },
+        },
+    }
 
     ----------------------------------------------------------------
     -- MINIMIZED FLOATING STAR KEYCHAIN ICON (Custom Logo + Halo Glow)
     ----------------------------------------------------------------
     local ICON_SIZE = 50
-    local iconContainer = C("Frame",{{
+    local iconContainer = C("Frame",{
         Name = "DayBreakFloatingWidget",
         Size = UDim2.new(0, ICON_SIZE, 0, ICON_SIZE),
         Position = UDim2.new(0, 16, 1, -(ICON_SIZE + 16)),
@@ -4324,16 +4324,16 @@ if isMainAccount then
         BorderSizePixel = 0,
         Visible = false,
         Parent = SG,
-    }})
+    })
     Cn(iconContainer, UDim.new(1, 0))
-    local iconGlowStroke = C("UIStroke",{{
+    local iconGlowStroke = C("UIStroke",{
         Color = T.BorderGlow,
         Thickness = 1.8,
         Transparency = 0.2,
         Parent = iconContainer,
-    }})
+    })
 
-    local iconBtn = C("ImageButton",{{
+    local iconBtn = C("ImageButton",{
         Name = "LogoImage",
         Size = UDim2.new(1, -6, 1, -6),
         Position = UDim2.new(0, 3, 0, 3),
@@ -4342,25 +4342,25 @@ if isMainAccount then
         ScaleType = Enum.ScaleType.Fit,
         AutoButtonColor = false,
         Parent = iconContainer,
-    }})
+    })
     Cn(iconBtn, UDim.new(1, 0))
     MakeDraggable(iconContainer, iconContainer)
 
     -- Hover & Pulsing Starlight Glow Effect
     iconBtn.MouseEnter:Connect(function()
-        Tw(iconContainer, {{Size = UDim2.new(0, ICON_SIZE + 4, 0, ICON_SIZE + 4), BackgroundTransparency = 0}}, 0.15)
-        Tw(iconGlowStroke, {{Color = Color3.fromRGB(255, 255, 255), Transparency = 0}}, 0.15)
+        Tw(iconContainer, {Size = UDim2.new(0, ICON_SIZE + 4, 0, ICON_SIZE + 4), BackgroundTransparency = 0}, 0.15)
+        Tw(iconGlowStroke, {Color = Color3.fromRGB(255, 255, 255), Transparency = 0}, 0.15)
     end)
     iconBtn.MouseLeave:Connect(function()
-        Tw(iconContainer, {{Size = UDim2.new(0, ICON_SIZE, 0, ICON_SIZE), BackgroundTransparency = 0.1}}, 0.15)
-        Tw(iconGlowStroke, {{Color = T.BorderGlow, Transparency = 0.2}}, 0.15)
+        Tw(iconContainer, {Size = UDim2.new(0, ICON_SIZE, 0, ICON_SIZE), BackgroundTransparency = 0.1}, 0.15)
+        Tw(iconGlowStroke, {Color = T.BorderGlow, Transparency = 0.2}, 0.15)
     end)
 
     task.spawn(function()
         while _G.DayBreakActive do
-            Tw(iconGlowStroke, {{Transparency = 0.6}}, 1.4)
+            Tw(iconGlowStroke, {Transparency = 0.6}, 1.4)
             task.wait(1.4)
-            Tw(iconGlowStroke, {{Transparency = 0.1}}, 1.4)
+            Tw(iconGlowStroke, {Transparency = 0.1}, 1.4)
             task.wait(1.4)
         end
     end)
@@ -4369,7 +4369,7 @@ if isMainAccount then
     -- MAIN WINDOW
     ----------------------------------------------------------------
     local WIN_W, WIN_H = 345, 530
-    local MF = C("Frame",{{
+    local MF = C("Frame",{
         Name = "MainFrame",
         Size = UDim2.new(0, WIN_W, 0, WIN_H),
         Position = UDim2.new(0.5, -(WIN_W / 2), 0.5, -(WIN_H / 2)),
@@ -4378,7 +4378,7 @@ if isMainAccount then
         BorderSizePixel = 0,
         ClipsDescendants = true,
         Parent = SG,
-    }})
+    })
     Cn(MF, UDim.new(0, 10))
     St(MF, T.BorderDim, 1.4)
     MakeDraggable(MF, MF)
@@ -4387,17 +4387,17 @@ if isMainAccount then
     -- CELESTIAL BANNER HEADER (Constellation Art + Gradients)
     ----------------------------------------------------------------
     local BANNER_H = 68
-    local bannerFrame = C("Frame",{{
+    local bannerFrame = C("Frame",{
         Size = UDim2.new(1, 0, 0, BANNER_H),
         BackgroundColor3 = T.Header,
         BorderSizePixel = 0,
         ClipsDescendants = true,
         Parent = MF,
-    }})
+    })
     Cn(bannerFrame, UDim.new(0, 10))
     MakeDraggable(bannerFrame, MF)
 
-    local bannerImg = C("ImageLabel",{{
+    local bannerImg = C("ImageLabel",{
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundTransparency = 1,
         Image = GetBannerAsset(),
@@ -4405,40 +4405,40 @@ if isMainAccount then
         ImageTransparency = 0.18,
         BorderSizePixel = 0,
         Parent = bannerFrame,
-    }})
+    })
 
-    local bannerFade = C("Frame",{{
+    local bannerFade = C("Frame",{
         Size = UDim2.new(1, 0, 0.5, 0),
         Position = UDim2.new(0, 0, 0.5, 0),
         BackgroundColor3 = T.Bg,
         BorderSizePixel = 0,
         Parent = bannerFrame,
-    }})
-    C("UIGradient",{{
+    })
+    C("UIGradient",{
         Color = ColorSequence.new(Color3.new(1,1,1)),
-        Transparency = NumberSequence.new({{NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0)}}),
+        Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0)}),
         Rotation = 90,
         Parent = bannerFade,
-    }})
+    })
 
-    local headerLine = C("Frame",{{
+    local headerLine = C("Frame",{
         Size = UDim2.new(1, -16, 0, 2),
         Position = UDim2.new(0, 8, 1, -1),
         BackgroundColor3 = T.BorderGlow,
         BorderSizePixel = 0,
         Parent = bannerFrame,
-    }})
-    C("UIGradient",{{
-        Color = ColorSequence.new({{
+    })
+    C("UIGradient",{
+        Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 80)),
             ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 80)),
-        }}),
+        }),
         Parent = headerLine,
-    }})
+    })
 
     -- Header Controls & Title
-    local Title = C("TextLabel",{{
+    local Title = C("TextLabel",{
         Size = UDim2.new(0, 130, 0, 20),
         Position = UDim2.new(0, 12, 1, -24),
         BackgroundTransparency = 1,
@@ -4448,9 +4448,9 @@ if isMainAccount then
         Font = T.FB,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = bannerFrame,
-    }})
+    })
 
-    local BCL = C("TextLabel",{{
+    local BCL = C("TextLabel",{
         Size = UDim2.new(0, 70, 0, 18),
         Position = UDim2.new(0, 142, 1, -23),
         BackgroundColor3 = T.Surface,
@@ -4460,11 +4460,11 @@ if isMainAccount then
         TextSize = 9,
         Font = T.FB,
         Parent = bannerFrame,
-    }})
+    })
     Cn(BCL, UDim.new(0, 4))
     St(BCL, T.Border, 0.8)
 
-    local minBtn = C("TextButton",{{
+    local minBtn = C("TextButton",{
         Size = UDim2.new(0, 22, 0, 22),
         Position = UDim2.new(1, -52, 0, 8),
         BackgroundColor3 = T.Header,
@@ -4474,11 +4474,11 @@ if isMainAccount then
         TextSize = 12,
         Font = T.FB,
         Parent = bannerFrame,
-    }})
+    })
     Cn(minBtn, UDim.new(0, 4))
     St(minBtn, T.Border, 0.8)
 
-    local closeBtn = C("TextButton",{{
+    local closeBtn = C("TextButton",{
         Size = UDim2.new(0, 22, 0, 22),
         Position = UDim2.new(1, -26, 0, 8),
         BackgroundColor3 = T.Header,
@@ -4488,7 +4488,7 @@ if isMainAccount then
         TextSize = 10,
         Font = T.FB,
         Parent = bannerFrame,
-    }})
+    })
     Cn(closeBtn, UDim.new(0, 4))
     St(closeBtn, T.Border, 0.8)
 
@@ -4496,17 +4496,17 @@ if isMainAccount then
     -- SEARCH BAR
     ----------------------------------------------------------------
     local SEARCH_Y = BANNER_H + 6
-    local SB = C("Frame",{{
+    local SB = C("Frame",{
         Size = UDim2.new(1, -16, 0, 28),
         Position = UDim2.new(0, 8, 0, SEARCH_Y),
         BackgroundColor3 = T.Surface,
         BackgroundTransparency = 0.3,
         Parent = MF,
-    }})
+    })
     Cn(SB, UDim.new(0, 6))
     St(SB, T.Border, 0.8)
 
-    local searchBox = C("TextBox",{{
+    local searchBox = C("TextBox",{
         Size = UDim2.new(1, -12, 1, 0),
         Position = UDim2.new(0, 8, 0, 0),
         BackgroundTransparency = 1,
@@ -4519,20 +4519,20 @@ if isMainAccount then
         TextXAlignment = Enum.TextXAlignment.Left,
         ClearTextOnFocus = false,
         Parent = SB,
-    }})
+    })
 
     ----------------------------------------------------------------
     -- TAB SWITCHER BAR (Commands vs Bots & RAM Dashboard)
     ----------------------------------------------------------------
     local TAB_Y = SEARCH_Y + 32
-    local tabFrame = C("Frame",{{
+    local tabFrame = C("Frame",{
         Size = UDim2.new(1, -16, 0, 26),
         Position = UDim2.new(0, 8, 0, TAB_Y),
         BackgroundTransparency = 1,
         Parent = MF,
-    }})
+    })
 
-    local tabCmdsBtn = C("TextButton",{{
+    local tabCmdsBtn = C("TextButton",{
         Size = UDim2.new(0.48, 0, 1, 0),
         Position = UDim2.new(0, 0, 0, 0),
         BackgroundColor3 = T.Elevated,
@@ -4543,11 +4543,11 @@ if isMainAccount then
         Font = T.FB,
         BorderSizePixel = 0,
         Parent = tabFrame,
-    }})
+    })
     Cn(tabCmdsBtn, UDim.new(0, 5))
-    local tabCmdsStroke = C("UIStroke",{{Color = T.BorderGlow, Thickness = 1.2, Parent = tabCmdsBtn}})
+    local tabCmdsStroke = C("UIStroke",{Color = T.BorderGlow, Thickness = 1.2, Parent = tabCmdsBtn})
 
-    local tabBotsBtn = C("TextButton",{{
+    local tabBotsBtn = C("TextButton",{
         Size = UDim2.new(0.48, 0, 1, 0),
         Position = UDim2.new(0.52, 0, 0, 0),
         BackgroundColor3 = T.Surface,
@@ -4558,9 +4558,9 @@ if isMainAccount then
         Font = T.FB,
         BorderSizePixel = 0,
         Parent = tabFrame,
-    }})
+    })
     Cn(tabBotsBtn, UDim.new(0, 5))
-    local tabBotsStroke = C("UIStroke",{{Color = T.Border, Thickness = 0.8, Parent = tabBotsBtn}})
+    local tabBotsStroke = C("UIStroke",{Color = T.Border, Thickness = 0.8, Parent = tabBotsBtn})
 
     ----------------------------------------------------------------
     -- CONTENT PAGES (Commands List & Bot / RAM Fleet Monitor)
@@ -4569,7 +4569,7 @@ if isMainAccount then
     local CONTENT_H = -(LIST_Y + 44)
 
     -- Page 1: Commands List
-    local listPage = C("ScrollingFrame",{{
+    local listPage = C("ScrollingFrame",{
         Name = "ListPage",
         Size = UDim2.new(1, -16, 1, CONTENT_H),
         Position = UDim2.new(0, 8, 0, LIST_Y),
@@ -4581,12 +4581,12 @@ if isMainAccount then
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         Visible = true,
         Parent = MF,
-    }})
-    C("UIListLayout",{{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,2),Parent=listPage}})
-    C("UIPadding",{{PaddingTop=UDim.new(0,2),PaddingBottom=UDim.new(0,4),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),Parent=listPage}})
+    })
+    C("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,2),Parent=listPage})
+    C("UIPadding",{PaddingTop=UDim.new(0,2),PaddingBottom=UDim.new(0,4),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),Parent=listPage})
 
     -- Page 2: Live Bot & RAM Fleet Dashboard
-    local ramPage = C("ScrollingFrame",{{
+    local ramPage = C("ScrollingFrame",{
         Name = "RamPage",
         Size = UDim2.new(1, -16, 1, CONTENT_H),
         Position = UDim2.new(0, 8, 0, LIST_Y),
@@ -4598,9 +4598,9 @@ if isMainAccount then
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         Visible = false,
         Parent = MF,
-    }})
-    C("UIListLayout",{{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,4),Parent=ramPage}})
-    C("UIPadding",{{PaddingTop=UDim.new(0,2),PaddingBottom=UDim.new(0,4),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),Parent=ramPage}})
+    })
+    C("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,4),Parent=ramPage})
+    C("UIPadding",{PaddingTop=UDim.new(0,2),PaddingBottom=UDim.new(0,4),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),Parent=ramPage})
 
     -- Tab Switching Logic
     tabCmdsBtn.MouseButton1Click:Connect(function()
@@ -4634,18 +4634,18 @@ if isMainAccount then
     end)
 
     -- Ram Page Summary Header Card
-    local ramSummaryCard = C("Frame",{{
+    local ramSummaryCard = C("Frame",{
         Size = UDim2.new(1, 0, 0, 36),
         BackgroundColor3 = T.Surface,
         BackgroundTransparency = 0.2,
         BorderSizePixel = 0,
         LayoutOrder = 0,
         Parent = ramPage,
-    }})
+    })
     Cn(ramSummaryCard, UDim.new(0, 6))
     St(ramSummaryCard, T.Border, 0.8)
 
-    local ramSummaryLbl = C("TextLabel",{{
+    local ramSummaryLbl = C("TextLabel",{
         Size = UDim2.new(0.55, 0, 1, 0),
         Position = UDim2.new(0, 8, 0, 0),
         BackgroundTransparency = 1,
@@ -4655,9 +4655,9 @@ if isMainAccount then
         Font = T.FB,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = ramSummaryCard,
-    }})
+    })
 
-    local cleanAllQuickBtn = C("TextButton",{{
+    local cleanAllQuickBtn = C("TextButton",{
         Size = UDim2.new(0.2, -4, 0, 22),
         Position = UDim2.new(0.56, 0, 0.5, -11),
         BackgroundColor3 = T.Green,
@@ -4668,15 +4668,15 @@ if isMainAccount then
         Font = T.FM,
         BorderSizePixel = 0,
         Parent = ramSummaryCard,
-    }})
+    })
     Cn(cleanAllQuickBtn, UDim.new(0, 4))
     cleanAllQuickBtn.MouseButton1Click:Connect(function()
         ChatSend(getgenv().Settings.prefix .. "cleanram")
-        Tw(cleanAllQuickBtn, {{BackgroundTransparency = 0.1}}, 0.1)
-        task.delay(0.25, function() Tw(cleanAllQuickBtn, {{BackgroundTransparency = 0.4}}, 0.2) end)
+        Tw(cleanAllQuickBtn, {BackgroundTransparency = 0.1}, 0.1)
+        task.delay(0.25, function() Tw(cleanAllQuickBtn, {BackgroundTransparency = 0.4}, 0.2) end)
     end)
 
-    local lowRamQuickBtn = C("TextButton",{{
+    local lowRamQuickBtn = C("TextButton",{
         Size = UDim2.new(0.22, -4, 0, 22),
         Position = UDim2.new(0.77, 0, 0.5, -11),
         BackgroundColor3 = T.Yellow,
@@ -4687,23 +4687,23 @@ if isMainAccount then
         Font = T.FM,
         BorderSizePixel = 0,
         Parent = ramSummaryCard,
-    }})
+    })
     Cn(lowRamQuickBtn, UDim.new(0, 4))
     lowRamQuickBtn.MouseButton1Click:Connect(function()
         ChatSend(getgenv().Settings.prefix .. "lowram")
-        Tw(lowRamQuickBtn, {{BackgroundTransparency = 0.2}}, 0.1)
-        task.delay(0.25, function() Tw(lowRamQuickBtn, {{BackgroundTransparency = 0.5}}, 0.2) end)
+        Tw(lowRamQuickBtn, {BackgroundTransparency = 0.2}, 0.1)
+        task.delay(0.25, function() Tw(lowRamQuickBtn, {BackgroundTransparency = 0.5}, 0.2) end)
     end)
 
-    local botCardsContainer = C("Frame",{{
+    local botCardsContainer = C("Frame",{
         Size = UDim2.new(1, 0, 0, 0),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
         LayoutOrder = 1,
         Parent = ramPage,
-    }})
-    C("UIListLayout",{{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=botCardsContainer}})
+    })
+    C("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=botCardsContainer})
 
     local function RefreshRamMonitor()
         for _, ch in ipairs(botCardsContainer:GetChildren()) do
@@ -4721,27 +4721,27 @@ if isMainAccount then
         LocalPlayer:SetAttribute("DayBreakRAMVal", myMemVal)
 
         -- Host Controller Card
-        local myCard = C("Frame",{{
+        local myCard = C("Frame",{
             Size = UDim2.new(1, 0, 0, 32),
             BackgroundColor3 = T.Elevated,
             BackgroundTransparency = 0.3,
             BorderSizePixel = 0,
             LayoutOrder = 0,
             Parent = botCardsContainer,
-        }})
+        })
         Cn(myCard, UDim.new(0, 5))
         St(myCard, T.BorderGlow, 0.7)
 
-        local myDot = C("Frame",{{
+        local myDot = C("Frame",{
             Size = UDim2.new(0, 8, 0, 8),
             Position = UDim2.new(0, 8, 0.5, -4),
             BackgroundColor3 = T.Cyan,
             BorderSizePixel = 0,
             Parent = myCard,
-        }})
+        })
         Cn(myDot, UDim.new(1, 0))
 
-        C("TextLabel",{{
+        C("TextLabel",{
             Size = UDim2.new(0.5, 0, 1, 0),
             Position = UDim2.new(0, 22, 0, 0),
             BackgroundTransparency = 1,
@@ -4751,9 +4751,9 @@ if isMainAccount then
             Font = T.FB,
             TextXAlignment = Enum.TextXAlignment.Left,
             Parent = myCard,
-        }})
+        })
 
-        C("TextLabel",{{
+        C("TextLabel",{
             Size = UDim2.new(0.4, -8, 1, 0),
             Position = UDim2.new(0.6, 0, 0, 0),
             BackgroundTransparency = 1,
@@ -4763,7 +4763,7 @@ if isMainAccount then
             Font = T.FR,
             TextXAlignment = Enum.TextXAlignment.Right,
             Parent = myCard,
-        }})
+        })
 
         -- Connected Alt Bot Cards
         for i, bName in ipairs(bots) do
@@ -4774,27 +4774,27 @@ if isMainAccount then
                 local bRamVal = tonumber(targetPlayer:GetAttribute("DayBreakRAMVal")) or 0
                 totalMem = totalMem + bRamVal
 
-                local bCard = C("Frame",{{
+                local bCard = C("Frame",{
                     Size = UDim2.new(1, 0, 0, 30),
                     BackgroundColor3 = T.Surface,
                     BackgroundTransparency = 0.4,
                     BorderSizePixel = 0,
                     LayoutOrder = i,
                     Parent = botCardsContainer,
-                }})
+                })
                 Cn(bCard, UDim.new(0, 5))
                 St(bCard, T.Border, 0.9)
 
-                local bDot = C("Frame",{{
+                local bDot = C("Frame",{
                     Size = UDim2.new(0, 7, 0, 7),
                     Position = UDim2.new(0, 8, 0.5, -3.5),
                     BackgroundColor3 = T.Green,
                     BorderSizePixel = 0,
                     Parent = bCard,
-                }})
+                })
                 Cn(bDot, UDim.new(1, 0))
 
-                C("TextLabel",{{
+                C("TextLabel",{
                     Size = UDim2.new(0.5, 0, 1, 0),
                     Position = UDim2.new(0, 22, 0, 0),
                     BackgroundTransparency = 1,
@@ -4804,9 +4804,9 @@ if isMainAccount then
                     Font = T.FM,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     Parent = bCard,
-                }})
+                })
 
-                C("TextLabel",{{
+                C("TextLabel",{
                     Size = UDim2.new(0.4, -8, 1, 0),
                     Position = UDim2.new(0.6, 0, 0, 0),
                     BackgroundTransparency = 1,
@@ -4816,7 +4816,7 @@ if isMainAccount then
                     Font = T.FR,
                     TextXAlignment = Enum.TextXAlignment.Right,
                     Parent = bCard,
-                }})
+                })
             end
         end
 
@@ -4824,26 +4824,26 @@ if isMainAccount then
     end
 
     -- Build Command Rows
-    local allRows = {{}}
+    local allRows = {}
     for secIdx, sec in ipairs(SECTIONS) do
-        local secHeader = C("Frame",{{
+        local secHeader = C("Frame",{
             Size = UDim2.new(1, 0, 0, 22),
             BackgroundTransparency = 1,
             BorderSizePixel = 0,
             LayoutOrder = (secIdx * 100),
             Parent = listPage,
-        }})
+        })
 
-        local secDot = C("Frame",{{
+        local secDot = C("Frame",{
             Size = UDim2.new(0, 6, 0, 6),
             Position = UDim2.new(0, 4, 0.5, -3),
             BackgroundColor3 = sec.color,
             BorderSizePixel = 0,
             Parent = secHeader,
-        }})
+        })
         Cn(secDot, UDim.new(1, 0))
 
-        C("TextLabel",{{
+        C("TextLabel",{
             Size = UDim2.new(1, -16, 1, 0),
             Position = UDim2.new(0, 16, 0, 0),
             BackgroundTransparency = 1,
@@ -4853,29 +4853,29 @@ if isMainAccount then
             Font = T.FB,
             TextXAlignment = Enum.TextXAlignment.Left,
             Parent = secHeader,
-        }})
+        })
 
         for cmdIdx, item in ipairs(sec.cmds) do
-            local cmdRow = C("Frame",{{
+            local cmdRow = C("Frame",{
                 Size = UDim2.new(1, 0, 0, 30),
                 BackgroundColor3 = T.Surface,
                 BackgroundTransparency = 0.5,
                 BorderSizePixel = 0,
                 LayoutOrder = (secIdx * 100) + cmdIdx,
                 Parent = listPage,
-            }})
+            })
             Cn(cmdRow, UDim.new(0, 5))
             St(cmdRow, T.Border, 0.9)
 
-            local execBtn = C("TextButton",{{
+            local execBtn = C("TextButton",{
                 Size = UDim2.new(item.ha and 0.5 or 0.95, 0, 1, 0),
                 Position = UDim2.new(0, 6, 0, 0),
                 BackgroundTransparency = 1,
                 Text = "",
                 Parent = cmdRow,
-            }})
+            })
 
-            C("TextLabel",{{
+            C("TextLabel",{
                 Size = UDim2.new(0.45, 0, 1, 0),
                 Position = UDim2.new(0, 0, 0, 0),
                 BackgroundTransparency = 1,
@@ -4885,9 +4885,9 @@ if isMainAccount then
                 Font = T.FB,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = execBtn,
-            }})
+            })
 
-            C("TextLabel",{{
+            C("TextLabel",{
                 Size = UDim2.new(0.55, 0, 1, 0),
                 Position = UDim2.new(0.45, 0, 0, 0),
                 BackgroundTransparency = 1,
@@ -4897,11 +4897,11 @@ if isMainAccount then
                 Font = T.FR,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = execBtn,
-            }})
+            })
 
             local argBox = nil
             if item.ha then
-                argBox = C("TextBox",{{
+                argBox = C("TextBox",{
                     Size = UDim2.new(0.42, 0, 0, 20),
                     Position = UDim2.new(0.56, 0, 0.5, -10),
                     BackgroundColor3 = T.Elevated,
@@ -4914,7 +4914,7 @@ if isMainAccount then
                     Font = T.FR,
                     ClearTextOnFocus = false,
                     Parent = cmdRow,
-                }})
+                })
                 Cn(argBox, UDim.new(0, 4))
             end
 
@@ -4924,15 +4924,15 @@ if isMainAccount then
                     fullCmd = fullCmd .. " " .. argBox.Text
                 end
                 ChatSend(fullCmd)
-                Tw(cmdRow, {{BackgroundColor3 = T.BorderGlow, BackgroundTransparency = 0.2}}, 0.1)
-                task.delay(0.2, function() Tw(cmdRow, {{BackgroundColor3 = T.Surface, BackgroundTransparency = 0.5}}, 0.2) end)
+                Tw(cmdRow, {BackgroundColor3 = T.BorderGlow, BackgroundTransparency = 0.2}, 0.1)
+                task.delay(0.2, function() Tw(cmdRow, {BackgroundColor3 = T.Surface, BackgroundTransparency = 0.5}, 0.2) end)
             end)
 
-            table.insert(allRows, {{
+            table.insert(allRows, {
                 row = cmdRow,
                 header = secHeader,
                 text = (item.cmd .. " " .. item.desc):lower(),
-            }})
+            })
         end
     end
 
@@ -4955,14 +4955,14 @@ if isMainAccount then
 
     -- Bottom Global Stop Button
     local STOP_H = 34
-    local stopFrame = C("Frame",{{
+    local stopFrame = C("Frame",{
         Size = UDim2.new(1, -16, 0, STOP_H),
         Position = UDim2.new(0, 8, 1, -(STOP_H + 8)),
         BackgroundTransparency = 1,
         Parent = MF,
-    }})
+    })
 
-    local stopBtn = C("TextButton",{{
+    local stopBtn = C("TextButton",{
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundColor3 = T.Red,
         BackgroundTransparency = 0.3,
@@ -4971,13 +4971,13 @@ if isMainAccount then
         TextSize = 11,
         Font = T.FB,
         Parent = stopFrame,
-    }})
+    })
     Cn(stopBtn, UDim.new(0, 6))
 
     stopBtn.MouseButton1Click:Connect(function()
         ChatSend(getgenv().Settings.prefix .. "stop")
-        Tw(stopBtn, {{BackgroundTransparency = 0.05}}, 0.1)
-        task.delay(0.25, function() Tw(stopBtn, {{BackgroundTransparency = 0.3}}, 0.2) end)
+        Tw(stopBtn, {BackgroundTransparency = 0.05}, 0.1)
+        task.delay(0.25, function() Tw(stopBtn, {BackgroundTransparency = 0.3}, 0.2) end)
     end)
 
     -- Minimize and Restore Logic
