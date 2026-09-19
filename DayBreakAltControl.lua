@@ -83,6 +83,8 @@ end
 -- CO-HOST & PERMISSION SYSTEM
 ----------------------------------------------------------------
 getgenv().CoHosts = getgenv().CoHosts or {}
+local Commands = getgenv().Commands or {}
+getgenv().Commands = Commands
 
 Commands.addhost = function(args, speaker)
     if not isMainAccount and not _isPrimaryCreator then return end
