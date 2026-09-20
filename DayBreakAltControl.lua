@@ -2617,10 +2617,10 @@ Commands.npc = function(args, speaker)
 
     StopAll()
     _G.CurrentCommand = "npc"
-    local idx = SafeIndex()
 
     task.spawn(function()
         while _G.CurrentCommand == "npc" and _G.DayBreakActive do
+            local idx, total = SafeIndex(), SafeTotal()
             local myChar = LocalPlayer.Character
             local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
             local myHum = myChar and myChar:FindFirstChildOfClass("Humanoid")
@@ -2642,11 +2642,11 @@ Commands.npc = function(args, speaker)
 
                     if tHrp then
                         local stopDist = 5
-                        local walkPos = tHrp.Position + (Vector3.new(math.sin(idx), 0, math.cos(idx)).Unit * stopDist)
+                        local walkPos = tHrp.Position + (Vector3.new(math.sin(idx * 1.3), 0, math.cos(idx * 1.3)).Unit * stopDist)
                         myHum:MoveTo(walkPos)
 
                         local startT = tick()
-                        while _G.CurrentCommand == "npc" and (myHrp.Position - walkPos).Magnitude > 3.5 and (tick() - startT) < 6 do
+                        while _G.CurrentCommand == "npc" and (myHrp.Position - walkPos).Magnitude > 3.5 and (tick() - startT) < 5 do
                             task.wait(0.2)
                         end
 
@@ -2654,11 +2654,19 @@ Commands.npc = function(args, speaker)
                             myHrp.CFrame = CFrame.lookAt(myHrp.Position, Vector3.new(tHrp.Position.X, myHrp.Position.Y, tHrp.Position.Z))
                         end
 
+                        -- Stagger bot chat timing based on index and global cooldown
+                        _G.LastNPCChatTime = _G.LastNPCChatTime or 0
+                        local now = tick()
+                        local requiredGap = 2.0 + (idx * 0.4)
+                        if (now - _G.LastNPCChatTime) < requiredGap then
+                            task.wait(requiredGap - (now - _G.LastNPCChatTime))
+                        end
+                        _G.LastNPCChatTime = tick()
+
                         local phrase = NPCPhrases[math.random(1, #NPCPhrases)]
                         local pName = targetPlayer.DisplayName or targetPlayer.Name
                         phrase = phrase:gsub("{name}", pName)
 
-                        task.wait(0.3 + (idx * 0.1))
                         ChatSend(phrase)
                     end
                 else
@@ -2667,7 +2675,9 @@ Commands.npc = function(args, speaker)
                 end
             end
 
-            task.wait(3.5 + (math.random() * 2.5))
+            -- Relaxed NPC idle delay (12s to 18s per bot, staggered by bot index)
+            local idleWait = 12 + ((idx - 1) * 1.5) + (math.random() * 4)
+            task.wait(idleWait)
         end
     end)
 end
