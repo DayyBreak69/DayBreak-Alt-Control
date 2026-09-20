@@ -2361,196 +2361,384 @@ local function GetFormationTargetHRP(args, speaker)
     return nil, nil
 end
 
-Commands.line = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "line"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
-    if not hrp then return end
-    local spacing = 4
+Commands.circle = function(args, speaker)
+    local radius, target = ParseSpeedTarget(args, speaker, nil)
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    StopAll(); task.wait(0.05); _G.CurrentCommand = "Circle"
+    local idx, total = SafeIndex(), SafeTotal()
+    radius = radius or math.max(8, total * 1.2)
+    local angle  = ((idx - 1) / total) * (2 * math.pi)
+    local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+    local tRoot  = target.Character:FindFirstChild("HumanoidRootPart")
+    local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if tRoot and myRoot then myRoot.CFrame = CFrame.new(tRoot.Position + offset, tRoot.Position) end
+end
 
+Commands.loopcircle = function(args, speaker)
+    local radiusIn, target = ParseSpeedTarget(args, speaker, nil)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.05); _G.CurrentCommand = "LoopCircle"
     task.spawn(function()
-        while _G.CurrentCommand == "line" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local offset = (myIdx - (total + 1) / 2) * spacing
-                local targetCFrame = hrp.CFrame * CFrame.new(offset, 0, 0)
-                myHrp.CFrame = myHrp.CFrame:Lerp(targetCFrame, 0.25)
+        while _G.CurrentCommand == "LoopCircle" and target and target.Character do
+            local idx, total = SafeIndex(), SafeTotal()
+            local radius = radiusIn or math.max(8, total * 1.2)
+            local angle  = ((idx - 1) / total) * (2 * math.pi)
+            local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+            local tRoot  = target.Character:FindFirstChild("HumanoidRootPart")
+            local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if tRoot and myRoot then myRoot.CFrame = CFrame.new(tRoot.Position + offset, tRoot.Position) end
+            task.wait()
+        end
+    end)
+end
+
+-- ═══════════════════════════════════════════════════════════
+--  MATHEMATICAL CURVE ENGINE (Time-based orbit, spiral, shield)
+--  Supports custom speed and distance range!
+--  Usage: !orbit [speed] [range] [target]  (e.g. !orbit 5 25)
+-- ═══════════════════════════════════════════════════════════
+local PI2 = math.pi * 2
+local PI  = math.pi
+local sin, cos, abs, sqrt = math.sin, math.cos, math.abs, math.sqrt
+
+local function RunOrbitCurve(args, speaker, curveFn, tag)
+    local speed, range, target = ParseSpeedRangeTarget(args, speaker, 4, 10)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = tag or "Orbit"
+    task.spawn(function()
+        local startT = tick()
+        while _G.CurrentCommand == (tag or "Orbit") and target and target.Character do
+            local idx, total = SafeIndex(), SafeTotal()
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if mR and tR then
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.Sit then h.Sit = false end
+                local t = (tick() - startT) * (speed / 4)
+                local pos = curveFn(t, idx, total, range)
+                mR.CFrame = CFrame.new(tR.Position + pos, tR.Position)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
             end
             RunService.Heartbeat:Wait()
         end
     end)
 end
 
-Commands.circle = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "circle"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
-    if not hrp then return end
+local OrbitCurves = {}
+OrbitCurves[0] = function(t, i, count, R)
+    R = math.max(R, count * 2)
+    local P = 15
+    local phase = (t / P + (i-1)/count) * PI2
+    return Vector3.new(sin(phase)*R, 0, cos(phase)*R)
+end
+OrbitCurves[1] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local breathe = R + sin(t * 0.5) * 1.5
+    return Vector3.new(sin(phase)*breathe, 0, cos(phase)*breathe)
+end
+OrbitCurves[2] = function(t, i, count, R)
+    local P = 14
+    local strand = (i % 2 == 0) and 0 or 1
+    local phase = (t / P + (i-1)/count) * PI2 + strand * PI
+    return Vector3.new(sin(phase)*R, sin(phase*0.5)*(R*0.7), cos(phase)*R)
+end
+OrbitCurves[3] = function(t, i, count, R)
+    local P = 16
+    local plane = i % 3
+    local gi = math.floor((i-1)/3); local gt = math.max(math.ceil(count/3), 1)
+    local phase = (t / P + gi/gt) * PI2
+    if plane == 0 then return Vector3.new(cos(phase)*R, sin(phase)*R, 0)
+    elseif plane == 1 then return Vector3.new(cos(phase)*R, 0, sin(phase)*R)
+    else return Vector3.new(0, cos(phase)*R, sin(phase)*R) end
+end
+OrbitCurves[4] = function(t, i, count, R)
+    local arms = math.min(3, math.ceil(count/3))
+    local arm = (i-1) % arms
+    local posInArm = math.floor((i-1)/arms)
+    local armAngle = (arm/arms) * PI2
+    local dist = 3 + posInArm * 2.5
+    local phase = armAngle + posInArm * 0.5 + t * 0.5
+    return Vector3.new(cos(phase)*dist, sin(t + i) * 1.5, sin(phase)*dist)
+end
+OrbitCurves[5] = function(t, i, count, R)
+    local P = 14
+    local frac = (i-1)/count
+    local height = frac * 20
+    local coneR = 3 + frac * R
+    local phase = (t / P + frac) * PI2
+    return Vector3.new(cos(phase)*coneR, height - 10, sin(phase)*coneR)
+end
+OrbitCurves[6] = function(t, i, count, R)
+    local P = 18
+    local phase = (t / P + (i-1)/count) * PI2
+    local denom = 1 + sin(phase) * sin(phase)
+    return Vector3.new(R*cos(phase)/denom, sin(phase*2)*3, R*sin(phase)*cos(phase)/denom)
+end
+OrbitCurves[7] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local breathe = R + sin(t * 2) * (R * 0.5)
+    return Vector3.new(cos(phase)*breathe, sin(t*3 + i)*2, sin(phase)*breathe)
+end
+OrbitCurves[8] = function(t, i, count, R)
+    local P = 14
+    local rings = math.min(3, math.ceil(count/3))
+    local ring = (i-1) % rings
+    local pir = math.floor((i-1)/rings); local bir = math.max(math.ceil(count/rings), 1)
+    local phase = (t / P + pir/bir) * PI2
+    local tilt = (ring/rings) * PI * 0.6
+    local lx, ly = cos(phase)*R, sin(phase)*R
+    return Vector3.new(lx, ly*cos(tilt), ly*sin(tilt))
+end
+OrbitCurves[9] = function(t, i, count, R)
+    local P = 20
+    local phase = (t / P + (i-1)/count) * PI2
+    local rr = R * abs(cos(3 * phase))
+    return Vector3.new(cos(phase)*rr, sin(phase*2)*3, sin(phase)*rr)
+end
+OrbitCurves[10] = function(t, i, count, R)
+    local seed = i * 1.1
+    return Vector3.new(
+        sin(t*1.3+seed)*R*cos(t*0.7+seed*2),
+        cos(t*0.9+seed*1.5)*(R*0.6)*sin(t*1.1+seed),
+        sin(t*1.1+seed*0.8)*R*cos(t*1.3+seed*1.7))
+end
 
+Commands.orbit = function(a, s) RunOrbitCurve(a, s, OrbitCurves[0]) end
+for i = 1, 10 do Commands["orbit" .. i] = function(a, s) RunOrbitCurve(a, s, OrbitCurves[i]) end end
+
+local SpiralCurves = {}
+SpiralCurves[1] = function(t, i, count, R)
+    local P = 12
+    local phase = (t / P + (i-1)/count) * PI2
+    local dynR = R + sin(t * 0.5) * 5
+    local y = sin(t + (i-1)/count * PI2) * 6
+    return Vector3.new(cos(phase)*dynR, y, sin(phase)*dynR)
+end
+SpiralCurves[2] = function(t, i, count, R)
+    local P = 14
+    local frac = (i-1)/count
+    local phase = (t / P + frac) * PI2
+    local hd = frac * 16; local ht = sin(t + hd) * 4 + hd
+    local cr = (ht / 16) * R
+    return Vector3.new(cos(phase)*cr, ht, sin(phase)*cr)
+end
+SpiralCurves[3] = function(t, i, count, R)
+    local P = 14
+    local strand = (i % 2 == 0) and 0 or 1
+    local pI = math.floor((i-1)/2)
+    local height = (pI / math.max(math.ceil(count/2), 1)) * 16
+    local phase = (t / P + (i-1)/count) * PI2 + strand * PI
+    return Vector3.new(cos(phase)*R, height + sin(t*0.5)*2 - 8, sin(phase)*R)
+end
+SpiralCurves[4] = function(t, i, count, R)
+    local P = 16
+    local frac = (i-1)/count
+    local cycle = (t/P*0.3 + frac * PI2) % PI2; local ph = cycle / PI2
+    local y, cr
+    if ph < 0.6 then y = (ph/0.6)*15; cr = R*0.4
+    else local ap = (ph-0.6)/0.4; y = 15*(1-ap*ap); cr = R*0.4 + R*ap end
+    local phase = (t / P + frac) * PI2
+    return Vector3.new(cos(phase)*cr, y - 5, sin(phase)*cr)
+end
+SpiralCurves[5] = function(t, i, count, R)
+    local P = 14
+    local frac = (i-1)/count
+    local height = ((t/P*0.5 + frac*20) % 20)
+    local nH = height / 20
+    local tR = R * (0.3 + nH * 0.7)
+    local phase = (t / P + frac) * PI2 + nH * PI * 4
+    return Vector3.new(cos(phase)*tR, height - 10, sin(phase)*tR)
+end
+
+Commands.spiral = function(a, s) RunOrbitCurve(a, s, SpiralCurves[1], "Spiral") end
+for i = 1, 5 do Commands["spiral" .. i] = function(a, s) RunOrbitCurve(a, s, SpiralCurves[i], "Spiral") end end
+
+local ShieldCurves = {}
+ShieldCurves[1] = function(t, i, count, R)
+    local spread = PI * 0.8
+    local angle = -spread/2 + ((i-1)/math.max(count-1, 1)) * spread
+    return Vector3.new(sin(angle)*R, sin(t*3 + i)*1.2, cos(angle)*R)
+end
+ShieldCurves[2] = function(t, i, count, R)
+    local spread = PI * 0.8
+    local half = math.ceil(count/2)
+    local row = (i <= half) and 1 or 2
+    local rI = (i <= half) and i or (i - half)
+    local rC = (i <= half) and half or (count - half)
+    local angle = -spread/2 + ((rI-1)/math.max(rC-1, 1)) * spread
+    local dist = (row == 1) and R or (R + 4)
+    return Vector3.new(sin(angle)*dist, (row-1)*3 - 1.5, cos(angle)*dist)
+end
+
+local function DoShield(args, speaker, shieldNum)
+    local speed, range, target = ParseSpeedRangeTarget(args, speaker, 3, 7)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "Shield"
     task.spawn(function()
-        while _G.CurrentCommand == "circle" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            local radius = math.max(7, total * 0.95)
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local angle = ((myIdx - 1) / total) * (math.pi * 2)
-                local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-                local targetPos = hrp.Position + offset
-                myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
+        local startT = tick()
+        local fn = ShieldCurves[shieldNum] or ShieldCurves[1]
+        while _G.CurrentCommand == "Shield" and target and target.Character do
+            local idx, total = SafeIndex(), SafeTotal()
+            local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            if mR and tR then
+                local t = (tick() - startT) * (speed / 3)
+                local offset = fn(t, idx, total, range)
+                local targetPos = tR.CFrame * CFrame.new(offset.X, offset.Y, -offset.Z)
+                mR.CFrame = CFrame.lookAt(targetPos.Position, targetPos.Position + (tR.CFrame.LookVector * 10))
+                mR.Velocity = Vector3.zero
             end
             RunService.Heartbeat:Wait()
         end
     end)
+end
+
+Commands.shield = function(a, s) DoShield(a, s, 1) end
+for i = 1, 2 do Commands["shield" .. i] = function(a, s) DoShield(a, s, i) end end
+
+-- Directional lines
+local LINE_DIRS = {
+    rline = Vector3.new(4,0,0), lline = Vector3.new(-4,0,0),
+    fline = Vector3.new(0,0,-4), bline = Vector3.new(0,0,4),
+}
+local function DoLine(args, speaker, isLoop)
+    local cmd = args[1]:lower():sub(#getgenv().Settings.prefix + 1)
+    local base = isLoop and cmd:sub(5) or cmd
+    local dir = LINE_DIRS[base]; if not dir then return end
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+    local spacing = distIn or 4
+    local unitDir = dir.Unit * spacing
+    local idx = SafeIndex()
+    local off = CFrame.new(unitDir * idx)
+    if isLoop then
+        StopAll(); _G.CurrentCommand = "LoopLine"
+        task.spawn(function()
+            while _G.CurrentCommand == "LoopLine" and target and target.Character do
+                local tR = target.Character:FindFirstChild("HumanoidRootPart")
+                local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if tR and mR then mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero end
+                RunService.Heartbeat:Wait()
+            end
+        end)
+    else
+        local tR = target.Character:FindFirstChild("HumanoidRootPart")
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if tR and mR then mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero end
+    end
+end
+
+for b in pairs(LINE_DIRS) do
+    Commands[b] = function(a, s) DoLine(a, s, false) end
+    Commands["loop" .. b] = function(a, s) DoLine(a, s, true) end
+end
+
+Commands.line = function(args, speaker)
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    local idx, total = SafeIndex(), SafeTotal()
+    local spacing = distIn or 4
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHrp then
+        local offset = (idx - (total + 1) / 2) * spacing
+        myHrp.CFrame = hrp.CFrame * CFrame.new(offset, 0, 0)
+    end
 end
 
 Commands.wall = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "wall"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-    local spacing = 3.5
-
-    task.spawn(function()
-        while _G.CurrentCommand == "wall" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local offset = (myIdx - (total + 1) / 2) * spacing
-                local targetCFrame = hrp.CFrame * CFrame.new(offset, 0, -6)
-                myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
-            end
-            RunService.Heartbeat:Wait()
-        end
-    end)
-end
-
-Commands.orbit = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "orbit"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
-    if not hrp then return end
-    local speed = 2.5
-
-    task.spawn(function()
-        while _G.CurrentCommand == "orbit" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            local radius = math.max(8, total * 0.95)
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local angle = (tick() * speed) + (((myIdx - 1) / total) * (math.pi * 2))
-                local targetPos = hrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-                myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
-            end
-            RunService.Heartbeat:Wait()
-        end
-    end)
+    local idx, total = SafeIndex(), SafeTotal()
+    local spacing = distIn or 3.5
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHrp then
+        local offset = (idx - (total + 1) / 2) * spacing
+        local targetCFrame = hrp.CFrame * CFrame.new(offset, 0, -6)
+        myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
+    end
 end
 
 Commands.box = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "box"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-    local spacing = 4
-
-    task.spawn(function()
-        while _G.CurrentCommand == "box" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            local perSide = math.ceil(total / 4)
-            local side = math.floor((myIdx - 1) / perSide)
-            local posOnSide = (myIdx - 1) % perSide
-            local size = math.max(8, perSide * spacing)
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local offsetOnSide = (posOnSide - (perSide - 1) / 2) * spacing
-                local targetCFrame = CFrame.identity
-                if side == 0 then
-                    targetCFrame = hrp.CFrame * CFrame.new(offsetOnSide, 0, -size / 2)
-                elseif side == 1 then
-                    targetCFrame = hrp.CFrame * CFrame.new(size / 2, 0, offsetOnSide)
-                elseif side == 2 then
-                    targetCFrame = hrp.CFrame * CFrame.new(-offsetOnSide, 0, size / 2)
-                else
-                    targetCFrame = hrp.CFrame * CFrame.new(-size / 2, 0, -offsetOnSide)
-                end
-                myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
-            end
-            RunService.Heartbeat:Wait()
+    local idx, total = SafeIndex(), SafeTotal()
+    local spacing = distIn or 4
+    local perSide = math.ceil(total / 4)
+    local side = math.floor((idx - 1) / perSide)
+    local posOnSide = (idx - 1) % perSide
+    local size = math.max(8, perSide * spacing)
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHrp then
+        local offsetOnSide = (posOnSide - (perSide - 1) / 2) * spacing
+        local targetCFrame = CFrame.identity
+        if side == 0 then
+            targetCFrame = hrp.CFrame * CFrame.new(offsetOnSide, 0, -size / 2)
+        elseif side == 1 then
+            targetCFrame = hrp.CFrame * CFrame.new(size / 2, 0, offsetOnSide)
+        elseif side == 2 then
+            targetCFrame = hrp.CFrame * CFrame.new(-offsetOnSide, 0, size / 2)
+        else
+            targetCFrame = hrp.CFrame * CFrame.new(-size / 2, 0, -offsetOnSide)
         end
-    end)
+        myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
+    end
 end
 
 Commands.triangle = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "triangle"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-
-    task.spawn(function()
-        while _G.CurrentCommand == "triangle" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            local perSide = math.ceil(total / 3)
-            local side = math.floor((myIdx - 1) / perSide)
-            local posOnSide = (myIdx - 1) % perSide
-            local radius = math.max(8, total * 0.9)
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local a1 = (side * (2 * math.pi / 3))
-                local a2 = ((side + 1) * (2 * math.pi / 3))
-                local p1 = Vector3.new(math.cos(a1) * radius, 0, math.sin(a1) * radius)
-                local p2 = Vector3.new(math.cos(a2) * radius, 0, math.sin(a2) * radius)
-                local t = (posOnSide + 0.5) / perSide
-                local interpPos = hrp.Position + p1:Lerp(p2, t)
-                myHrp.CFrame = CFrame.lookAt(interpPos, hrp.Position)
-            end
-            RunService.Heartbeat:Wait()
-        end
-    end)
+    local idx, total = SafeIndex(), SafeTotal()
+    local radius = distIn or math.max(8, total * 0.9)
+    local perSide = math.ceil(total / 3)
+    local side = math.floor((idx - 1) / perSide)
+    local posOnSide = (idx - 1) % perSide
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHrp then
+        local a1 = (side * (2 * math.pi / 3))
+        local a2 = ((side + 1) * (2 * math.pi / 3))
+        local p1 = Vector3.new(math.cos(a1) * radius, 0, math.sin(a1) * radius)
+        local p2 = Vector3.new(math.cos(a2) * radius, 0, math.sin(a2) * radius)
+        local t = (posOnSide + 0.5) / perSide
+        local interpPos = hrp.Position + p1:Lerp(p2, t)
+        myHrp.CFrame = CFrame.lookAt(interpPos, hrp.Position)
+    end
 end
 
 Commands.v = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "v"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-
-    task.spawn(function()
-        while _G.CurrentCommand == "v" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local side = (myIdx % 2 == 1) and 1 or -1
-                local depth = math.ceil(myIdx / 2)
-                local targetCFrame = hrp.CFrame * CFrame.new(side * depth * 3.5, 0, depth * 3.5)
-                myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position + (hrp.CFrame.LookVector * 10))
-            end
-            RunService.Heartbeat:Wait()
-        end
-    end)
+    local idx = SafeIndex()
+    local spacing = distIn or 3.5
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHrp then
+        local side = (idx % 2 == 1) and 1 or -1
+        local depth = math.ceil(idx / 2)
+        local targetCFrame = hrp.CFrame * CFrame.new(side * depth * spacing, 0, depth * spacing)
+        myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position + (hrp.CFrame.LookVector * 10))
+    end
 end
 
 Commands.star = function(args, speaker)
-    StopAll()
-    _G.CurrentCommand = "star"
-    local hrp, target = GetFormationTargetHRP(args, speaker)
+    local distIn, target = ParseSpeedTarget(args, speaker, nil)
+    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-
-    task.spawn(function()
-        while _G.CurrentCommand == "star" and _G.DayBreakActive do
-            local myIdx, total = SafeIndex(), SafeTotal()
-            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local outerR = math.max(12, total * 1.2)
-                local innerR = math.max(6, total * 0.6)
-                local r = (myIdx % 2 == 0) and outerR or innerR
-                local angle = (((myIdx - 1) / total) * (math.pi * 2)) + (tick() * 0.8)
-                local targetPos = hrp.Position + Vector3.new(math.cos(angle) * r, 0, math.sin(angle) * r)
-                myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
-            end
-            RunService.Heartbeat:Wait()
-        end
-    end)
+    local idx, total = SafeIndex(), SafeTotal()
+    local outerR = distIn or math.max(12, total * 1.2)
+    local innerR = outerR * 0.5
+    local r = (idx % 2 == 0) and outerR or innerR
+    local angle = (((idx - 1) / total) * (math.pi * 2))
+    local targetPos = hrp.Position + Vector3.new(math.cos(angle) * r, 0, math.sin(angle) * r)
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHrp then
+        myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
+    end
 end
 
 -- ===================================================================
