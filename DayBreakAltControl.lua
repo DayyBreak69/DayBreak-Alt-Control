@@ -194,6 +194,8 @@ local function IsBotPlayer(plr)
     if name == mainName and mainName ~= "" then return false end
     if name == "daybreak" or name == "dayybreak66" or name == "haylees_ekitty" or name == "xomqhayleealt" then return false end
     if getgenv().CoHosts and getgenv().CoHosts[name] then return false end
+    local pObj = Players:FindFirstChild(plr.Name)
+    if pObj and pObj:GetAttribute("DayBreakHost") then return false end
     
     -- Self is always a bot if running as alt
     if plr == LocalPlayer and isAltAccount then return true end
@@ -201,21 +203,17 @@ local function IsBotPlayer(plr)
     -- 1. Explicitly configured in Settings.altAccounts
     if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
     
-    -- 2. Shared Username Prefix Fleet Isolation (e.g. Gummies1, Gummies2, Gummies3...)
+    -- 2. Registered via Chat announcement/handshake (Any active DayBreak alt bot in server)
+    if _registeredBots[name] then return true end
+    
+    -- 3. Check client attribute (for self or local testing)
+    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
+    
+    -- 4. Shared Username Prefix Auto-Detection (e.g. Gummies1, Gummies2, Gummies3...)
     local myName = LocalPlayer.Name:lower()
     local prefixLen = math.min(4, #myName)
     if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
         return true
-    end
-
-    -- 3. Check client attribute (for self or local testing)
-    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
-    
-    -- 4. Registered via Chat announcement/handshake (only if matching account fleet prefix)
-    if _registeredBots[name] then
-        if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
-            return true
-        end
     end
     
     return false
@@ -1309,13 +1307,15 @@ local function isDancing(character, animIdStr)
 end
 
 -- ===================================================================
---  UGC & CATALOG EMOTE ENGINE (Triple-Fallback Resolver)
+--  UGC & CATALOG EMOTE ENGINE (True Asset-Unpacking Resolver)
 -- ===================================================================
 local _currentTrack = nil
+_G.DayBreakEmoteCache = _G.DayBreakEmoteCache or {}
 
 local function StopCurrentEmoteTrack()
     if _currentTrack then
-        pcall(function() _currentTrack:Stop() end)
+        pcall(function() _currentTrack:Stop(0.1) end)
+        pcall(function() _currentTrack:Destroy() end)
         _currentTrack = nil
     end
 end
@@ -1324,6 +1324,8 @@ local DAYBREAK_EMOTE_CATALOG = {
     { name = "floss", id = 10714340543 },
     { name = "griddy", id = 10714371458 },
     { name = "hype", id = 3695333480 },
+    { name = "justice", id = 3695333480 },
+    { name = "orangejustice", id = 3695333480 },
     { name = "shrug", id = 3576968024 },
     { name = "salute", id = 3360689775 },
     { name = "tilt", id = 3360686498 },
@@ -1333,12 +1335,13 @@ local DAYBREAK_EMOTE_CATALOG = {
     { name = "wave", id = 3576835634 },
     { name = "laugh", id = 3576813728 },
     { name = "dance", id = 10714340543 },
+    { name = "dance1", id = 10714340543 },
     { name = "dance2", id = 10714371458 },
     { name = "dance3", id = 3695333480 },
 }
 
 local function ResolveEmoteAnimation(query)
-    if not query or query == "" then return nil end
+    if not query or query == "" then return 10714340543 end
     local q = query:lower():gsub("%s+", "")
     if q:match("^%d+$") then
         return tonumber(q)
@@ -1348,37 +1351,64 @@ local function ResolveEmoteAnimation(query)
             return item.id
         end
     end
-    return 10714340543 -- Default Floss fallback
+    return tonumber(q) or 10714340543
+end
+
+local function GetActualAnimationId(assetId)
+    local num = tonumber(assetId)
+    if not num then return nil end
+    
+    if _G.DayBreakEmoteCache[num] then
+        return _G.DayBreakEmoteCache[num]
+    end
+
+    -- Extract actual Animation object from Roblox Asset
+    local ok, objects = pcall(function()
+        return game:GetObjects("rbxassetid://" .. num)
+    end)
+
+    if ok and objects and #objects > 0 then
+        for _, obj in ipairs(objects) do
+            if obj:IsA("Animation") and obj.AnimationId and obj.AnimationId ~= "" then
+                _G.DayBreakEmoteCache[num] = obj.AnimationId
+                return obj.AnimationId
+            elseif obj:IsA("Folder") or obj:IsA("Model") or obj:IsA("Configuration") then
+                local animObj = obj:FindFirstChildWhichIsA("Animation", true)
+                if animObj and animObj.AnimationId and animObj.AnimationId ~= "" then
+                    _G.DayBreakEmoteCache[num] = animObj.AnimationId
+                    return animObj.AnimationId
+                end
+            end
+        end
+    end
+
+    local fallbackId = "rbxassetid://" .. num
+    _G.DayBreakEmoteCache[num] = fallbackId
+    return fallbackId
 end
 
 local function PlayDayBreakEmote(emoteAssetId, customName)
     local char = LocalPlayer.Character
     if not char then return false end
     local hum = char:FindFirstChildOfClass("Humanoid")
-    local anim = hum and hum:FindFirstChildOfClass("Animator")
+    local anim = hum and (hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum))
 
     StopCurrentEmoteTrack()
+    if hum and hum.Sit then hum.Sit = false end
 
-    local animAssetId = emoteAssetId and ("rbxassetid://" .. tostring(emoteAssetId)) or nil
+    -- Resolve raw Catalog Asset ID into valid AnimationId string
+    local resolvedAnimId = GetActualAnimationId(emoteAssetId)
+    if not resolvedAnimId then return false end
 
-    -- Method 1: PlayEmoteAsync
-    local m1Ok = pcall(function()
-        if hum and customName and hum:FindFirstChild("HumanoidDescription") then
-            hum:PlayEmote(customName)
-            return true
-        end
-    end)
-    if m1Ok then return true end
-
-    -- Method 2: Load Animation directly on Animator
-    if anim and animAssetId then
+    -- Method 1: Animator:LoadAnimation (Action Priority)
+    if anim then
         local ok, track = pcall(function()
             local a = Instance.new("Animation")
-            a.AnimationId = animAssetId
+            a.AnimationId = resolvedAnimId
             local tr = anim:LoadAnimation(a)
             tr.Priority = Enum.AnimationPriority.Action
             tr.Looped = true
-            tr:Play()
+            tr:Play(0.1)
             return tr
         end)
         if ok and track then
@@ -1387,15 +1417,15 @@ local function PlayDayBreakEmote(emoteAssetId, customName)
         end
     end
 
-    -- Method 3: Fallback Animation on Humanoid
-    if hum and animAssetId then
+    -- Method 2: Humanoid:LoadAnimation fallback
+    if hum then
         local ok, track = pcall(function()
             local a = Instance.new("Animation")
-            a.AnimationId = animAssetId
+            a.AnimationId = resolvedAnimId
             local tr = hum:LoadAnimation(a)
             tr.Priority = Enum.AnimationPriority.Action
             tr.Looped = true
-            tr:Play()
+            tr:Play(0.1)
             return tr
         end)
         if ok and track then
@@ -1404,7 +1434,9 @@ local function PlayDayBreakEmote(emoteAssetId, customName)
         end
     end
 
-    return false
+    -- Method 3: Default Chat Emote Fallback (/e dance)
+    ChatSend("/e dance")
+    return true
 end
 
 Commands.sync = function(args, speaker)
@@ -1420,13 +1452,13 @@ Commands.sync = function(args, speaker)
     local idx = SafeIndex()
 
     task.spawn(function()
-        -- Staggered sync delay
-        task.wait((idx - 1) * 0.08)
+        task.wait((idx - 1) * 0.05)
         PlayDayBreakEmote(animId, query)
     end)
 end
 
 Commands.emote = Commands.sync
+
 Commands.unemote = function(args, speaker)
     local shouldRun, _ = ParseBotTarget(args)
     if not shouldRun then return end
@@ -1435,7 +1467,7 @@ Commands.unemote = function(args, speaker)
         local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         if h then
             for _, t in ipairs(h:GetPlayingAnimationTracks()) do
-                t:Stop()
+                t:Stop(0.1)
             end
         end
     end)
