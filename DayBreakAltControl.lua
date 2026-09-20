@@ -96,12 +96,23 @@ local isAltAccount = false
 if _lpNameLower == _mainAccSetting and _mainAccSetting ~= "" and _mainAccSetting ~= "your_main_account_username" then
     isMainAccount = true
     isAltAccount = false
-elseif (_mainAccSetting == "your_main_account_username" or _mainAccSetting == "") and _isPrimaryCreator then
+elseif _isPrimaryCreator then
+    isMainAccount = true
+    isAltAccount = false
+elseif getgenv().PasscodeMasterKey ~= nil or (_mainAccSetting == "your_main_account_username" or _mainAccSetting == "") then
+    -- If launched on main account or with MasterKey loader, register as host
     isMainAccount = true
     isAltAccount = false
 else
     isMainAccount = false
     isAltAccount = true
+end
+
+if isMainAccount then
+    pcall(function()
+        LocalPlayer:SetAttribute("DayBreakHost", true)
+    end)
+    getgenv().ManualWhitelist[_lpNameLower] = true
 end
 
 -- If running as Alt Bot, broadcast bot attributes immediately
@@ -211,6 +222,8 @@ local function IsWhitelisted(name)
     if getgenv().Settings and getgenv().Settings.mainAccount and nl == getgenv().Settings.mainAccount:lower() then return true end
     if getgenv().ManualWhitelist and getgenv().ManualWhitelist[nl] then return true end
     if getgenv().CoHosts and getgenv().CoHosts[nl] then return true end
+    local pObj = Players:FindFirstChild(name)
+    if pObj and pObj:GetAttribute("DayBreakHost") then return true end
     return false
 end
 
