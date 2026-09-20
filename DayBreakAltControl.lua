@@ -96,11 +96,7 @@ local isAltAccount = false
 if _lpNameLower == _mainAccSetting and _mainAccSetting ~= "" and _mainAccSetting ~= "your_main_account_username" then
     isMainAccount = true
     isAltAccount = false
-elseif _isPrimaryCreator then
-    isMainAccount = true
-    isAltAccount = false
-elseif getgenv().PasscodeMasterKey ~= nil or (_mainAccSetting == "your_main_account_username" or _mainAccSetting == "") then
-    -- If launched on main account or with MasterKey loader, register as host
+elseif _isPrimaryCreator and (_mainAccSetting == "your_main_account_username" or _mainAccSetting == "" or _mainAccSetting == _lpNameLower) then
     isMainAccount = true
     isAltAccount = false
 else
@@ -146,26 +142,22 @@ local function IsBotPlayer(plr)
     if name == "daybreak" or name == "dayybreak66" or name == "haylees_ekitty" or name == "xomqhayleealt" then return false end
     if getgenv().CoHosts and getgenv().CoHosts[name] then return false end
     
+    -- Self is always a bot if running as alt
+    if plr == LocalPlayer and isAltAccount then return true end
+    
     -- 1. Explicitly configured in Settings.altAccounts
     if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
     
-    -- 2. Registered via Chat announcement/handshake
-    if _registeredBots[name] and (tick() - _registeredBots[name]) < 600 then return true end
+    -- 2. Registered via Chat announcement/handshake (Permanent for server session)
+    if _registeredBots[name] then return true end
     
     -- 3. Check client attribute (for self or local testing)
     if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
     
-    -- 4. Auto-discovery fallback: if altAccounts has default placeholders or empty, treat all non-whitelisted/non-main accounts in server as alts
-    local altsTable = getgenv().Settings and getgenv().Settings.altAccounts or {}
-    local hasCustomAlts = false
-    for k, v in pairs(altsTable) do
-        if k:lower() ~= "alt1" and k:lower() ~= "alt2" and v then
-            hasCustomAlts = true; break
-        end
-    end
-    
-    if not hasCustomAlts then
-        -- Auto-detect mode: any player in server that is not Main/Creator/CoHost is treated as an Alt Bot
+    -- 4. Shared Username Prefix Auto-Detection (e.g. Gummies1, Gummies2, Gummies3...)
+    local myName = LocalPlayer.Name:lower()
+    local prefixLen = math.min(4, #myName)
+    if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
         return true
     end
     
@@ -2285,12 +2277,11 @@ Commands.line = function(args, speaker)
     _G.CurrentCommand = "line"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
     local spacing = 4
 
     task.spawn(function()
         while _G.CurrentCommand == "line" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local offset = (myIdx - (total + 1) / 2) * spacing
@@ -2307,12 +2298,11 @@ Commands.circle = function(args, speaker)
     _G.CurrentCommand = "circle"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
-    local radius = math.max(7, total * 0.95)
 
     task.spawn(function()
         while _G.CurrentCommand == "circle" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
+            local radius = math.max(7, total * 0.95)
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local angle = ((myIdx - 1) / total) * (math.pi * 2)
@@ -2330,12 +2320,11 @@ Commands.wall = function(args, speaker)
     _G.CurrentCommand = "wall"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
     local spacing = 3.5
 
     task.spawn(function()
         while _G.CurrentCommand == "wall" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local offset = (myIdx - (total + 1) / 2) * spacing
@@ -2352,13 +2341,12 @@ Commands.orbit = function(args, speaker)
     _G.CurrentCommand = "orbit"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
-    local radius = math.max(8, total * 0.95)
     local speed = 2.5
 
     task.spawn(function()
         while _G.CurrentCommand == "orbit" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
+            local radius = math.max(8, total * 0.95)
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local angle = (tick() * speed) + (((myIdx - 1) / total) * (math.pi * 2))
@@ -2375,16 +2363,15 @@ Commands.box = function(args, speaker)
     _G.CurrentCommand = "box"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
-    local perSide = math.ceil(total / 4)
-    local side = math.floor((myIdx - 1) / perSide)
-    local posOnSide = (myIdx - 1) % perSide
     local spacing = 4
-    local size = math.max(8, perSide * spacing)
 
     task.spawn(function()
         while _G.CurrentCommand == "box" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
+            local perSide = math.ceil(total / 4)
+            local side = math.floor((myIdx - 1) / perSide)
+            local posOnSide = (myIdx - 1) % perSide
+            local size = math.max(8, perSide * spacing)
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local offsetOnSide = (posOnSide - (perSide - 1) / 2) * spacing
@@ -2410,15 +2397,14 @@ Commands.triangle = function(args, speaker)
     _G.CurrentCommand = "triangle"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
-    local perSide = math.ceil(total / 3)
-    local side = math.floor((myIdx - 1) / perSide)
-    local posOnSide = (myIdx - 1) % perSide
-    local radius = math.max(8, total * 0.9)
 
     task.spawn(function()
         while _G.CurrentCommand == "triangle" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
+            local perSide = math.ceil(total / 3)
+            local side = math.floor((myIdx - 1) / perSide)
+            local posOnSide = (myIdx - 1) % perSide
+            local radius = math.max(8, total * 0.9)
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local a1 = (side * (2 * math.pi / 3))
@@ -2439,10 +2425,10 @@ Commands.v = function(args, speaker)
     _G.CurrentCommand = "v"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
 
     task.spawn(function()
         while _G.CurrentCommand == "v" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local side = (myIdx % 2 == 1) and 1 or -1
@@ -2460,11 +2446,10 @@ Commands.star = function(args, speaker)
     _G.CurrentCommand = "star"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myIdx = SafeIndex()
-    local total = math.max(1, _bc.total)
 
     task.spawn(function()
         while _G.CurrentCommand == "star" and _G.DayBreakActive do
+            local myIdx, total = SafeIndex(), SafeTotal()
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
                 local outerR = math.max(12, total * 1.2)
