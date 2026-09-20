@@ -113,17 +113,51 @@ if isAltAccount then
 end
 
 ----------------------------------------------------------------
--- 3. DYNAMIC BOT INDEXING & DETECTION
+-- 3. DYNAMIC BOT INDEXING & AUTOMATIC AUTO-DISCOVERY
 ----------------------------------------------------------------
+local _registeredBots = {}
+
+local function RegisterBot(name)
+    if not name then return end
+    local nl = name:lower()
+    local mainName = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
+    if nl == mainName and mainName ~= "" then return end
+    if nl == "daybreak" or nl == "dayybreak66" or nl == "haylees_ekitty" or nl == "xomqhayleealt" then return end
+    if getgenv().CoHosts and getgenv().CoHosts[nl] then return end
+    _registeredBots[nl] = tick()
+end
+
 local function IsBotPlayer(plr)
-    if not plr or plr == LocalPlayer then return false end
+    if not plr then return false end
     local name = plr.Name:lower()
     local mainName = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
     if name == mainName and mainName ~= "" then return false end
     if name == "daybreak" or name == "dayybreak66" or name == "haylees_ekitty" or name == "xomqhayleealt" then return false end
     if getgenv().CoHosts and getgenv().CoHosts[name] then return false end
-    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
+    
+    -- 1. Explicitly configured in Settings.altAccounts
     if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
+    
+    -- 2. Registered via Chat announcement/handshake
+    if _registeredBots[name] and (tick() - _registeredBots[name]) < 600 then return true end
+    
+    -- 3. Check client attribute (for self or local testing)
+    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
+    
+    -- 4. Auto-discovery fallback: if altAccounts has default placeholders or empty, treat all non-whitelisted/non-main accounts in server as alts
+    local altsTable = getgenv().Settings and getgenv().Settings.altAccounts or {}
+    local hasCustomAlts = false
+    for k, v in pairs(altsTable) do
+        if k:lower() ~= "alt1" and k:lower() ~= "alt2" and v then
+            hasCustomAlts = true; break
+        end
+    end
+    
+    if not hasCustomAlts then
+        -- Auto-detect mode: any player in server that is not Main/Creator/CoHost is treated as an Alt Bot
+        return true
+    end
+    
     return false
 end
 
@@ -131,7 +165,7 @@ local _bc = { list = {}, map = {}, total = 0, lastUpdate = 0 }
 
 local function RefreshBotCache()
     local now = tick()
-    if now - _bc.lastUpdate < 1 then return end
+    if now - _bc.lastUpdate < 0.5 then return end
     _bc.lastUpdate = now
     local online = {}
     for _, p in ipairs(Players:GetPlayers()) do
@@ -154,6 +188,15 @@ end
 local function SafeIndex()
     local idx = MyIndex()
     return (type(idx) == "number" and idx > 0) and idx or 1
+end
+
+local function TotalBots()
+    RefreshBotCache()
+    return math.max(1, _bc.total)
+end
+
+local function SafeTotal()
+    return TotalBots()
 end
 
 local function GetOnlineBotNames()
@@ -2253,13 +2296,13 @@ Commands.circle = function(args, speaker)
     if not hrp then return end
     local myIdx = SafeIndex()
     local total = math.max(1, _bc.total)
-    local radius = 8
+    local radius = math.max(7, total * 0.95)
 
     task.spawn(function()
         while _G.CurrentCommand == "circle" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local angle = (myIdx / total) * (math.pi * 2)
+                local angle = ((myIdx - 1) / total) * (math.pi * 2)
                 local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
                 local targetPos = hrp.Position + offset
                 myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
@@ -2298,14 +2341,14 @@ Commands.orbit = function(args, speaker)
     if not hrp then return end
     local myIdx = SafeIndex()
     local total = math.max(1, _bc.total)
-    local radius = 9
+    local radius = math.max(8, total * 0.95)
     local speed = 2.5
 
     task.spawn(function()
         while _G.CurrentCommand == "orbit" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local angle = (tick() * speed) + ((myIdx / total) * (math.pi * 2))
+                local angle = (tick() * speed) + (((myIdx - 1) / total) * (math.pi * 2))
                 local targetPos = hrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
                 myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
             end
@@ -2320,19 +2363,79 @@ Commands.box = function(args, speaker)
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
     local myIdx = SafeIndex()
-    local dist = 6
+    local total = math.max(1, _bc.total)
+    local perSide = math.ceil(total / 4)
+    local side = math.floor((myIdx - 1) / perSide)
+    local posOnSide = (myIdx - 1) % perSide
+    local spacing = 4
+    local size = math.max(8, perSide * spacing)
 
     task.spawn(function()
         while _G.CurrentCommand == "box" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local side = (myIdx % 4)
-                local offset = Vector3.new(0,0,0)
-                if side == 0 then offset = Vector3.new(dist, 0, 0)
-                elseif side == 1 then offset = Vector3.new(-dist, 0, 0)
-                elseif side == 2 then offset = Vector3.new(0, 0, dist)
-                elseif side == 3 then offset = Vector3.new(0, 0, -dist) end
-                myHrp.CFrame = CFrame.lookAt(hrp.Position + offset, hrp.Position)
+                local offsetOnSide = (posOnSide - (perSide - 1) / 2) * spacing
+                local targetCFrame = CFrame.identity
+                if side == 0 then
+                    targetCFrame = hrp.CFrame * CFrame.new(offsetOnSide, 0, -size / 2)
+                elseif side == 1 then
+                    targetCFrame = hrp.CFrame * CFrame.new(size / 2, 0, offsetOnSide)
+                elseif side == 2 then
+                    targetCFrame = hrp.CFrame * CFrame.new(-offsetOnSide, 0, size / 2)
+                else
+                    targetCFrame = hrp.CFrame * CFrame.new(-size / 2, 0, -offsetOnSide)
+                end
+                myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+Commands.triangle = function(args, speaker)
+    StopAll()
+    _G.CurrentCommand = "triangle"
+    local hrp, target = GetFormationTargetHRP(args, speaker)
+    if not hrp then return end
+    local myIdx = SafeIndex()
+    local total = math.max(1, _bc.total)
+    local perSide = math.ceil(total / 3)
+    local side = math.floor((myIdx - 1) / perSide)
+    local posOnSide = (myIdx - 1) % perSide
+    local radius = math.max(8, total * 0.9)
+
+    task.spawn(function()
+        while _G.CurrentCommand == "triangle" and _G.DayBreakActive do
+            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local myHrp = LocalPlayer.Character.HumanoidRootPart
+                local a1 = (side * (2 * math.pi / 3))
+                local a2 = ((side + 1) * (2 * math.pi / 3))
+                local p1 = Vector3.new(math.cos(a1) * radius, 0, math.sin(a1) * radius)
+                local p2 = Vector3.new(math.cos(a2) * radius, 0, math.sin(a2) * radius)
+                local t = (posOnSide + 0.5) / perSide
+                local interpPos = hrp.Position + p1:Lerp(p2, t)
+                myHrp.CFrame = CFrame.lookAt(interpPos, hrp.Position)
+            end
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+Commands.v = function(args, speaker)
+    StopAll()
+    _G.CurrentCommand = "v"
+    local hrp, target = GetFormationTargetHRP(args, speaker)
+    if not hrp then return end
+    local myIdx = SafeIndex()
+
+    task.spawn(function()
+        while _G.CurrentCommand == "v" and _G.DayBreakActive do
+            if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local myHrp = LocalPlayer.Character.HumanoidRootPart
+                local side = (myIdx % 2 == 1) and 1 or -1
+                local depth = math.ceil(myIdx / 2)
+                local targetCFrame = hrp.CFrame * CFrame.new(side * depth * 3.5, 0, depth * 3.5)
+                myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position + (hrp.CFrame.LookVector * 10))
             end
             RunService.Heartbeat:Wait()
         end
@@ -2351,8 +2454,10 @@ Commands.star = function(args, speaker)
         while _G.CurrentCommand == "star" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local r = (myIdx % 2 == 0) and 12 or 6
-                local angle = ((myIdx / total) * (math.pi * 2)) + (tick() * 0.8)
+                local outerR = math.max(12, total * 1.2)
+                local innerR = math.max(6, total * 0.6)
+                local r = (myIdx % 2 == 0) and outerR or innerR
+                local angle = (((myIdx - 1) / total) * (math.pi * 2)) + (tick() * 0.8)
                 local targetPos = hrp.Position + Vector3.new(math.cos(angle) * r, 0, math.sin(angle) * r)
                 myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
             end
@@ -2360,9 +2465,6 @@ Commands.star = function(args, speaker)
         end
     end)
 end
-
-Commands.triangle = Commands.box
-Commands.v = Commands.box
 
 -- ===================================================================
 --  75+ COMEDY NPC ENGINE (Dynamic Player Seeking & {name} Injection)
@@ -4007,6 +4109,10 @@ local function SetupChatListener(p)
         
         local prefix = getgenv().Settings.prefix
         
+        if msg:find("DayBreak") or msg:sub(1, #prefix) == prefix then
+            RegisterBot(p.Name)
+        end
+        
         if IsWhitelisted(p.Name) then
             if msg:sub(1, #prefix) == prefix then getgenv().Execute(msg, p) end
         end
@@ -5081,9 +5187,11 @@ InitAntiAFK()
 
 if isAltAccount and not isMainAccount then
     task.spawn(function()
+        RegisterBot(LocalPlayer.Name)
+        task.wait(0.5)
         local idx = SafeIndex() or 1
-        local total = math.max(1, _bc.total)
-        task.wait(1.5 + ((idx - 1) * 0.2))
+        local total = SafeTotal()
+        task.wait(1.0 + ((idx - 1) * 0.25))
         ChatSend(string.format("[DayBreak] Bot #%d/%d Online & Ready", idx, total))
     end)
 end
