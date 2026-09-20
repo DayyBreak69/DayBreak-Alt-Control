@@ -134,6 +134,59 @@ local function RegisterBot(name)
     _registeredBots[nl] = tick()
 end
 
+local function ParseBotTarget(args)
+    if not args or not args[2] then return true, args end
+    
+    -- Format A: !cmd bot4
+    local botMatch = args[2]:lower():match("^bot(%d+)$")
+    if botMatch then
+        local targetBotNum = tonumber(botMatch)
+        local myIdx = SafeIndex()
+        local newArgs = { args[1] }
+        for i = 3, #args do
+            table.insert(newArgs, args[i])
+        end
+        if myIdx ~= targetBotNum then
+            return false, newArgs
+        end
+        return true, newArgs
+    end
+
+    -- Format B: !cmd bot 4
+    if args[2]:lower() == "bot" and args[3] and args[3]:match("^%d+$") then
+        local targetBotNum = tonumber(args[3])
+        local myIdx = SafeIndex()
+        local newArgs = { args[1] }
+        for i = 4, #args do
+            table.insert(newArgs, args[i])
+        end
+        if myIdx ~= targetBotNum then
+            return false, newArgs
+        end
+        return true, newArgs
+    end
+
+    -- Format C: !cmd target bot4 (e.g. !bring Me bot4)
+    local lastArg = args[#args] and args[#args]:lower()
+    if lastArg and #args > 2 then
+        local endBotMatch = lastArg:match("^bot(%d+)$")
+        if endBotMatch then
+            local targetBotNum = tonumber(endBotMatch)
+            local myIdx = SafeIndex()
+            local newArgs = {}
+            for i = 1, #args - 1 do
+                table.insert(newArgs, args[i])
+            end
+            if myIdx ~= targetBotNum then
+                return false, newArgs
+            end
+            return true, newArgs
+        end
+    end
+
+    return true, args
+end
+
 local function IsBotPlayer(plr)
     if not plr then return false end
     local name = plr.Name:lower()
@@ -148,17 +201,21 @@ local function IsBotPlayer(plr)
     -- 1. Explicitly configured in Settings.altAccounts
     if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
     
-    -- 2. Registered via Chat announcement/handshake (Permanent for server session)
-    if _registeredBots[name] then return true end
-    
-    -- 3. Check client attribute (for self or local testing)
-    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
-    
-    -- 4. Shared Username Prefix Auto-Detection (e.g. Gummies1, Gummies2, Gummies3...)
+    -- 2. Shared Username Prefix Fleet Isolation (e.g. Gummies1, Gummies2, Gummies3...)
     local myName = LocalPlayer.Name:lower()
     local prefixLen = math.min(4, #myName)
     if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
         return true
+    end
+
+    -- 3. Check client attribute (for self or local testing)
+    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
+    
+    -- 4. Registered via Chat announcement/handshake (only if matching account fleet prefix)
+    if _registeredBots[name] then
+        if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
+            return true
+        end
     end
     
     return false
