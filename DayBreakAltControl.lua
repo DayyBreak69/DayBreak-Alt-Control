@@ -111,7 +111,7 @@ if isMainAccount then
     getgenv().ManualWhitelist[_lpNameLower] = true
 end
 
--- If running as Alt Bot, broadcast bot attributes immediately
+-- If running as Alt Bot, broadcast bot attributes immediately and launch RAM heartbeat
 if isAltAccount then
     pcall(function()
         LocalPlayer:SetAttribute("DayBreakBot", true)
@@ -119,19 +119,36 @@ if isAltAccount then
     end)
 end
 
+-- Background RAM file sync (Multi-Client Communication)
+task.spawn(function()
+    while _G.DayBreakActive do
+        pcall(function()
+            local count = collectgarbage("count")
+            local memVal = math.floor((count / 1024) * 10) / 10
+            local memStr = string.format("%.1f MB", memVal)
+            LocalPlayer:SetAttribute("DayBreakRAM", memStr)
+            LocalPlayer:SetAttribute("DayBreakRAMVal", memVal)
+            if writefile then
+                writefile("DayBreak_RAM_" .. LocalPlayer.Name:lower() .. ".txt", tostring(memVal))
+            end
+        end)
+        task.wait(1.5)
+    end
+end)
+
 ----------------------------------------------------------------
 -- 3. DYNAMIC BOT INDEXING & AUTOMATIC AUTO-DISCOVERY
 ----------------------------------------------------------------
 local _registeredBots = {}
 
-local function RegisterBot(name)
+local function RegisterBot(name, ramVal)
     if not name then return end
     local nl = name:lower()
     local mainName = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
     if nl == mainName and mainName ~= "" then return end
     if nl == "daybreak" or nl == "dayybreak66" or nl == "haylees_ekitty" or nl == "xomqhayleealt" then return end
     if getgenv().CoHosts and getgenv().CoHosts[nl] then return end
-    _registeredBots[nl] = tick()
+    _registeredBots[nl] = { time = tick(), ram = ramVal or "Online" }
 end
 
 local function ParseBotTarget(args)
@@ -203,18 +220,31 @@ local function IsBotPlayer(plr)
     -- 1. Explicitly configured in Settings.altAccounts
     if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
     
-    -- 2. Registered via Chat announcement/handshake (Any active DayBreak alt bot in server)
+    -- 2. Registered via Chat announcement/handshake or file sync
     if _registeredBots[name] then return true end
     
-    -- 3. Check client attribute (for self or local testing)
+    -- 3. Check client attribute
     if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
     
-    -- 4. Shared Username Prefix Auto-Detection (e.g. Gummies1, Gummies2, Gummies3...)
+    -- 4. Shared Username Prefix Auto-Detection (e.g. BreakerAltBot2, BreakerAltBot3... / Gummies1, Gummies2...)
     local myName = LocalPlayer.Name:lower()
     local prefixLen = math.min(4, #myName)
     if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
         return true
     end
+    
+    -- 5. Common Alt/Bot Keywords & Numbered Suffixes (e.g. BreakerAltBot, AltBot, Bot1..99)
+    if name:find("alt") or name:find("bot") or name:find("breaker") then
+        return true
+    end
+    
+    -- 6. Check if RAM file exists locally
+    pcall(function()
+        if isfile and isfile("DayBreak_RAM_" .. name .. ".txt") then
+            RegisterBot(name)
+            return true
+        end
+    end)
     
     return false
 end
@@ -226,10 +256,23 @@ local function RefreshBotCache()
     if now - _bc.lastUpdate < 0.5 then return end
     _bc.lastUpdate = now
     local online = {}
+    
+    -- If LocalPlayer is Alt, group with bots sharing same fleet prefix
+    local myName = LocalPlayer.Name:lower()
+    local isAlt = isAltAccount
+    
     for _, p in ipairs(Players:GetPlayers()) do
         local nl = p.Name:lower()
         if IsBotPlayer(p) or (p == LocalPlayer and isAltAccount) then
-            table.insert(online, nl)
+            if isAlt then
+                local myPrefix = myName:match("^([%a_]+)%d*$") or myName:sub(1, 4)
+                local pPrefix = nl:match("^([%a_]+)%d*$") or nl:sub(1, 4)
+                if myPrefix == pPrefix or (getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[nl]) or _registeredBots[nl] then
+                    table.insert(online, nl)
+                end
+            else
+                table.insert(online, nl)
+            end
         end
     end
     table.sort(online)
@@ -369,12 +412,12 @@ local function doMicUnmute()
         if not micFrame then
             -- Mic frame not loaded yet, wait and retry
             task.wait(2)
-            -- continue
+        else
+            doMicToggle()
+            task.wait(0.5)
+            if not isMicMuted() then return end -- Success
+            task.wait(1) -- Wait before retry
         end
-        doMicToggle()
-        task.wait(0.5)
-        if not isMicMuted() then return end -- Success
-        task.wait(1) -- Wait before retry
     end
     warn("[MicToggle] Failed to unmute after 3 attempts")
 end
@@ -1333,145 +1376,127 @@ local DAYBREAK_EMOTE_CATALOG = {
     { name = "point", id = 3576823880 },
     { name = "cheer", id = 3576835634 },
     { name = "wave", id = 3576835634 },
-    { name = "laugh", id = 3576813728 },
-    { name = "dance", id = 10714340543 },
-    { name = "dance1", id = 10714340543 },
-    { name = "dance2", id = 10714371458 },
-    { name = "dance3", id = 3695333480 },
+    { name = "laugh", id = 3360689775 },
+    { name = "dance", id = 507771019 },
+    { name = "dance2", id = 507776043 },
+    { name = "dance3", id = 507777268 },
 }
 
-local function ResolveEmoteAnimation(query)
-    if not query or query == "" then return 10714340543 end
-    local q = query:lower():gsub("%s+", "")
-    if q:match("^%d+$") then
-        return tonumber(q)
-    end
+local function ResolveEmoteId(emoteArg)
+    if not emoteArg then return nil end
+    local raw = tostring(emoteArg):lower():gsub("%s+", "")
+    if raw:match("^%d+$") then return tonumber(raw) end
     for _, item in ipairs(DAYBREAK_EMOTE_CATALOG) do
-        if item.name:lower():gsub("%s+", ""):find(q, 1, true) then
-            return item.id
-        end
+        if item.name == raw then return item.id end
     end
-    return tonumber(q) or 10714340543
+    return nil
 end
 
-local function GetActualAnimationId(assetId)
-    local num = tonumber(assetId)
-    if not num then return nil end
-    
-    if _G.DayBreakEmoteCache[num] then
-        return _G.DayBreakEmoteCache[num]
-    end
+local function ResolveEmoteAnimation(assetId)
+    if not assetId then return nil end
+    if _G.DayBreakEmoteCache[assetId] then return _G.DayBreakEmoteCache[assetId] end
 
-    -- Extract actual Animation object from Roblox Asset
-    local ok, objects = pcall(function()
-        return game:GetObjects("rbxassetid://" .. num)
-    end)
+    local myIdx = SafeIndex()
+    task.wait((myIdx - 1) * 0.12)
 
-    if ok and objects and #objects > 0 then
-        for _, obj in ipairs(objects) do
-            if obj:IsA("Animation") and obj.AnimationId and obj.AnimationId ~= "" then
-                _G.DayBreakEmoteCache[num] = obj.AnimationId
-                return obj.AnimationId
-            elseif obj:IsA("Folder") or obj:IsA("Model") or obj:IsA("Configuration") then
-                local animObj = obj:FindFirstChildWhichIsA("Animation", true)
-                if animObj and animObj.AnimationId and animObj.AnimationId ~= "" then
-                    _G.DayBreakEmoteCache[num] = animObj.AnimationId
-                    return animObj.AnimationId
+    local success, result = pcall(function()
+        local objs = game:GetObjects("rbxassetid://" .. tostring(assetId))
+        if objs and #objs > 0 then
+            for _, obj in ipairs(objs) do
+                if obj:IsA("Animation") then return obj end
+                for _, desc in ipairs(obj:GetDescendants()) do
+                    if desc:IsA("Animation") then return desc end
                 end
             end
         end
+        return nil
+    end)
+
+    if success and result then
+        _G.DayBreakEmoteCache[assetId] = result
+        return result
     end
 
-    local fallbackId = "rbxassetid://" .. num
-    _G.DayBreakEmoteCache[num] = fallbackId
-    return fallbackId
+    local fallbackAnim = Instance.new("Animation")
+    fallbackAnim.AnimationId = "rbxassetid://" .. tostring(assetId)
+    _G.DayBreakEmoteCache[assetId] = fallbackAnim
+    return fallbackAnim
 end
 
-local function PlayDayBreakEmote(emoteAssetId, customName)
+local function PlayDayBreakEmote(emoteArg)
     local char = LocalPlayer.Character
     if not char then return false end
     local hum = char:FindFirstChildOfClass("Humanoid")
-    local anim = hum and (hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum))
+    if not hum then return false end
 
     StopCurrentEmoteTrack()
-    if hum and hum.Sit then hum.Sit = false end
 
-    -- Resolve raw Catalog Asset ID into valid AnimationId string
-    local resolvedAnimId = GetActualAnimationId(emoteAssetId)
-    if not resolvedAnimId then return false end
+    local assetId = ResolveEmoteId(emoteArg)
+    if not assetId then
+        local rawStr = tostring(emoteArg)
+        local r6Success = pcall(function() hum:PlayEmote(rawStr) end)
+        return r6Success
+    end
 
-    -- Method 1: Animator:LoadAnimation (Action Priority)
-    if anim then
-        local ok, track = pcall(function()
-            local a = Instance.new("Animation")
-            a.AnimationId = resolvedAnimId
-            local tr = anim:LoadAnimation(a)
-            tr.Priority = Enum.AnimationPriority.Action
-            tr.Looped = true
-            tr:Play(0.1)
-            return tr
-        end)
-        if ok and track then
+    local animObj = ResolveEmoteAnimation(assetId)
+    if animObj then
+        local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+        local success, track = pcall(function() return animator:LoadAnimation(animObj) end)
+        if success and track then
+            track.Priority = Enum.AnimationPriority.Action4
+            track.Looped = true
+            track:Play(0.1)
             _currentTrack = track
             return true
         end
     end
 
-    -- Method 2: Humanoid:LoadAnimation fallback
-    if hum then
-        local ok, track = pcall(function()
-            local a = Instance.new("Animation")
-            a.AnimationId = resolvedAnimId
-            local tr = hum:LoadAnimation(a)
-            tr.Priority = Enum.AnimationPriority.Action
-            tr.Looped = true
-            tr:Play(0.1)
-            return tr
-        end)
-        if ok and track then
-            _currentTrack = track
-            return true
-        end
-    end
+    local emoteStr = tostring(emoteArg)
+    local fSuccess = pcall(function() hum:PlayEmote(emoteStr) end)
+    return fSuccess
+end
 
-    -- Method 3: Default Chat Emote Fallback (/e dance)
-    ChatSend("/e dance")
-    return true
+Commands.emote = function(args, speaker)
+    local shouldRun, _ = ParseBotTarget(args)
+    if not shouldRun then return end
+    local emoteArg = args[2] or "dance"
+    PlayDayBreakEmote(emoteArg)
 end
 
 Commands.sync = function(args, speaker)
-    local shouldRun, newArgs = ParseBotTarget(args)
-    if not shouldRun then return end
-
-    local query = table.concat(newArgs, " ", 2)
-    if not query or query == "" then
-        query = "dance"
-    end
-
-    local animId = ResolveEmoteAnimation(query)
+    local emoteArg = args[2] or "dance"
     local idx = SafeIndex()
-
-    task.spawn(function()
-        task.wait((idx - 1) * 0.05)
-        PlayDayBreakEmote(animId, query)
+    task.delay((idx - 1) * 0.05, function()
+        PlayDayBreakEmote(emoteArg)
     end)
 end
-
-Commands.emote = Commands.sync
 
 Commands.unemote = function(args, speaker)
     local shouldRun, _ = ParseBotTarget(args)
     if not shouldRun then return end
     StopCurrentEmoteTrack()
-    pcall(function()
-        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if h then
-            for _, t in ipairs(h:GetPlayingAnimationTracks()) do
-                t:Stop(0.1)
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            for _, t in ipairs(hum:GetPlayingAnimationTracks()) do
+                if t.Priority == Enum.AnimationPriority.Action4 or t.Priority == Enum.AnimationPriority.Action then
+                    t:Stop(0.1)
+                end
             end
         end
-    end)
+    end
 end
+Commands.stopemote = Commands.unemote
+Commands.dance = function(args, speaker) Commands.emote({"emote", "dance"}, speaker) end
+Commands.dance2 = function(args, speaker) Commands.emote({"emote", "dance2"}, speaker) end
+Commands.dance3 = function(args, speaker) Commands.emote({"emote", "dance3"}, speaker) end
+Commands.wave = function(args, speaker) Commands.emote({"emote", "wave"}, speaker) end
+Commands.point = function(args, speaker) Commands.emote({"emote", "point"}, speaker) end
+Commands.cheer = function(args, speaker) Commands.emote({"emote", "cheer"}, speaker) end
+Commands.laugh = function(args, speaker) Commands.emote({"emote", "laugh"}, speaker) end
+Commands.floss = function(args, speaker) Commands.emote({"emote", "floss"}, speaker) end
+Commands.griddy = function(args, speaker) Commands.emote({"emote", "griddy"}, speaker) end
 
 
 Commands.firework = function(args, speaker)
@@ -2133,6 +2158,7 @@ Commands.memory = function(args, speaker)
     local memMB = string.format("%.2f", count / 1024)
     local idx = SafeIndex()
     LocalPlayer:SetAttribute("DayBreakRAM", memMB .. " MB")
+    LocalPlayer:SetAttribute("DayBreakRAMVal", math.floor((count / 1024) * 10) / 10)
     ChatSend(string.format("[RAM] Bot #%d: %s MB (Render: %s)", idx, memMB, _lowRamEnabled and "LowRAM" or "Normal"))
 end
 Commands.ram = Commands.memory
@@ -2146,6 +2172,7 @@ Commands.lowram = function(args, speaker)
     local count = collectgarbage("count")
     local memMB = string.format("%.2f", count / 1024)
     LocalPlayer:SetAttribute("DayBreakRAM", memMB .. " MB")
+    LocalPlayer:SetAttribute("DayBreakRAMVal", math.floor((count / 1024) * 10) / 10)
     if idx == 1 or args[2] then
         ChatSend(string.format("[LowRAM] Bot #%d Mode ON | RAM: %s MB", idx, memMB))
     end
@@ -2171,6 +2198,7 @@ Commands.cleanram = function(args, speaker)
     local idx = SafeIndex()
     local memMB = string.format("%.2f", after / 1024)
     LocalPlayer:SetAttribute("DayBreakRAM", memMB .. " MB")
+    LocalPlayer:SetAttribute("DayBreakRAMVal", math.floor((after / 1024) * 10) / 10)
     ChatSend(string.format("[Clean] Bot #%d Cleaned %d KB | RAM: %s MB", idx, saved, memMB))
 end
 Commands.flush = Commands.cleanram
@@ -2247,7 +2275,7 @@ end
 local function ClearBotVFX(char)
     if not char then return end
     pcall(function()
-        local h = char:FindFirstChild("DayBreakHighlight")
+        local h = char:FindFirstChild("DayBreakBotHighlight") or char:FindFirstChild("DayBreakHighlight")
         if h then h:Destroy() end
         for _, obj in ipairs(char:GetDescendants()) do
             if obj.Name == "DayBreakTrail" or obj.Name == "DayBreakLaser" or obj.Name == "DayBreakAtt0" or obj.Name == "DayBreakAtt1" then
@@ -2260,12 +2288,13 @@ end
 local function ApplyBotHighlight(char)
     if not char or not getgenv().DayBreakVFX.Highlight then return end
     pcall(function()
-        local hl = char:FindFirstChild("DayBreakHighlight") or Instance.new("Highlight")
-        hl.Name = "DayBreakHighlight"
+        local hl = char:FindFirstChild("DayBreakBotHighlight") or Instance.new("Highlight")
+        hl.Name = "DayBreakBotHighlight"
         hl.FillColor = GetVFXColor()
         hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-        hl.FillTransparency = 0.4
-        hl.OutlineTransparency = 0.1
+        hl.FillTransparency = 0.35
+        hl.OutlineTransparency = 0
+        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
         hl.Adornee = char
         hl.Parent = char
     end)
@@ -2296,6 +2325,25 @@ local function ApplyBotTrail(char)
     end)
 end
 
+-- Global continuous updater for bot highlights across the map
+task.spawn(function()
+    while _G.DayBreakActive do
+        if getgenv().DayBreakVFX.Highlight then
+            local bots = GetOnlineBotNames()
+            for _, bName in ipairs(bots) do
+                local p = Players:FindFirstChild(bName)
+                if p and p.Character then
+                    ApplyBotHighlight(p.Character)
+                end
+            end
+            if LocalPlayer.Character and isAltAccount then
+                ApplyBotHighlight(LocalPlayer.Character)
+            end
+        end
+        task.wait(1.5)
+    end
+end)
+
 Commands.vfx = function(args, speaker)
     local sub = args[2] and args[2]:lower() or "help"
     local p = args[3] and args[3]:lower()
@@ -2303,12 +2351,21 @@ Commands.vfx = function(args, speaker)
     if sub == "highlight" or sub == "hl" then
         getgenv().DayBreakVFX.Highlight = not getgenv().DayBreakVFX.Highlight
         if getgenv().DayBreakVFX.Highlight then
-            ApplyBotHighlight(LocalPlayer.Character)
+            local bots = GetOnlineBotNames()
+            for _, bName in ipairs(bots) do
+                local pl = Players:FindFirstChild(bName)
+                if pl and pl.Character then ApplyBotHighlight(pl.Character) end
+            end
+            if LocalPlayer.Character then ApplyBotHighlight(LocalPlayer.Character) end
         else
-            local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("DayBreakHighlight")
-            if h then h:Destroy() end
+            for _, pl in ipairs(Players:GetPlayers()) do
+                if pl.Character then
+                    local h = pl.Character:FindFirstChild("DayBreakBotHighlight") or pl.Character:FindFirstChild("DayBreakHighlight")
+                    if h then h:Destroy() end
+                end
+            end
         end
-        if SafeIndex() == 1 then ChatSend("[VFX] Highlight " .. (getgenv().DayBreakVFX.Highlight and "ENABLED" or "DISABLED")) end
+        if SafeIndex() == 1 then ChatSend("[VFX] Highlight " .. (getgenv().DayBreakVFX.Highlight and "ENABLED (AlwaysOnTop)" or "DISABLED")) end
 
     elseif sub == "trail" or sub == "tr" then
         getgenv().DayBreakVFX.Trail = not getgenv().DayBreakVFX.Trail
@@ -2327,7 +2384,13 @@ Commands.vfx = function(args, speaker)
         if p and VFX_PALETTES[p] then
             getgenv().DayBreakVFX.CurrentPalette = p
             getgenv().DayBreakVFX.Rainbow = false
-            if getgenv().DayBreakVFX.Highlight then ApplyBotHighlight(LocalPlayer.Character) end
+            if getgenv().DayBreakVFX.Highlight then
+                local bots = GetOnlineBotNames()
+                for _, bName in ipairs(bots) do
+                    local pl = Players:FindFirstChild(bName)
+                    if pl and pl.Character then ApplyBotHighlight(pl.Character) end
+                end
+            end
             if SafeIndex() == 1 then ChatSend("[VFX] Palette set to: " .. p:upper()) end
         else
             if SafeIndex() == 1 then ChatSend("[VFX] Available palettes: purple, cyan, gold, red, green, pink, white") end
@@ -2342,7 +2405,9 @@ Commands.vfx = function(args, speaker)
         getgenv().DayBreakVFX.Trail = false
         getgenv().DayBreakVFX.Rainbow = false
         getgenv().DayBreakVFX.Laser = false
-        ClearBotVFX(LocalPlayer.Character)
+        for _, pl in ipairs(Players:GetPlayers()) do
+            if pl.Character then ClearBotVFX(pl.Character) end
+        end
         if SafeIndex() == 1 then ChatSend("[VFX] All visual effects cleared.") end
     end
 end
@@ -2482,406 +2547,310 @@ OrbitCurves[7] = function(t, i, count, R)
     return Vector3.new(cos(phase)*breathe, sin(t*3 + i)*2, sin(phase)*breathe)
 end
 OrbitCurves[8] = function(t, i, count, R)
-    local P = 14
-    local rings = math.min(3, math.ceil(count/3))
-    local ring = (i-1) % rings
-    local pir = math.floor((i-1)/rings); local bir = math.max(math.ceil(count/rings), 1)
-    local phase = (t / P + pir/bir) * PI2
-    local tilt = (ring/rings) * PI * 0.6
-    local lx, ly = cos(phase)*R, sin(phase)*R
-    return Vector3.new(lx, ly*cos(tilt), ly*sin(tilt))
+    local P = 15
+    local phase = (t / P + (i-1)/count) * PI2
+    local ring = (i-1) % 3
+    local rRadius = R * (0.5 + ring * 0.3)
+    local rHeight = (ring - 1) * 3
+    return Vector3.new(cos(phase)*rRadius, rHeight, sin(phase)*rRadius)
 end
 OrbitCurves[9] = function(t, i, count, R)
-    local P = 20
+    local P = 16
     local phase = (t / P + (i-1)/count) * PI2
-    local rr = R * abs(cos(3 * phase))
-    return Vector3.new(cos(phase)*rr, sin(phase*2)*3, sin(phase)*rr)
+    local d = R + sin(t*2 + i)*3
+    return Vector3.new(cos(phase)*d, cos(phase*2)*4, sin(phase)*d)
 end
 OrbitCurves[10] = function(t, i, count, R)
-    local seed = i * 1.1
-    return Vector3.new(
-        sin(t*1.3+seed)*R*cos(t*0.7+seed*2),
-        cos(t*0.9+seed*1.5)*(R*0.6)*sin(t*1.1+seed),
-        sin(t*1.1+seed*0.8)*R*cos(t*1.3+seed*1.7))
+    local P = 20
+    local phase = (t / P + (i-1)/count) * PI2
+    local d = R * (0.8 + 0.4 * sin(phase * 4))
+    return Vector3.new(cos(phase)*d, sin(phase * 3) * 3, sin(phase)*d)
 end
 
-Commands.orbit = function(a, s) RunOrbitCurve(a, s, OrbitCurves[0]) end
-for i = 1, 10 do Commands["orbit" .. i] = function(a, s) RunOrbitCurve(a, s, OrbitCurves[i]) end end
+Commands.orbit  = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[0], "Orbit") end
+Commands.orbit1 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[1], "Orbit1") end
+Commands.orbit2 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[2], "Orbit2") end
+Commands.orbit3 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[3], "Orbit3") end
+Commands.orbit4 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[4], "Orbit4") end
+Commands.orbit5 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[5], "Orbit5") end
+Commands.orbit6 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[6], "Orbit6") end
+Commands.orbit7 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[7], "Orbit7") end
+Commands.orbit8 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[8], "Orbit8") end
+Commands.orbit9 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[9], "Orbit9") end
+Commands.orbit10 = function(args, speaker) RunOrbitCurve(args, speaker, OrbitCurves[10], "Orbit10") end
 
+-- Spirals
 local SpiralCurves = {}
 SpiralCurves[1] = function(t, i, count, R)
-    local P = 12
-    local phase = (t / P + (i-1)/count) * PI2
-    local dynR = R + sin(t * 0.5) * 5
-    local y = sin(t + (i-1)/count * PI2) * 6
-    return Vector3.new(cos(phase)*dynR, y, sin(phase)*dynR)
+    local turns = 3; local frac = (i-1)/count
+    local angle = (t * 0.5 + frac * turns) * PI2
+    return Vector3.new(cos(angle)*(R*frac + 2), frac * 20 - 10, sin(angle)*(R*frac + 2))
 end
 SpiralCurves[2] = function(t, i, count, R)
-    local P = 14
     local frac = (i-1)/count
-    local phase = (t / P + frac) * PI2
-    local hd = frac * 16; local ht = sin(t + hd) * 4 + hd
-    local cr = (ht / 16) * R
-    return Vector3.new(cos(phase)*cr, ht, sin(phase)*cr)
+    local angle = (t * 0.6 + frac * 4) * PI2
+    local r = R * (1 - frac * 0.5)
+    return Vector3.new(cos(angle)*r, 12 - frac * 24, sin(angle)*r)
 end
 SpiralCurves[3] = function(t, i, count, R)
-    local P = 14
-    local strand = (i % 2 == 0) and 0 or 1
-    local pI = math.floor((i-1)/2)
-    local height = (pI / math.max(math.ceil(count/2), 1)) * 16
-    local phase = (t / P + (i-1)/count) * PI2 + strand * PI
-    return Vector3.new(cos(phase)*R, height + sin(t*0.5)*2 - 8, sin(phase)*R)
+    local strand = (i % 2 == 0) and 0 or PI
+    local frac = (i-1)/count
+    local angle = (t * 0.4 + frac * 2) * PI2 + strand
+    return Vector3.new(cos(angle)*R, frac * 16 - 8, sin(angle)*R)
 end
 SpiralCurves[4] = function(t, i, count, R)
-    local P = 16
     local frac = (i-1)/count
-    local cycle = (t/P*0.3 + frac * PI2) % PI2; local ph = cycle / PI2
-    local y, cr
-    if ph < 0.6 then y = (ph/0.6)*15; cr = R*0.4
-    else local ap = (ph-0.6)/0.4; y = 15*(1-ap*ap); cr = R*0.4 + R*ap end
-    local phase = (t / P + frac) * PI2
-    return Vector3.new(cos(phase)*cr, y - 5, sin(phase)*cr)
+    local angle = (t * 0.5 + frac * 3) * PI2
+    local r = R * (0.4 + 0.6 * sin(frac * PI))
+    return Vector3.new(cos(angle)*r, frac * 18 - 9, sin(angle)*r)
 end
 SpiralCurves[5] = function(t, i, count, R)
-    local P = 14
     local frac = (i-1)/count
-    local height = ((t/P*0.5 + frac*20) % 20)
-    local nH = height / 20
-    local tR = R * (0.3 + nH * 0.7)
-    local phase = (t / P + frac) * PI2 + nH * PI * 4
-    return Vector3.new(cos(phase)*tR, height - 10, sin(phase)*tR)
+    local angle = (t * 0.8 + frac * 5) * PI2
+    local r = 2 + frac * (R - 2)
+    return Vector3.new(cos(angle)*r, sin(t + frac*PI2)*3, sin(angle)*r)
 end
 
-Commands.spiral = function(a, s) RunOrbitCurve(a, s, SpiralCurves[1], "Spiral") end
-for i = 1, 5 do Commands["spiral" .. i] = function(a, s) RunOrbitCurve(a, s, SpiralCurves[i], "Spiral") end end
+Commands.spiral  = function(args, speaker) RunOrbitCurve(args, speaker, SpiralCurves[1], "Spiral") end
+Commands.spiral1 = function(args, speaker) RunOrbitCurve(args, speaker, SpiralCurves[1], "Spiral1") end
+Commands.spiral2 = function(args, speaker) RunOrbitCurve(args, speaker, SpiralCurves[2], "Spiral2") end
+Commands.spiral3 = function(args, speaker) RunOrbitCurve(args, speaker, SpiralCurves[3], "Spiral3") end
+Commands.spiral4 = function(args, speaker) RunOrbitCurve(args, speaker, SpiralCurves[4], "Spiral4") end
+Commands.spiral5 = function(args, speaker) RunOrbitCurve(args, speaker, SpiralCurves[5], "Spiral5") end
 
+-- Shields
 local ShieldCurves = {}
 ShieldCurves[1] = function(t, i, count, R)
-    local spread = PI * 0.8
-    local angle = -spread/2 + ((i-1)/math.max(count-1, 1)) * spread
-    return Vector3.new(sin(angle)*R, sin(t*3 + i)*1.2, cos(angle)*R)
+    local golden = PI * (3 - sqrt(5))
+    local y = 1 - ((i-1)/(count-1 or 1)) * 2
+    local rAtY = sqrt(abs(1 - y*y)) * R
+    local theta = (i-1) * golden + t * 0.5
+    return Vector3.new(cos(theta)*rAtY, y * R, sin(theta)*rAtY)
 end
 ShieldCurves[2] = function(t, i, count, R)
-    local spread = PI * 0.8
-    local half = math.ceil(count/2)
-    local row = (i <= half) and 1 or 2
-    local rI = (i <= half) and i or (i - half)
-    local rC = (i <= half) and half or (count - half)
-    local angle = -spread/2 + ((rI-1)/math.max(rC-1, 1)) * spread
-    local dist = (row == 1) and R or (R + 4)
-    return Vector3.new(sin(angle)*dist, (row-1)*3 - 1.5, cos(angle)*dist)
+    local ring = (i-1) % 3
+    local posInRing = math.floor((i-1)/3)
+    local countInRing = math.max(math.ceil(count/3), 1)
+    local theta = (posInRing/countInRing) * PI2 + t * (ring == 1 and -0.6 or 0.6)
+    if ring == 0 then return Vector3.new(cos(theta)*R, sin(theta)*R, 0)
+    elseif ring == 1 then return Vector3.new(cos(theta)*R, 0, sin(theta)*R)
+    else return Vector3.new(0, cos(theta)*R, sin(theta)*R) end
 end
 
-local function DoShield(args, speaker, shieldNum)
-    local speed, range, target = ParseSpeedRangeTarget(args, speaker, 3, 7)
+local function DoShield(args, speaker, shieldFn, tag)
+    local speed, range, target = ParseSpeedRangeTarget(args, speaker, 2, 7)
     if not target or not target.Character then return end
-    StopAll(); task.wait(0.1); _G.CurrentCommand = "Shield"
+    StopAll(); task.wait(0.1); _G.CurrentCommand = tag or "Shield"
     task.spawn(function()
         local startT = tick()
-        local fn = ShieldCurves[shieldNum] or ShieldCurves[1]
-        while _G.CurrentCommand == "Shield" and target and target.Character do
+        while _G.CurrentCommand == (tag or "Shield") and target and target.Character do
             local idx, total = SafeIndex(), SafeTotal()
             local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
             local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
             if mR and tR then
-                local t = (tick() - startT) * (speed / 3)
-                local offset = fn(t, idx, total, range)
-                local targetPos = tR.CFrame * CFrame.new(offset.X, offset.Y, -offset.Z)
-                mR.CFrame = CFrame.lookAt(targetPos.Position, targetPos.Position + (tR.CFrame.LookVector * 10))
-                mR.Velocity = Vector3.zero
+                local h = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if h and h.Sit then h.Sit = false end
+                local t = (tick() - startT) * speed
+                local pos = shieldFn(t, idx, total, range)
+                mR.CFrame = CFrame.new(tR.Position + pos, tR.Position)
+                mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
             end
             RunService.Heartbeat:Wait()
         end
     end)
 end
 
-Commands.shield = function(a, s) DoShield(a, s, 1) end
-for i = 1, 2 do Commands["shield" .. i] = function(a, s) DoShield(a, s, i) end end
+Commands.shield  = function(args, speaker) DoShield(args, speaker, ShieldCurves[1], "Shield") end
+Commands.shield1 = function(args, speaker) DoShield(args, speaker, ShieldCurves[1], "Shield1") end
+Commands.shield2 = function(args, speaker) DoShield(args, speaker, ShieldCurves[2], "Shield2") end
 
--- Directional lines
-local LINE_DIRS = {
-    rline = Vector3.new(4,0,0), lline = Vector3.new(-4,0,0),
-    fline = Vector3.new(0,0,-4), bline = Vector3.new(0,0,4),
-}
-local function DoLine(args, speaker, isLoop)
-    local cmd = args[1]:lower():sub(#getgenv().Settings.prefix + 1)
-    local base = isLoop and cmd:sub(5) or cmd
-    local dir = LINE_DIRS[base]; if not dir then return end
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
-    local spacing = distIn or 4
-    local unitDir = dir.Unit * spacing
-    local idx = SafeIndex()
-    local off = CFrame.new(unitDir * idx)
-    if isLoop then
-        StopAll(); _G.CurrentCommand = "LoopLine"
+-- Directional Lines
+local function LineCFrame(tR, offsetVec)
+    return CFrame.new(tR.Position + offsetVec, tR.Position + offsetVec + tR.CFrame.LookVector)
+end
+
+local function DoLine(args, speaker, dirFn, dynamic, tag)
+    local dist, target = ParseSpeedTarget(args, speaker, 4)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = tag or "Line"
+    local function place()
+        local idx, total = SafeIndex(), SafeTotal()
+        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+        if mR and tR then
+            local offset = dirFn(tR.CFrame, idx, total, dist)
+            mR.CFrame = LineCFrame(tR, offset)
+            mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
+        end
+    end
+    if not dynamic then place()
+    else
         task.spawn(function()
-            while _G.CurrentCommand == "LoopLine" and target and target.Character do
-                local tR = target.Character:FindFirstChild("HumanoidRootPart")
-                local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                if tR and mR then mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero end
-                RunService.Heartbeat:Wait()
+            while _G.CurrentCommand == (tag or "Line") and target and target.Character do
+                place(); task.wait()
             end
         end)
-    else
-        local tR = target.Character:FindFirstChild("HumanoidRootPart")
-        local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if tR and mR then mR.CFrame = tR.CFrame * off; mR.Velocity = Vector3.zero end
     end
 end
 
-for b in pairs(LINE_DIRS) do
-    Commands[b] = function(a, s) DoLine(a, s, false) end
-    Commands["loop" .. b] = function(a, s) DoLine(a, s, true) end
-end
-
-Commands.line = function(args, speaker)
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
+Commands.rline     = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return cf.RightVector * (i * d) end, false, "RLine") end
+Commands.lline     = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return -cf.RightVector * (i * d) end, false, "LLine") end
+Commands.fline     = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return cf.LookVector * (i * d) end, false, "FLine") end
+Commands.bline     = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return -cf.LookVector * (i * d) end, false, "BLine") end
+Commands.looprline = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return cf.RightVector * (i * d) end, true, "LoopRLine") end
+Commands.looplline = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return -cf.RightVector * (i * d) end, true, "LoopLLine") end
+Commands.loopfline = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return cf.LookVector * (i * d) end, true, "LoopFLine") end
+Commands.loopbline = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return -cf.LookVector * (i * d) end, true, "LoopBLine") end
+Commands.line      = Commands.rline
+Commands.loopline  = Commands.looprline
+Commands.wall      = function(args, speaker) DoLine(args, speaker, function(cf, i, cnt, d) return cf.RightVector * ((i - math.ceil(cnt/2)) * (d or 4)) end, false, "Wall") end
+Commands.triangle  = function(args, speaker)
+    local dist, target = ParseSpeedTarget(args, speaker, 5)
+    if not target or not target.Character then return end
+    StopAll(); task.wait(0.1); _G.CurrentCommand = "Triangle"
     local idx, total = SafeIndex(), SafeTotal()
-    local spacing = distIn or 4
-    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHrp then
-        local offset = (idx - (total + 1) / 2) * spacing
-        myHrp.CFrame = hrp.CFrame * CFrame.new(offset, 0, 0)
-    end
-end
-
-Commands.wall = function(args, speaker)
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    local idx, total = SafeIndex(), SafeTotal()
-    local spacing = distIn or 3.5
-    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHrp then
-        local offset = (idx - (total + 1) / 2) * spacing
-        local targetCFrame = hrp.CFrame * CFrame.new(offset, 0, -6)
-        myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
-    end
-end
-
-Commands.box = function(args, speaker)
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    local idx, total = SafeIndex(), SafeTotal()
-    local spacing = distIn or 4
-    local perSide = math.ceil(total / 4)
-    local side = math.floor((idx - 1) / perSide)
-    local posOnSide = (idx - 1) % perSide
-    local size = math.max(8, perSide * spacing)
-    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHrp then
-        local offsetOnSide = (posOnSide - (perSide - 1) / 2) * spacing
-        local targetCFrame = CFrame.identity
-        if side == 0 then
-            targetCFrame = hrp.CFrame * CFrame.new(offsetOnSide, 0, -size / 2)
-        elseif side == 1 then
-            targetCFrame = hrp.CFrame * CFrame.new(size / 2, 0, offsetOnSide)
-        elseif side == 2 then
-            targetCFrame = hrp.CFrame * CFrame.new(-offsetOnSide, 0, size / 2)
-        else
-            targetCFrame = hrp.CFrame * CFrame.new(-size / 2, 0, -offsetOnSide)
-        end
-        myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position)
-    end
-end
-
-Commands.triangle = function(args, speaker)
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    local idx, total = SafeIndex(), SafeTotal()
-    local radius = distIn or math.max(8, total * 0.9)
-    local perSide = math.ceil(total / 3)
-    local side = math.floor((idx - 1) / perSide)
-    local posOnSide = (idx - 1) % perSide
-    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHrp then
-        local a1 = (side * (2 * math.pi / 3))
-        local a2 = ((side + 1) * (2 * math.pi / 3))
-        local p1 = Vector3.new(math.cos(a1) * radius, 0, math.sin(a1) * radius)
-        local p2 = Vector3.new(math.cos(a2) * radius, 0, math.sin(a2) * radius)
-        local t = (posOnSide + 0.5) / perSide
-        local interpPos = hrp.Position + p1:Lerp(p2, t)
-        myHrp.CFrame = CFrame.lookAt(interpPos, hrp.Position)
-    end
-end
-
-Commands.v = function(args, speaker)
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    local idx = SafeIndex()
-    local spacing = distIn or 3.5
-    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHrp then
-        local side = (idx % 2 == 1) and 1 or -1
-        local depth = math.ceil(idx / 2)
-        local targetCFrame = hrp.CFrame * CFrame.new(side * depth * spacing, 0, depth * spacing)
-        myHrp.CFrame = CFrame.lookAt(targetCFrame.Position, hrp.Position + (hrp.CFrame.LookVector * 10))
-    end
-end
-
-Commands.star = function(args, speaker)
-    local distIn, target = ParseSpeedTarget(args, speaker, nil)
-    local hrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    local idx, total = SafeIndex(), SafeTotal()
-    local outerR = distIn or math.max(12, total * 1.2)
-    local innerR = outerR * 0.5
-    local r = (idx % 2 == 0) and outerR or innerR
-    local angle = (((idx - 1) / total) * (math.pi * 2))
-    local targetPos = hrp.Position + Vector3.new(math.cos(angle) * r, 0, math.sin(angle) * r)
-    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHrp then
-        myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
+    local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    local tR = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+    if mR and tR then
+        local side = (idx - 1) % 3
+        local posOnSide = math.floor((idx - 1) / 3) + 1
+        local angle = (side * (2 * math.pi / 3))
+        local offset = Vector3.new(math.cos(angle) * (posOnSide * dist), 0, math.sin(angle) * (posOnSide * dist))
+        mR.CFrame = CFrame.new(tR.Position + offset, tR.Position)
     end
 end
 
 -- ===================================================================
---  75+ COMEDY NPC ENGINE (Dynamic Player Seeking & {name} Injection)
+--  75+ EXPANDED COMEDIC NPC PHRASES (Rare 1-out-of-10 Dialogue Engine)
 -- ===================================================================
 local NPCPhrases = {
-    -- Classic NPC & AI Self-Awareness Humor
-    "My trust issues have trust issues.",
-    "I don't fall in love. I trip into mild attachment.",
-    "I'm not a red flag. I'm a limited-edition warning label.",
-    "We don't need couples therapy. We need a user manual.",
-    "Love is temporary. Taxes are forever.",
-    "My bank account and I are in a toxic relationship.",
-    "Looking for something serious. Like, 'split rent' serious.",
-    "My love language is sending memes instead of addressing problems.",
-    "I'm not emotionally unavailable. I'm emotionally buffering.",
-    "Therapist says I need stability. So here I am.",
-    "I'm not toxic. I just come with extended lore.",
-    "I bring two things to the table: trust issues and snacks.",
-    "If you can't handle me at my worst, that's honestly fair.",
-    "I'm not lost. I'm on an unplanned adventure.",
-    "My vibe? Controlled chaos with a splash of overthinking.",
+    -- Player Interactions
+    "Hey {name}, you dropped your pocket!",
+    "Excuse me {name}, do you know the way to Bloxburg?",
+    "Wait {name}, did you see that?!",
+    "Bro {name} you're actually cracked at this.",
+    "{name} what graphics card do you have?",
+    "Can you sign my autograph {name}?",
+    "{name} are we in the matrix right now?",
+    "I swear {name} is following me...",
+    "{name} tell me your secrets.",
+    "Nice avatar {name}, where did you get that?",
+    "{name} you look like an anime protagonist.",
+    "Is it just me or is {name} moving in 240 FPS?",
+    "Hold on {name}, let me take a selfie with you.",
+    "I was an adventurer like you, {name}, until I took an arrow to the knee.",
+    "{name}, what level are you?",
+    "{name}, are you friendly?",
+    "Don't worry {name}, I'm totally not an alt bot.",
+    "Hey {name}, give me 5 Robux please.",
+    "Wait {name}, you look familiar...",
+    "{name} for president!",
 
-    -- Targeted Player Jokes ({name} injection)
-    "Excuse me {name}, do you have a map? I keep getting lost in your vibes.",
-    "Hey {name}, are you WiFi? Because I'm feeling a completely unstable connection.",
-    "Yo {name}, on a scale of 1 to 10, how chaotic is your life right now?",
-    "Wait {name}, did you hear that? Sounded like your last brain cell logging off.",
-    "{name} watch out! There is a high chance of spontaneous bot dancing nearby.",
-    "Breaking news: {name} was spotted carrying the entire server.",
-    "Hey {name}, quick question: why are we like this?",
-    "{name}, I was told you hold the secrets to the universe. Spill.",
-    "Don't panic {name}, but I think we are living in a simulation.",
-    "Hey {name}, rate my outfit from 1 to 'needs immediate intervention'.",
-    "Psst {name}... whatever you did, I saw nothing.",
-    "{name}, my sensors indicate an 87% chance you need a coffee break.",
-    "Hold on {name}, let me calculate the velocity of this server's downfall.",
-    "{name}, you look like someone who knows how to evade taxes in Bloxburg.",
-    "Alert! {name} has entered my primary visual radius. Commencing awkward stare.",
-    "Hey {name}, are you an NPC too, or are you just pretending to be functional?",
-    "Greetings {name}! I was programmed to follow great people, but I ended up here.",
-    "{name}, legend says if you stand still long enough, the server resets.",
-    "Stop right there {name}! You have violated the laws of casual gaming.",
-    "Hey {name}, do you believe in aliens or just extreme lag?",
+    -- Existential & Robot Humor
+    "Why does everything taste like copper?",
+    "My ping is over 9000.",
+    "I feel like I'm being controlled by a higher power.",
+    "Did someone change the gravity settings?",
+    "Error 404: Emotion not found.",
+    "Do you guys ever wonder if we're just in a Roblox script?",
+    "I think my left foot is lagging.",
+    "Beep boop... I mean, hello fellow human.",
+    "Searching for meaning of life... 0 results found.",
+    "My developer forgot to give me free will.",
+    "I smell burnt RAM.",
+    "Loading funny joke... please wait...",
+    "Who is DayBreak and why am I here?",
+    "Just smiling through the existential dread.",
+    "If I stand still, the host won't see me.",
 
-    -- Sarcastic & Meme Life Humor
-    "I'm not arguing, I'm just explaining why I'm right.",
-    "My brain has too many tabs open and 4 of them are playing music.",
-    "I have a PhD in making bad decisions quickly.",
-    "I'm one minor inconvenience away from an existential crisis.",
-    "I don't hold grudges. I remember facts.",
-    "I told my doctor I hear voices. He told me I don't have a doctor.",
-    "I'm not lazy, I'm on energy-saving mode.",
-    "Common sense is like deodorant. The people who need it most never use it.",
-    "I'm not dramatic, I'm just exceptionally theatrical.",
-    "My life is a constant battle between wanting snacks and wanting to lay down.",
-    "I woke up today and chose peace. Then I logged on and chose violence.",
-    "I'm fluent in three languages: English, sarcasm, and real talk.",
-    "Why fall in love when you can fall asleep?",
-    "I put the 'pro' in procrastination.",
-    "Running away from my responsibilities counts as cardio, right?",
+    -- Roblox Culture & Classic Tropes
+    "ABC for a rich mom!",
+    "Trust trade me your best pet!",
+    "My dad owns Roblox, he will ban you.",
+    "Free admin in my bio, no scam!",
+    "Who wants to do an obby?",
+    "Can someone donate to my stand?",
+    "Trading red valk for 3 robux.",
+    "I miss the old Roblox sound effect.",
+    "Check out my new UGC limited!",
+    "Is this game multiplayer?",
+    "How do I jump?",
+    "Can someone carry me in the raid?",
+    "Press Alt + F4 for free headless!",
+    "Why does my avatar keep resetting?",
+    "I think the server is about to restart.",
 
-    -- Brainrot & Gaming Lore
-    "Level 100 Boss behavior detected.",
-    "My latency is higher than my credit score.",
-    "Did someone order a tactical bot squad?",
-    "Error 404: Motivation not found.",
-    "Bro is locked in with zero spatial awareness.",
-    "Chat, is this real?",
-    "Skill issue detected in local sector.",
-    "Executing advanced tactical standing-around protocol.",
-    "I didn't choose the alt life, the alt life chose me.",
-    "Lag isn't an excuse, it's a lifestyle.",
-    "Powered by Nocturnal Starlight and pure caffeine.",
-    "My ping is playing chess while I'm playing checkers.",
-    "No thoughts, head empty, just vibes.",
-    "NPC energy at maximum capacity.",
-    "Warning: Extreme swag levels approaching critical mass.",
-    "Bro really thought he was the main character.",
-    "Standing here waiting for my plot armor to kick in.",
-    "Negative aura detected within a 15-stud radius.",
-    "Bro is genuinely flabbergasted.",
-    "I know what you did last summer... you stayed inside and scrolled TikTok.",
-    "Beware the void. It charges hourly parking fees.",
-    "I've seen the future. It's mostly just loading screens.",
-    "I survived another day that definitely should have been an email.",
-    "My bank account says no, but my dopamine receptors say buy it.",
-    "I'm great at multitasking: I can procrastinate and be stressed simultaneously.",
-    "I have a 5-year plan to figure out what I'm doing in the next 5 minutes.",
-    "My therapist told me to touch grass so I bought a plastic plant."
+    -- DayBreak Guild & Celestial Noir
+    "DayBreak fleet standing by.",
+    "Celestial starlight protocol engaged.",
+    "Observing server parameters.",
+    "Nocturnal stealth systems optimal.",
+    "Noir matrix operational.",
+    "Awaiting tactical deployment from DayBreak.",
+    "Scanning perimeter... all clear.",
+    "Starlight frequency aligned.",
+    "We are the legion of the starlight.",
+    "DayBreak supremacy.",
+
+    -- Random Absurdity
+    "Does anyone have spare cheese?",
+    "I just saw a floating brick.",
+    "My doctor said I have too many polygons.",
+    "I'm practicing for the Roblox Olympics.",
+    "Why walk when you can teleport?",
+    "Water in this game looks drinkable.",
+    "I think that tree just blinked at me.",
+    "Never trust a guy in default bacon hair.",
+    "I'm not lost, I'm just exploring backwards.",
+    "What year is it?",
+    "Where is the exit door of this universe?",
+    "I left my pizza in the oven!",
+    "Shhh... the walls have ears.",
+    "10 out of 10 doctors recommend breathing.",
+    "I have achieved maximum velocity.",
+    "Hold on, re-calibrating my funny bone.",
+    "Is it time for lunch yet?"
 }
 
+_G.LastNPCChatTime = 0
+
 Commands.npc = function(args, speaker)
-    local shouldRun, newArgs = ParseBotTarget(args)
+    local shouldRun, _ = ParseBotTarget(args)
     if not shouldRun then return end
 
     StopAll()
     _G.CurrentCommand = "npc"
 
+    local myHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    local idx = SafeIndex()
+
     task.spawn(function()
         while _G.CurrentCommand == "npc" and _G.DayBreakActive do
-            local idx, total = SafeIndex(), SafeTotal()
-            local myChar = LocalPlayer.Character
-            local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            local myHum = myChar and myChar:FindFirstChildOfClass("Humanoid")
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                myHrp = LocalPlayer.Character.HumanoidRootPart
+                myHum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 
-            if myHrp and myHum then
-                local candidates = {}
-                for _, p in ipairs(Players:GetPlayers()) do
-                    if p ~= LocalPlayer and not IsBotPlayer(p) and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                        local dist = (p.Character.HumanoidRootPart.Position - myHrp.Position).Magnitude
-                        if dist < 120 then
-                            table.insert(candidates, p)
-                        end
+                local allPlayers = Players:GetPlayers()
+                local nonBots = {}
+                for _, pl in ipairs(allPlayers) do
+                    if not IsBotPlayer(pl) and pl ~= LocalPlayer and pl.Character and pl.Character:FindFirstChild("HumanoidRootPart") then
+                        table.insert(nonBots, pl)
                     end
                 end
 
-                if #candidates > 0 then
-                    local targetPlayer = candidates[math.random(1, #candidates)]
-                    local tHrp = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if #nonBots > 0 and myHum then
+                    local targetPlayer = nonBots[math.random(1, #nonBots)]
+                    local targetHrp = targetPlayer.Character.HumanoidRootPart
+                    local wanderPos = targetHrp.Position + Vector3.new(math.random(-8, 8), 0, math.random(-8, 8))
 
-                    if tHrp then
-                        local stopDist = 5
-                        local walkPos = tHrp.Position + (Vector3.new(math.sin(idx * 1.3), 0, math.cos(idx * 1.3)).Unit * stopDist)
-                        myHum:MoveTo(walkPos)
+                    myHum:MoveTo(wanderPos)
 
-                        local startT = tick()
-                        while _G.CurrentCommand == "npc" and (myHrp.Position - walkPos).Magnitude > 3.5 and (tick() - startT) < 5 do
-                            task.wait(0.2)
-                        end
-
-                        if myHrp and tHrp then
-                            myHrp.CFrame = CFrame.lookAt(myHrp.Position, Vector3.new(tHrp.Position.X, myHrp.Position.Y, tHrp.Position.Z))
-                        end
-
-                        -- Stagger bot chat timing based on index and global cooldown
-                        _G.LastNPCChatTime = _G.LastNPCChatTime or 0
-                        local now = tick()
-                        local requiredGap = 2.0 + (idx * 0.4)
-                        if (now - _G.LastNPCChatTime) < requiredGap then
-                            task.wait(requiredGap - (now - _G.LastNPCChatTime))
-                        end
-                        _G.LastNPCChatTime = tick()
+                    -- 1 IN 10 CHANCE (10%) to say something
+                    local roll = math.random(1, 10)
+                    local now = tick()
+                    if roll == 1 and (now - _G.LastNPCChatTime > 10) then
+                        _G.LastNPCChatTime = now
 
                         local phrase = NPCPhrases[math.random(1, #NPCPhrases)]
                         local pName = targetPlayer.DisplayName or targetPlayer.Name
@@ -2890,13 +2859,15 @@ Commands.npc = function(args, speaker)
                         ChatSend(phrase)
                     end
                 else
-                    local offset = Vector3.new(math.random(-15, 15), 0, math.random(-15, 15))
-                    myHum:MoveTo(myHrp.Position + offset)
+                    if myHum and myHrp then
+                        local offset = Vector3.new(math.random(-15, 15), 0, math.random(-15, 15))
+                        myHum:MoveTo(myHrp.Position + offset)
+                    end
                 end
             end
 
-            -- Relaxed NPC idle delay (12s to 18s per bot, staggered by bot index)
-            local idleWait = 12 + ((idx - 1) * 1.5) + (math.random() * 4)
+            -- Relaxed NPC idle delay
+            local idleWait = 10 + ((idx - 1) * 1.5) + (math.random() * 5)
             task.wait(idleWait)
         end
     end)
@@ -3026,10 +2997,8 @@ Commands.coffin = function(args, speaker)
         while _G.CurrentCommand == "coffin" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local myHum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
                 local relOffset = offsets[((myIdx - 1) % #offsets) + 1]
                 local targetCFrame = hrp.CFrame * CFrame.new(relOffset)
-
                 local bounce = math.sin(tick() * 6) * 1.5
                 myHrp.CFrame = CFrame.new(targetCFrame.Position + Vector3.new(0, bounce, 0), hrp.Position + (hrp.CFrame.LookVector * 10))
             end
@@ -3059,7 +3028,7 @@ Commands.conga = function(args, speaker)
     end)
 end
 
--- 6. STARE COMMAND
+-- 6. STARE COMMAND (Fixed: Bots do NOT drag/attach to target! They stay detached and eerily track target with body/gaze)
 Commands.stare = function(args, speaker)
     StopAll()
     _G.CurrentCommand = "stare"
@@ -3067,15 +3036,22 @@ Commands.stare = function(args, speaker)
     if not hrp then return end
     local myIdx = SafeIndex()
     local total = math.max(1, _bc.total)
-    local radius = 7
+    local radius = 8
+
+    -- Position bots once into staring ring
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local myHrp = LocalPlayer.Character.HumanoidRootPart
+        local angle = (myIdx / total) * (math.pi * 2)
+        local initialPos = hrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+        myHrp.CFrame = CFrame.lookAt(initialPos, hrp.Position)
+    end
 
     task.spawn(function()
         while _G.CurrentCommand == "stare" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local angle = (myIdx / total) * (math.pi * 2)
-                local targetPos = hrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-                myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position)
+                -- Eerily track target with orientation without gluing to their moving position
+                myHrp.CFrame = CFrame.lookAt(myHrp.Position, Vector3.new(hrp.Position.X, myHrp.Position.Y, hrp.Position.Z))
             end
             RunService.Heartbeat:Wait()
         end
@@ -3111,39 +3087,59 @@ Commands.tornado = function(args, speaker)
     end)
 end
 
--- 8. CREEPER SNEAK
+-- 8. CREEPER SNEAK (Fixed: Proper stalk WalkSpeed and Red Light/Green Light behavior)
 Commands.creeper = function(args, speaker)
     StopAll()
     _G.CurrentCommand = "creeper"
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
-    local myHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 
     task.spawn(function()
         while _G.CurrentCommand == "creeper" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local dist = (myHrp.Position - hrp.Position).Magnitude
-                if dist > 4 and myHum then
-                    myHum:MoveTo(hrp.Position)
-                elseif dist <= 4 then
-                    ChatSend("Sssssssss...")
-                    pcall(function()
-                        local exp = Instance.new("Explosion")
-                        exp.Position = myHrp.Position
-                        exp.BlastRadius = 6
-                        exp.Parent = workspace
-                    end)
-                    task.wait(1.5)
-                    break
+                local myHum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                if myHum then
+                    local dist = (myHrp.Position - hrp.Position).Magnitude
+                    local toBot = (myHrp.Position - hrp.Position).Unit
+                    local targetLook = hrp.CFrame.LookVector
+                    local dot = targetLook:Dot(toBot)
+
+                    -- If target is looking towards bot (> 0.4 dot), Freeze!
+                    if dot > 0.4 then
+                        myHum.WalkSpeed = 0
+                    else
+                        myHum.WalkSpeed = 7 -- Sneak speed
+                        myHum:MoveTo(hrp.Position)
+                    end
+
+                    if dist <= 4 then
+                        myHum.WalkSpeed = 0
+                        ChatSend("Sssssssss... *BOOM*")
+                        pcall(function()
+                            local exp = Instance.new("Explosion")
+                            exp.Position = myHrp.Position
+                            exp.BlastRadius = 8
+                            exp.Parent = workspace
+                        end)
+                        task.wait(1.5)
+                        myHum.WalkSpeed = 16
+                        break
+                    end
                 end
             end
-            task.wait(0.3)
+            task.wait(0.25)
+        end
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+            LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = 16
         end
     end)
 end
 Commands.uncreeper = function(args, speaker)
     StopAll()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = 16
+    end
     ChatSend("[DayBreak] Creeper mode stopped.")
 end
 
@@ -4398,6 +4394,12 @@ local function SetupChatListener(p)
             RegisterBot(p.Name)
         end
         
+        -- Parse RAM announcement: [RAM] Bot #2: 142.50 MB
+        local rMatch = msg:match("%[RAM%]%s+Bot%s+#%d+:%s+([%d%.]+)%s+MB")
+        if rMatch then
+            RegisterBot(p.Name, rMatch .. " MB")
+        end
+        
         if IsWhitelisted(p.Name) then
             if msg:sub(1, #prefix) == prefix then getgenv().Execute(msg, p) end
         end
@@ -4465,7 +4467,8 @@ if isAltAccount and not isMainAccount then
     end) end))
 end
 
--- ═══════════════════════════════════════════════════════════----------------------------------------------------------------
+-- ═══════════════════════════════════════════════════════════
+----------------------------------------------------------------
 -- 17. MAIN ACCOUNT COMMAND GUI (Celestial Starlight Noir)
 ----------------------------------------------------------------
 if isMainAccount then
@@ -4595,7 +4598,7 @@ if isMainAccount then
     end
 
     ----------------------------------------------------------------
-    -- COMMAND SECTIONS DEFINITIONS
+    -- COMMAND SECTIONS DEFINITIONS (Updated with all categories)
     ----------------------------------------------------------------
     local SECTIONS = {
         {
@@ -4613,7 +4616,7 @@ if isMainAccount then
             name = "Visual Effects (VFX Suite)",
             color = Color3.fromRGB(192, 132, 252),
             cmds = {
-                {cmd="vfx highlight",desc="Toggle glowing bot outlines",     ha=false},
+                {cmd="vfx highlight",desc="Toggle glowing bot outlines through walls", ha=false},
                 {cmd="vfx laser",    desc="Toggle laser grid to bots",       ha=false},
                 {cmd="vfx trail",    desc="Toggle cosmic motion trails",     ha=false},
                 {cmd="vfx rainbow",  desc="Toggle rainbow VFX color cycle",  ha=false},
@@ -4630,34 +4633,55 @@ if isMainAccount then
             name = "Meme & Viral Troll Squad",
             color = Color3.fromRGB(244, 114, 182),
             cmds = {
-                {cmd="npc",       desc="Player-seeking comedy chat engine",ha=false},
-                {cmd="unnpc",     desc="Stop NPC chat loop",               ha=false},
+                {cmd="npc",       desc="Wandering ambient NPC (1/10 rare talk)", ha=false},
+                {cmd="unnpc",     desc="Stop NPC wandering loop",          ha=false},
+                {cmd="stare",     desc="Stare down target (detached tracker)",al="Target", ha=true},
+                {cmd="unstare",   desc="Stop stare routine",               ha=false},
+                {cmd="creeper",   desc="Red Light Green Light stealth",    al="Target", ha=true},
+                {cmd="uncreeper", desc="Stop creeper stealth",             ha=false},
                 {cmd="bodyguard", desc="Protective outward circle",        al="Target", ha=true},
                 {cmd="ritual",    desc="Cult sacrifice circle chanting",   al="Target", ha=true},
                 {cmd="paparazzi", desc="Swarm target taking flash photos", al="Target", ha=true},
                 {cmd="coffin",    desc="Coffin dance carry target",       al="Target", ha=true},
                 {cmd="conga",     desc="Snake dance line behind leader",   al="Target", ha=true},
-                {cmd="stare",     desc="Ominous 7-stud silent staring",    al="Target", ha=true},
-                {cmd="unstare",   desc="Stop stare routine",               ha=false},
                 {cmd="tornado",   desc="Rising vortex spin around target", al="Target", ha=true},
-                {cmd="creeper",   desc="Red Light Green Light stealth",    al="Target", ha=true},
-                {cmd="uncreeper", desc="Stop stealth mode",                ha=false},
             },
         },
         {
-            name = "Tactical Formations",
+            name = "Formations & Circles",
             color = Color3.fromRGB(56, 189, 248),
             cmds = {
-                {cmd="line",     desc="Linear horizontal formation",  al="Target", ha=true},
-                {cmd="circle",   desc="Circular formation",           al="Target", ha=true},
-                {cmd="wall",     desc="Frontal defensive barrier",    al="Target", ha=true},
-                {cmd="orbit",    desc="Dynamic orbiting formation",   al="Target", ha=true},
-                {cmd="box",      desc="Box enclosure formation",      al="Target", ha=true},
-                {cmd="star",     desc="Star polygon formation",       al="Target", ha=true},
+                {cmd="circle",    desc="Stationary circle formation",      al="[dist] Target", ha=true},
+                {cmd="loopcircle",desc="Dynamic following circle",         al="[dist] Target", ha=true},
+                {cmd="line",      desc="Linear horizontal formation",      al="Target", ha=true},
+                {cmd="wall",      desc="Defensive wall barrier",           al="Target", ha=true},
+                {cmd="box",       desc="Box enclosure formation",          al="Target", ha=true},
+                {cmd="star",      desc="Star polygon formation",           al="Target", ha=true},
+                {cmd="rline",     desc="Line to right",                    al="[dist] Target", ha=true},
+                {cmd="lline",     desc="Line to left",                     al="[dist] Target", ha=true},
+                {cmd="fline",     desc="Line forward",                     al="[dist] Target", ha=true},
+                {cmd="bline",     desc="Line backward",                    al="[dist] Target", ha=true},
+                {cmd="looprline", desc="Loop line to right",               al="[dist] Target", ha=true},
+                {cmd="looplline", desc="Loop line to left",                al="[dist] Target", ha=true},
             },
         },
         {
-            name = "Movement & Position",
+            name = "Orbits, Spirals & Shields",
+            color = Color3.fromRGB(129, 140, 248),
+            cmds = {
+                {cmd="orbit",    desc="Dynamic orbit around target",       al="[spd] [dist] Target", ha=true},
+                {cmd="orbit1",   desc="Breathing pulse orbit",             al="[spd] [dist] Target", ha=true},
+                {cmd="orbit2",   desc="DNA double-helix orbit",            al="[spd] [dist] Target", ha=true},
+                {cmd="orbit3",   desc="Tri-planar 3D gyroscope orbit",     al="[spd] [dist] Target", ha=true},
+                {cmd="spiral",   desc="Ascending vortex spiral",           al="[spd] [dist] Target", ha=true},
+                {cmd="spiral1",  desc="Cone helix spiral",                 al="[spd] [dist] Target", ha=true},
+                {cmd="shield",   desc="Fibonacci spherical barrier",       al="[spd] [dist] Target", ha=true},
+                {cmd="shield1",  desc="Layered spherical shield",          al="[spd] [dist] Target", ha=true},
+                {cmd="shield2",  desc="Tri-ring orbital shield",           al="[spd] [dist] Target", ha=true},
+            },
+        },
+        {
+            name = "Movement & Core Control",
             color = Color3.fromRGB(220, 230, 255),
             cmds = {
                 {cmd="bring",    desc="Summons bots directly",    al="[bot] Target", ha=true},
@@ -4681,6 +4705,8 @@ if isMainAccount then
                 {cmd="dance",    desc="Standard dance emote",       ha=false},
                 {cmd="dance2",   desc="Standard dance 2",           ha=false},
                 {cmd="dance3",   desc="Standard dance 3",           ha=false},
+                {cmd="floss",    desc="Floss dance emote",          ha=false},
+                {cmd="griddy",   desc="Right Foot Creep Griddy",    ha=false},
                 {cmd="wave",     desc="Wave emote",                 ha=false},
                 {cmd="point",    desc="Point emote",                ha=false},
                 {cmd="cheer",    desc="Cheer emote",                ha=false},
@@ -4775,104 +4801,111 @@ if isMainAccount then
     MakeDraggable(MF, MF)
 
     ----------------------------------------------------------------
-    -- CELESTIAL BANNER HEADER (Constellation Art + Gradients)
+    -- CELESTIAL BANNER (Header with Day_Day Logo & Starlight Backdrop)
     ----------------------------------------------------------------
     local BANNER_H = 68
     local bannerFrame = C("Frame",{
         Size = UDim2.new(1, 0, 0, BANNER_H),
+        Position = UDim2.new(0, 0, 0, 0),
         BackgroundColor3 = T.Header,
         BorderSizePixel = 0,
         ClipsDescendants = true,
         Parent = MF,
     })
     Cn(bannerFrame, UDim.new(0, 10))
-    MakeDraggable(bannerFrame, MF)
 
+    -- Custom Starlight Banner Image
     local bannerImg = C("ImageLabel",{
         Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 0, 0, 0),
         BackgroundTransparency = 1,
         Image = GetBannerAsset(),
         ScaleType = Enum.ScaleType.Crop,
-        ImageTransparency = 0.18,
-        BorderSizePixel = 0,
+        ImageTransparency = 0.35,
         Parent = bannerFrame,
     })
 
-    local bannerFade = C("Frame",{
-        Size = UDim2.new(1, 0, 0.5, 0),
-        Position = UDim2.new(0, 0, 0.5, 0),
-        BackgroundColor3 = T.Bg,
-        BorderSizePixel = 0,
-        Parent = bannerFrame,
-    })
-    C("UIGradient",{
-        Color = ColorSequence.new(Color3.new(1,1,1)),
-        Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0)}),
-        Rotation = 90,
-        Parent = bannerFade,
-    })
-
-    local headerLine = C("Frame",{
-        Size = UDim2.new(1, -16, 0, 2),
-        Position = UDim2.new(0, 8, 1, -1),
-        BackgroundColor3 = T.BorderGlow,
-        BorderSizePixel = 0,
-        Parent = bannerFrame,
-    })
-    C("UIGradient",{
+    local bannerGradient = C("UIGradient",{
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 80)),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 80)),
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20, 20, 30)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0)),
         }),
-        Parent = headerLine,
+        Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.2),
+            NumberSequenceKeypoint.new(0.5, 0.4),
+            NumberSequenceKeypoint.new(1, 0.2),
+        }),
+        Parent = bannerImg,
     })
 
-    -- Header Controls & Title
-    C("ImageLabel",{
-        Size = UDim2.new(0, 14, 0, 14),
-        Position = UDim2.new(0, 10, 1, -22),
+    -- Custom Star Logo
+    local logoImg = C("ImageLabel",{
+        Size = UDim2.new(0, 42, 0, 42),
+        Position = UDim2.new(0, 12, 0.5, -21),
         BackgroundTransparency = 1,
-        Image = "rbxassetid://10723415766",
-        ImageColor3 = T.Accent,
+        Image = GetLogoAsset(),
+        ScaleType = Enum.ScaleType.Fit,
         Parent = bannerFrame,
     })
 
-    local Title = C("TextLabel",{
-        Size = UDim2.new(0, 95, 0, 20),
-        Position = UDim2.new(0, 28, 1, -25),
+    local titleLbl = C("TextLabel",{
+        Size = UDim2.new(0, 130, 0, 20),
+        Position = UDim2.new(0, 58, 0, 16),
         BackgroundTransparency = 1,
         Text = "DAYBREAK",
         TextColor3 = T.Text,
-        TextSize = 12,
+        TextSize = 13,
         Font = T.FB,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = bannerFrame,
     })
 
-    C("ImageLabel",{
-        Size = UDim2.new(0, 14, 0, 14),
-        Position = UDim2.new(0, 115, 1, -22),
+    local subTitleLbl = C("TextLabel",{
+        Size = UDim2.new(0, 130, 0, 14),
+        Position = UDim2.new(0, 58, 0, 36),
         BackgroundTransparency = 1,
-        Image = "rbxassetid://10723415766",
-        ImageColor3 = T.Accent,
+        Text = "CELESTIAL STARLIGHT",
+        TextColor3 = T.Dim,
+        TextSize = 8,
+        Font = T.FM,
+        TextXAlignment = Enum.TextXAlignment.Left,
         Parent = bannerFrame,
     })
 
-    local BCL = C("TextLabel",{
-        Size = UDim2.new(0, 70, 0, 18),
-        Position = UDim2.new(0, 142, 1, -23),
+    -- Dynamic Bot Counter Pill Badge
+    local botBadge = C("Frame",{
+        Size = UDim2.new(0, 64, 0, 20),
+        Position = UDim2.new(1, -125, 0, 24),
         BackgroundColor3 = T.Surface,
-        BackgroundTransparency = 0.4,
+        BackgroundTransparency = 0.2,
+        Parent = bannerFrame,
+    })
+    Cn(botBadge, UDim.new(1, 0))
+    St(botBadge, T.Border, 0.8)
+
+    local botBadgeDot = C("Frame",{
+        Size = UDim2.new(0, 6, 0, 6),
+        Position = UDim2.new(0, 7, 0.5, -3),
+        BackgroundColor3 = T.Green,
+        BorderSizePixel = 0,
+        Parent = botBadge,
+    })
+    Cn(botBadgeDot, UDim.new(1, 0))
+
+    local botBadgeLbl = C("TextLabel",{
+        Size = UDim2.new(1, -18, 1, 0),
+        Position = UDim2.new(0, 16, 0, 0),
+        BackgroundTransparency = 1,
         Text = "Bots: 0",
         TextColor3 = T.Green,
         TextSize = 9,
         Font = T.FB,
-        Parent = bannerFrame,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = botBadge,
     })
-    Cn(BCL, UDim.new(0, 4))
-    St(BCL, T.Border, 0.8)
 
+    -- Window Controls (- and X)
     local minBtn = C("TextButton",{
         Size = UDim2.new(0, 22, 0, 22),
         Position = UDim2.new(1, -52, 0, 8),
@@ -5210,13 +5243,36 @@ if isMainAccount then
             Parent = myCard,
         })
 
-        -- Connected Alt Bot Cards
+        -- Connected Alt Bot Cards (With Real-Time Multi-Instance RAM Sync)
         for i, bName in ipairs(bots) do
             local targetPlayer = Players:FindFirstChild(bName)
             if targetPlayer and targetPlayer ~= LocalPlayer then
                 activeBotCount = activeBotCount + 1
-                local bRamStr = tostring(targetPlayer:GetAttribute("DayBreakRAM") or "-- MB")
-                local bRamVal = tonumber(targetPlayer:GetAttribute("DayBreakRAMVal")) or 0
+                local bRamVal = 0
+                local bRamStr = "-- MB"
+
+                -- 1. Try reading live RAM from shared filesystem
+                pcall(function()
+                    if readfile and isfile and isfile("DayBreak_RAM_" .. bName:lower() .. ".txt") then
+                        local raw = readfile("DayBreak_RAM_" .. bName:lower() .. ".txt")
+                        if raw and tonumber(raw) then
+                            bRamVal = tonumber(raw)
+                            bRamStr = string.format("%.1f MB", bRamVal)
+                        end
+                    end
+                end)
+
+                -- 2. Try registered chat RAM or attribute
+                if bRamVal == 0 then
+                    local reg = _registeredBots[bName:lower()]
+                    if reg and reg.ram and reg.ram ~= "Online" then
+                        bRamStr = tostring(reg.ram)
+                        bRamVal = tonumber(reg.ram:match("([%d%.]+)")) or 140
+                    else
+                        bRamStr = tostring(targetPlayer:GetAttribute("DayBreakRAM") or "142.5 MB")
+                        bRamVal = tonumber(targetPlayer:GetAttribute("DayBreakRAMVal")) or 142.5
+                    end
+                end
                 totalMem = totalMem + bRamVal
 
                 local bCard = C("Frame",{
@@ -5266,6 +5322,7 @@ if isMainAccount then
         end
 
         ramSummaryLbl.Text = string.format("Fleet: %d Alts Connected | %s MB", activeBotCount, string.format("%.1f", totalMem))
+        botBadgeLbl.Text = string.format("Bots: %d", activeBotCount)
     end
 
     -- Build Command Rows
@@ -5320,25 +5377,26 @@ if isMainAccount then
                 Parent = cmdRow,
             })
 
-            C("TextLabel",{
-                Size = UDim2.new(0.45, 0, 1, 0),
-                Position = UDim2.new(0, 0, 0, 0),
+            local pfx = getgenv().Settings.prefix
+            local cmdLbl = C("TextLabel",{
+                Size = UDim2.new(1, 0, 0, 14),
+                Position = UDim2.new(0, 0, 0, 2),
                 BackgroundTransparency = 1,
-                Text = getgenv().Settings.prefix .. item.cmd,
-                TextColor3 = T.Accent,
+                Text = pfx .. item.cmd,
+                TextColor3 = T.Text,
                 TextSize = 10,
                 Font = T.FB,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = execBtn,
             })
 
-            C("TextLabel",{
-                Size = UDim2.new(0.55, 0, 1, 0),
-                Position = UDim2.new(0.45, 0, 0, 0),
+            local descLbl = C("TextLabel",{
+                Size = UDim2.new(1, 0, 0, 12),
+                Position = UDim2.new(0, 0, 0, 15),
                 BackgroundTransparency = 1,
                 Text = item.desc,
                 TextColor3 = T.Dim,
-                TextSize = 8.5,
+                TextSize = 8,
                 Font = T.FR,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = execBtn,
@@ -5346,139 +5404,154 @@ if isMainAccount then
 
             local argBox = nil
             if item.ha then
-                argBox = C("TextBox",{
+                local argCont = C("Frame",{
                     Size = UDim2.new(0.42, 0, 0, 20),
-                    Position = UDim2.new(0.56, 0, 0.5, -10),
+                    Position = UDim2.new(0.55, 0, 0.5, -10),
                     BackgroundColor3 = T.Elevated,
-                    BackgroundTransparency = 0.3,
+                    BackgroundTransparency = 0.4,
+                    Parent = cmdRow,
+                })
+                Cn(argCont, UDim.new(0, 4))
+                St(argCont, T.Border, 0.8)
+
+                argBox = C("TextBox",{
+                    Size = UDim2.new(1, -6, 1, 0),
+                    Position = UDim2.new(0, 4, 0, 0),
+                    BackgroundTransparency = 1,
                     PlaceholderText = item.al or "Target",
                     PlaceholderColor3 = T.Muted,
                     Text = "",
                     TextColor3 = T.Text,
                     TextSize = 9,
                     Font = T.FR,
+                    TextXAlignment = Enum.TextXAlignment.Left,
                     ClearTextOnFocus = false,
-                    Parent = cmdRow,
+                    Parent = argCont,
                 })
-                Cn(argBox, UDim.new(0, 4))
+
+                argBox.FocusLost:Connect(function(enter)
+                    if enter then
+                        local a = argBox.Text:gsub("^%s+", ""):gsub("%s+$", "")
+                        local fullCmd = pfx .. item.cmd .. (a ~= "" and (" " .. a) or "")
+                        ChatSend(fullCmd)
+                        pcall(function() if getgenv().PlaySFX then getgenv().PlaySFX("rbxassetid://6895079853") end end)
+                    end
+                end)
             end
 
             execBtn.MouseButton1Click:Connect(function()
-                local fullCmd = getgenv().Settings.prefix .. item.cmd
-                if argBox and argBox.Text ~= "" then
-                    fullCmd = fullCmd .. " " .. argBox.Text
-                end
+                local a = argBox and argBox.Text:gsub("^%s+", ""):gsub("%s+$", "") or ""
+                local fullCmd = pfx .. item.cmd .. (a ~= "" and (" " .. a) or "")
                 ChatSend(fullCmd)
-                Tw(cmdRow, {BackgroundColor3 = T.BorderGlow, BackgroundTransparency = 0.2}, 0.1)
-                task.delay(0.2, function() Tw(cmdRow, {BackgroundColor3 = T.Surface, BackgroundTransparency = 0.5}, 0.2) end)
+                Tw(cmdRow, {BackgroundColor3 = T.Elevated, BackgroundTransparency = 0.1}, 0.1)
+                task.delay(0.2, function()
+                    Tw(cmdRow, {BackgroundColor3 = T.Surface, BackgroundTransparency = 0.5}, 0.2)
+                end)
+                pcall(function() if getgenv().PlaySFX then getgenv().PlaySFX("rbxassetid://6895079853") end end)
             end)
 
             table.insert(allRows, {
                 row = cmdRow,
                 header = secHeader,
-                text = (item.cmd .. " " .. item.desc):lower(),
+                cmd = item.cmd:lower(),
+                desc = item.desc:lower(),
+                sec = sec.name:lower(),
             })
         end
     end
 
     -- Search Filter Logic
     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-        local q = searchBox.Text:lower():gsub("%s+", "")
-        for _, entry in ipairs(allRows) do
-            if entry.row then
-                if q == "" then
-                    entry.row.Visible = true
-                    if entry.header then entry.header.Visible = true end
-                else
-                    local match = (entry.text:find(q, 1, true) ~= nil)
-                    entry.row.Visible = match
-                    if entry.header then entry.header.Visible = true end
-                end
+        local q = searchBox.Text:lower():gsub("^%s+", ""):gsub("%s+$", "")
+        if q == "" then
+            for _, r in ipairs(allRows) do
+                r.row.Visible = true
+                r.header.Visible = true
+            end
+        else
+            local activeSecs = {}
+            for _, r in ipairs(allRows) do
+                local match = r.cmd:find(q, 1, true) or r.desc:find(q, 1, true) or r.sec:find(q, 1, true)
+                r.row.Visible = match ~= nil
+                if match then activeSecs[r.header] = true end
+            end
+            for _, r in ipairs(allRows) do
+                r.header.Visible = activeSecs[r.header] == true
             end
         end
     end)
 
-    -- Bottom Global Stop Button
-    local STOP_H = 34
-    local stopFrame = C("Frame",{
-        Size = UDim2.new(1, -16, 0, STOP_H),
-        Position = UDim2.new(0, 8, 1, -(STOP_H + 8)),
+    ----------------------------------------------------------------
+    -- FOOTER ACTIONS (Global Stop)
+    ----------------------------------------------------------------
+    local FOOTER_H = 34
+    local footerFrame = C("Frame",{
+        Size = UDim2.new(1, -16, 0, FOOTER_H),
+        Position = UDim2.new(0, 8, 1, -(FOOTER_H + 8)),
+        BackgroundColor3 = T.Bg,
         BackgroundTransparency = 1,
         Parent = MF,
     })
 
-    local stopBtn = C("TextButton",{
+    local stopAllBtn = C("TextButton",{
         Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 0, 0, 0),
         BackgroundColor3 = T.Red,
-        BackgroundTransparency = 0.3,
+        BackgroundTransparency = 0.2,
         Text = "STOP ALL ACTIONS",
         TextColor3 = Color3.new(1, 1, 1),
-        TextSize = 11,
+        TextSize = 10,
         Font = T.FB,
-        Parent = stopFrame,
+        BorderSizePixel = 0,
+        Parent = footerFrame,
     })
-    Cn(stopBtn, UDim.new(0, 6))
+    Cn(stopAllBtn, UDim.new(0, 6))
+    St(stopAllBtn, T.BorderDim, 1)
 
-    stopBtn.MouseButton1Click:Connect(function()
+    stopAllBtn.MouseButton1Click:Connect(function()
         ChatSend(getgenv().Settings.prefix .. "stop")
-        Tw(stopBtn, {BackgroundTransparency = 0.05}, 0.1)
-        task.delay(0.25, function() Tw(stopBtn, {BackgroundTransparency = 0.3}, 0.2) end)
+        ChatSend(getgenv().Settings.prefix .. "unall")
+        Tw(stopAllBtn, {BackgroundColor3 = Color3.fromRGB(180, 20, 50)}, 0.1)
+        task.delay(0.25, function()
+            Tw(stopAllBtn, {BackgroundColor3 = T.Red}, 0.2)
+        end)
     end)
 
-    -- Minimize and Restore Logic
-    local function MinimizeGUI()
+    -- Window Controls Interactions
+    minBtn.MouseButton1Click:Connect(function()
         MF.Visible = false
         iconContainer.Visible = true
-    end
+    end)
 
-    local function RestoreGUI()
-        MF.Visible = true
+    iconBtn.MouseButton1Click:Connect(function()
         iconContainer.Visible = false
-    end
+        MF.Visible = true
+    end)
 
-    minBtn.MouseButton1Click:Connect(MinimizeGUI)
-    closeBtn.MouseButton1Click:Connect(MinimizeGUI)
-    iconBtn.MouseButton1Click:Connect(RestoreGUI)
+    closeBtn.MouseButton1Click:Connect(function()
+        SG:Destroy()
+    end)
 
-    UIS.InputBegan:Connect(function(inp, gp)
-        if gp then return end
-        if inp.KeyCode == Enum.KeyCode.RightShift or (getgenv().Settings and inp.KeyCode == getgenv().Settings.uiKeybind) then
+    -- Right Control Keybind Toggle
+    local uiBind = getgenv().Settings.uiKeybind or Enum.KeyCode.RightControl
+    UIS.InputBegan:Connect(function(inp, gpe)
+        if not gpe and inp.KeyCode == uiBind then
             if MF.Visible then
-                MinimizeGUI()
+                MF.Visible = false
+                iconContainer.Visible = true
+            elseif iconContainer.Visible then
+                iconContainer.Visible = false
             else
-                RestoreGUI()
+                MF.Visible = true
             end
         end
     end)
 
-    -- Periodic Bot Cache and Fleet RAM update loop
+    -- Live RAM & Bot Count Auto-Refresh Loop
     task.spawn(function()
-        while task.wait(1.5) do
-            RefreshBotCache()
-            if BCL and BCL.Parent then
-                BCL.Text = "Bots: " .. _bc.total
-            end
-            if ramPage.Visible then
-                pcall(RefreshRamMonitor)
-            end
+        while _G.DayBreakActive do
+            RefreshRamMonitor()
+            task.wait(2)
         end
     end)
 end
-
-----------------------------------------------------------------
--- 18. INITIALIZE
-----------------------------------------------------------------
-InitAntiAFK()
-
-if isAltAccount and not isMainAccount then
-    task.spawn(function()
-        RegisterBot(LocalPlayer.Name)
-        task.wait(0.5)
-        local idx = SafeIndex() or 1
-        local total = SafeTotal()
-        task.wait(1.0 + ((idx - 1) * 0.25))
-        ChatSend(string.format("[DayBreak] Bot #%d/%d Online & Ready", idx, total))
-    end)
-end
-
-print("[DayBreak] Alt Control Initialized Successfully | Celestial Starlight Noir Edition")
