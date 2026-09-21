@@ -1350,10 +1350,11 @@ local function isDancing(character, animIdStr)
 end
 
 -- ===================================================================
---  UGC & CATALOG EMOTE ENGINE (True Asset-Unpacking Resolver)
+--  UNIVERSAL EMOTE ENGINE (Direct Animation ID + Multi-Method Fallback)
+--  Usage: !emote <name or ID>   e.g. !emote floss, !emote 10714340543
+--  Any numeric ID from the Roblox catalog/toolbox works as a raw asset.
 -- ===================================================================
 local _currentTrack = nil
-_G.DayBreakEmoteCache = _G.DayBreakEmoteCache or {}
 
 local function StopCurrentEmoteTrack()
     if _currentTrack then
@@ -1363,64 +1364,52 @@ local function StopCurrentEmoteTrack()
     end
 end
 
+-- Mapping of friendly name -> actual Animation asset ID (not bundle/emote page ID).
+-- These are the raw animation IDs that Animator:LoadAnimation can play directly.
 local DAYBREAK_EMOTE_CATALOG = {
-    { name = "floss", id = 10714340543 },
-    { name = "griddy", id = 10714371458 },
-    { name = "hype", id = 3695333480 },
-    { name = "justice", id = 3695333480 },
-    { name = "orangejustice", id = 3695333480 },
-    { name = "shrug", id = 3576968024 },
-    { name = "salute", id = 3360689775 },
-    { name = "tilt", id = 3360686498 },
-    { name = "stadium", id = 3360686498 },
-    { name = "point", id = 3576823880 },
-    { name = "cheer", id = 3576835634 },
-    { name = "wave", id = 3576835634 },
-    { name = "laugh", id = 3360689775 },
-    { name = "dance", id = 507771019 },
-    { name = "dance2", id = 507776043 },
-    { name = "dance3", id = 507777268 },
+    -- R15 default emotes
+    ["dance"]         = 507771019,
+    ["dance2"]        = 507776043,
+    ["dance3"]        = 507777268,
+    ["wave"]          = 507770239,
+    ["point"]         = 507770453,
+    ["laugh"]         = 507770818,
+    ["cheer"]         = 507770677,
+    -- Popular catalog emotes (animation asset IDs)
+    ["floss"]         = 5917459365,
+    ["griddy"]        = 12299297362,
+    ["hype"]          = 2685847926,
+    ["orangejustice"] = 2685847926,
+    ["justice"]       = 2685847926,
+    ["shrug"]         = 3576968024,
+    ["salute"]        = 3360689775,
+    ["tilt"]          = 3360686498,
+    ["stadium"]       = 3360686498,
+    ["headshake"]     = 2685857445,
+    ["clap"]          = 5915779043,
+    ["dab"]           = 10714340543,
+    ["tpose"]         = 3360689775,
+    ["pushups"]       = 2685856615,
+    ["situps"]        = 2685855949,
+    ["jumpingjacks"]  = 2685857488,
 }
 
-local function ResolveEmoteId(emoteArg)
+local function ResolveAnimationId(emoteArg)
     if not emoteArg then return nil end
     local raw = tostring(emoteArg):lower():gsub("%s+", "")
+
+    -- Direct numeric ID -> use as-is
     if raw:match("^%d+$") then return tonumber(raw) end
-    for _, item in ipairs(DAYBREAK_EMOTE_CATALOG) do
-        if item.name == raw then return item.id end
+
+    -- Lookup in catalog
+    if DAYBREAK_EMOTE_CATALOG[raw] then return DAYBREAK_EMOTE_CATALOG[raw] end
+
+    -- Partial name match
+    for name, id in pairs(DAYBREAK_EMOTE_CATALOG) do
+        if name:find(raw, 1, true) then return id end
     end
+
     return nil
-end
-
-local function ResolveEmoteAnimation(assetId)
-    if not assetId then return nil end
-    if _G.DayBreakEmoteCache[assetId] then return _G.DayBreakEmoteCache[assetId] end
-
-    local myIdx = SafeIndex()
-    task.wait((myIdx - 1) * 0.12)
-
-    local success, result = pcall(function()
-        local objs = game:GetObjects("rbxassetid://" .. tostring(assetId))
-        if objs and #objs > 0 then
-            for _, obj in ipairs(objs) do
-                if obj:IsA("Animation") then return obj end
-                for _, desc in ipairs(obj:GetDescendants()) do
-                    if desc:IsA("Animation") then return desc end
-                end
-            end
-        end
-        return nil
-    end)
-
-    if success and result then
-        _G.DayBreakEmoteCache[assetId] = result
-        return result
-    end
-
-    local fallbackAnim = Instance.new("Animation")
-    fallbackAnim.AnimationId = "rbxassetid://" .. tostring(assetId)
-    _G.DayBreakEmoteCache[assetId] = fallbackAnim
-    return fallbackAnim
 end
 
 local function PlayDayBreakEmote(emoteArg)
@@ -1431,18 +1420,21 @@ local function PlayDayBreakEmote(emoteArg)
 
     StopCurrentEmoteTrack()
 
-    local assetId = ResolveEmoteId(emoteArg)
-    if not assetId then
-        local rawStr = tostring(emoteArg)
-        local r6Success = pcall(function() hum:PlayEmote(rawStr) end)
-        return r6Success
-    end
+    local animId = ResolveAnimationId(emoteArg)
 
-    local animObj = ResolveEmoteAnimation(assetId)
-    if animObj then
-        local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
-        local success, track = pcall(function() return animator:LoadAnimation(animObj) end)
-        if success and track then
+    -- Method 1: Direct Animation object with Animator:LoadAnimation (most reliable)
+    if animId then
+        local ok, track = pcall(function()
+            local anim = Instance.new("Animation")
+            anim.AnimationId = "rbxassetid://" .. tostring(animId)
+            local animator = hum:FindFirstChildOfClass("Animator")
+            if not animator then
+                animator = Instance.new("Animator")
+                animator.Parent = hum
+            end
+            return animator:LoadAnimation(anim)
+        end)
+        if ok and track then
             track.Priority = Enum.AnimationPriority.Action4
             track.Looped = true
             track:Play(0.1)
@@ -1451,22 +1443,77 @@ local function PlayDayBreakEmote(emoteArg)
         end
     end
 
+    -- Method 2: Try Humanoid:PlayEmote with string name (works for avatar-owned emotes)
     local emoteStr = tostring(emoteArg)
-    local fSuccess = pcall(function() hum:PlayEmote(emoteStr) end)
-    return fSuccess
+    local emoteOk = pcall(function()
+        local desc = hum:FindFirstChildOfClass("HumanoidDescription")
+        if desc then
+            local emotes = desc:GetEmotes()
+            for eName, eList in pairs(emotes) do
+                if eName:lower() == emoteStr:lower() then
+                    hum:PlayEmote(eName)
+                    return
+                end
+            end
+        end
+        hum:PlayEmote(emoteStr)
+    end)
+    if emoteOk then return true end
+
+    -- Method 3: If user passed a raw number and Method 1 failed, try game:GetObjects fallback
+    if animId then
+        local objOk, objTrack = pcall(function()
+            local objs = game:GetObjects("rbxassetid://" .. tostring(animId))
+            if objs and #objs > 0 then
+                local animObj = nil
+                for _, obj in ipairs(objs) do
+                    if obj:IsA("Animation") then animObj = obj; break end
+                    for _, desc in ipairs(obj:GetDescendants()) do
+                        if desc:IsA("Animation") then animObj = desc; break end
+                    end
+                    if animObj then break end
+                end
+                if animObj then
+                    local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+                    local t = animator:LoadAnimation(animObj)
+                    t.Priority = Enum.AnimationPriority.Action4
+                    t.Looped = true
+                    t:Play(0.1)
+                    return t
+                end
+            end
+            return nil
+        end)
+        if objOk and objTrack then
+            _currentTrack = objTrack
+            return true
+        end
+    end
+
+    return false
 end
 
 Commands.emote = function(args, speaker)
-    local shouldRun, _ = ParseBotTarget(args)
+    local shouldRun, newArgs = ParseBotTarget(args)
     if not shouldRun then return end
-    local emoteArg = args[2] or "dance"
-    PlayDayBreakEmote(emoteArg)
+    -- Support multi-word emote names: !emote orange justice -> "orangejustice"
+    local emoteArg = nil
+    if newArgs[2] then
+        local parts = {}
+        for i = 2, #newArgs do table.insert(parts, newArgs[i]) end
+        emoteArg = table.concat(parts, "")
+    end
+    emoteArg = emoteArg or "dance"
+    local ok = PlayDayBreakEmote(emoteArg)
+    if not ok and SafeIndex() == 1 then
+        ChatSend("[Emote] Could not play: " .. tostring(args[2] or "dance") .. " - try a numeric asset ID from the catalog")
+    end
 end
 
 Commands.sync = function(args, speaker)
     local emoteArg = args[2] or "dance"
     local idx = SafeIndex()
-    task.delay((idx - 1) * 0.05, function()
+    task.delay((idx - 1) * 0.08, function()
         PlayDayBreakEmote(emoteArg)
     end)
 end
@@ -1479,24 +1526,32 @@ Commands.unemote = function(args, speaker)
     if char then
         local hum = char:FindFirstChildOfClass("Humanoid")
         if hum then
-            for _, t in ipairs(hum:GetPlayingAnimationTracks()) do
-                if t.Priority == Enum.AnimationPriority.Action4 or t.Priority == Enum.AnimationPriority.Action then
-                    t:Stop(0.1)
+            local animator = hum:FindFirstChildOfClass("Animator")
+            if animator then
+                for _, t in ipairs(animator:GetPlayingAnimationTracks()) do
+                    if t.Priority == Enum.AnimationPriority.Action4 or t.Priority == Enum.AnimationPriority.Action then
+                        t:Stop(0.1)
+                    end
                 end
             end
         end
     end
 end
 Commands.stopemote = Commands.unemote
-Commands.dance = function(args, speaker) Commands.emote({"emote", "dance"}, speaker) end
-Commands.dance2 = function(args, speaker) Commands.emote({"emote", "dance2"}, speaker) end
-Commands.dance3 = function(args, speaker) Commands.emote({"emote", "dance3"}, speaker) end
-Commands.wave = function(args, speaker) Commands.emote({"emote", "wave"}, speaker) end
-Commands.point = function(args, speaker) Commands.emote({"emote", "point"}, speaker) end
-Commands.cheer = function(args, speaker) Commands.emote({"emote", "cheer"}, speaker) end
-Commands.laugh = function(args, speaker) Commands.emote({"emote", "laugh"}, speaker) end
-Commands.floss = function(args, speaker) Commands.emote({"emote", "floss"}, speaker) end
-Commands.griddy = function(args, speaker) Commands.emote({"emote", "griddy"}, speaker) end
+Commands.dance  = function(args, speaker) PlayDayBreakEmote("dance") end
+Commands.dance2 = function(args, speaker) PlayDayBreakEmote("dance2") end
+Commands.dance3 = function(args, speaker) PlayDayBreakEmote("dance3") end
+Commands.wave   = function(args, speaker) PlayDayBreakEmote("wave") end
+Commands.point  = function(args, speaker) PlayDayBreakEmote("point") end
+Commands.cheer  = function(args, speaker) PlayDayBreakEmote("cheer") end
+Commands.laugh  = function(args, speaker) PlayDayBreakEmote("laugh") end
+Commands.floss  = function(args, speaker) PlayDayBreakEmote("floss") end
+Commands.griddy = function(args, speaker) PlayDayBreakEmote("griddy") end
+Commands.dab    = function(args, speaker) PlayDayBreakEmote("dab") end
+Commands.hype   = function(args, speaker) PlayDayBreakEmote("hype") end
+Commands.shrug  = function(args, speaker) PlayDayBreakEmote("shrug") end
+Commands.salute = function(args, speaker) PlayDayBreakEmote("salute") end
+Commands.clap   = function(args, speaker) PlayDayBreakEmote("clap") end
 
 
 Commands.firework = function(args, speaker)
