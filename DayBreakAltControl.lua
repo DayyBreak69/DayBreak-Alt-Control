@@ -239,25 +239,35 @@ local function IsBotPlayer(plr)
     end
     
     -- 6. Check if RAM file exists locally
+    local ramFound = false
     pcall(function()
         if isfile and isfile("DayBreak_RAM_" .. name .. ".txt") then
             RegisterBot(name)
-            return true
+            ramFound = true
         end
     end)
+    if ramFound then return true end
     
     return false
 end
 
-local _bc = { list = {}, map = {}, total = 0, lastUpdate = 0 }
+local _bc = { list = {}, map = {}, total = 0, lastUpdate = 0, setHash = "" }
+local _lockedPositions = {}   -- name -> locked index (persists until bot leaves)
 
-local function RefreshBotCache()
+local function NaturalSortKey(name)
+    local prefix, num = name:match("^(.-)(%d+)$")
+    if prefix and num then
+        return prefix .. string.format("%06d", tonumber(num))
+    end
+    return name
+end
+
+local function RefreshBotCache(forceRebuild)
     local now = tick()
-    if now - _bc.lastUpdate < 0.5 then return end
+    if not forceRebuild and (now - _bc.lastUpdate < 2) then return end
     _bc.lastUpdate = now
     local online = {}
     
-    -- If LocalPlayer is Alt, group with bots sharing same fleet prefix
     local myName = LocalPlayer.Name:lower()
     local isAlt = isAltAccount
     
@@ -275,11 +285,68 @@ local function RefreshBotCache()
             end
         end
     end
-    table.sort(online)
+
+    -- Natural numerical sorting: Bot2 < Bot3 < Bot6 < Bot7 < Bot10
+    table.sort(online, function(a, b)
+        return NaturalSortKey(a) < NaturalSortKey(b)
+    end)
+
+    -- Build a hash of the current online set to detect actual changes
+    local newHash = table.concat(online, ",")
+    if newHash == _bc.setHash and not forceRebuild then
+        return  -- same set of bots, no re-index needed
+    end
+    _bc.setHash = newHash
+
+    -- Remove locked positions for bots no longer online
+    local onlineSet = {}
+    for _, n in ipairs(online) do onlineSet[n] = true end
+    for name, _ in pairs(_lockedPositions) do
+        if not onlineSet[name] then
+            _lockedPositions[name] = nil
+        end
+    end
+
+    -- Assign stable indices: keep existing locked positions, assign new ones to open slots
+    local usedSlots = {}
+    for name, slot in pairs(_lockedPositions) do
+        if onlineSet[name] then
+            usedSlots[slot] = name
+        end
+    end
+
+    -- New bots get the next available slot in natural-sort order
+    for _, name in ipairs(online) do
+        if not _lockedPositions[name] then
+            local slot = 1
+            while usedSlots[slot] do
+                slot = slot + 1
+            end
+            _lockedPositions[name] = slot
+            usedSlots[slot] = name
+        end
+    end
+
+    -- Build the final sorted list by locked position
+    table.sort(online, function(a, b)
+        return (_lockedPositions[a] or 999) < (_lockedPositions[b] or 999)
+    end)
+
     local m = {}
     for i, n in ipairs(online) do m[n] = i end
     _bc.list, _bc.map, _bc.total = online, m, #online
 end
+
+-- Force re-index when a player leaves so departed bots free their slot
+pcall(function()
+    Players.PlayerRemoving:Connect(function(plr)
+        local nl = plr.Name:lower()
+        if _lockedPositions[nl] then
+            _lockedPositions[nl] = nil
+            _bc.lastUpdate = 0  -- force next RefreshBotCache to rebuild
+        end
+    end)
+end)
 
 local function MyIndex()
     RefreshBotCache()
