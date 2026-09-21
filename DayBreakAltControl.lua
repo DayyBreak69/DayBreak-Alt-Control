@@ -5631,10 +5631,13 @@ if isMainAccount then
     St(stopAllBtn, T.BorderDim, 1)
 
     stopAllBtn.MouseButton1Click:Connect(function()
-        ChatSend(getgenv().Settings.prefix .. "stop")
-        ChatSend(getgenv().Settings.prefix .. "unall")
+        local pfx = getgenv().Settings.prefix
+        ChatSend(pfx .. "stop")
         Tw(stopAllBtn, {BackgroundColor3 = Color3.fromRGB(180, 20, 50)}, 0.1)
-        task.delay(0.25, function()
+        task.delay(0.3, function()
+            ChatSend(pfx .. "unall")
+        end)
+        task.delay(0.5, function()
             Tw(stopAllBtn, {BackgroundColor3 = T.Red}, 0.2)
         end)
     end)
