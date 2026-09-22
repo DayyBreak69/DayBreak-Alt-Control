@@ -14,9 +14,7 @@ local _userSettings = getgenv().Settings or {}
 getgenv().Settings = {
     prefix = _userSettings.prefix or "!",
     mainAccount = _userSettings.mainAccount or "DayyBreak66",
-    altAccounts = _userSettings.altAccounts or {
-        ["alt1"] = true,
-        ["alt2"] = true,
+    altAccounts = _userSettings.altAccounts or {},
     },
     whitelistedUsers = _userSettings.whitelistedUsers or {},
     autoReconnect = (_userSettings.autoReconnect ~= nil) and _userSettings.autoReconnect or true,
@@ -148,6 +146,9 @@ local function RegisterBot(name, ramVal)
     if nl == mainName and mainName ~= "" then return end
     if nl == "daybreak" or nl == "dayybreak66" or nl == "haylees_ekitty" or nl == "xomqhayleealt" then return end
     if getgenv().CoHosts and getgenv().CoHosts[nl] then return end
+    -- Only register if this player is actually in the server
+    local pObj = Players:FindFirstChild(name)
+    if not pObj then return end
     _registeredBots[nl] = { time = tick(), ram = ramVal or "Online" }
 end
 
@@ -213,41 +214,29 @@ local function IsBotPlayer(plr)
     if getgenv().CoHosts and getgenv().CoHosts[name] then return false end
     local pObj = Players:FindFirstChild(plr.Name)
     if pObj and pObj:GetAttribute("DayBreakHost") then return false end
-    
+
     -- Self is always a bot if running as alt
     if plr == LocalPlayer and isAltAccount then return true end
-    
-    -- 1. Explicitly configured in Settings.altAccounts
-    if getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[name] then return true end
-    
-    -- 2. Registered via Chat announcement/handshake or file sync
+
+    -- 1. Explicitly configured in Settings.altAccounts (STRICT boolean match)
+    if getgenv().Settings and getgenv().Settings.altAccounts
+       and getgenv().Settings.altAccounts[name] == true then
+        return true
+    end
+
+    -- 2. Registered via chat announcement/handshake
     if _registeredBots[name] then return true end
-    
-    -- 3. Check client attribute
-    if plr:GetAttribute("DayBreakBot") or plr:GetAttribute("DayBreakRAM") then return true end
-    
-    -- 4. Shared Username Prefix Auto-Detection (e.g. BreakerAltBot2, BreakerAltBot3... / Gummies1, Gummies2...)
-    local myName = LocalPlayer.Name:lower()
-    local prefixLen = math.min(4, #myName)
-    if prefixLen >= 3 and name:sub(1, prefixLen) == myName:sub(1, prefixLen) then
-        return true
-    end
-    
-    -- 5. Common Alt/Bot Keywords & Numbered Suffixes (e.g. BreakerAltBot, AltBot, Bot1..99)
-    if name:find("alt") or name:find("bot") or name:find("breaker") then
-        return true
-    end
-    
-    -- 6. Check if RAM file exists locally
-    local ramFound = false
-    pcall(function()
-        if isfile and isfile("DayBreak_RAM_" .. name .. ".txt") then
-            RegisterBot(name)
-            ramFound = true
-        end
-    end)
-    if ramFound then return true end
-    
+
+    -- 3. Client attribute set by the alt itself on join (most reliable signal)
+    if plr:GetAttribute("DayBreakBot") == true then return true end
+    if plr:GetAttribute("DayBreakRAM") ~= nil then return true end
+
+    -- NOTE: Prefix-matching, keyword-matching, and RAM-file heuristics
+    -- have been REMOVED. They caused false positives (any player with
+    -- "alt"/"bot"/"breaker" in their name, or shared name prefix, was
+    -- wrongly counted as a bot), which inflated SafeTotal() and made
+    -- formations size as if more bots were online than actually were.
+
     return false
 end
 
@@ -266,18 +255,35 @@ local function RefreshBotCache(forceRebuild)
     local now = tick()
     if not forceRebuild and (now - _bc.lastUpdate < 2) then return end
     _bc.lastUpdate = now
+
+    -- Purge stale registered bots that are no longer in the server
+    local onlineSet = {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        onlineSet[p.Name:lower()] = true
+    end
+    for regName, _ in pairs(_registeredBots) do
+        if not onlineSet[regName] then
+            _registeredBots[regName] = nil
+        end
+    end
+
     local online = {}
-    
     local myName = LocalPlayer.Name:lower()
     local isAlt = isAltAccount
-    
+
     for _, p in ipairs(Players:GetPlayers()) do
         local nl = p.Name:lower()
         if IsBotPlayer(p) or (p == LocalPlayer and isAltAccount) then
             if isAlt then
-                local myPrefix = myName:match("^([%a_]+)%d*$") or myName:sub(1, 4)
-                local pPrefix = nl:match("^([%a_]+)%d*$") or nl:sub(1, 4)
-                if myPrefix == pPrefix or (getgenv().Settings and getgenv().Settings.altAccounts and getgenv().Settings.altAccounts[nl]) or _registeredBots[nl] then
+                -- STRICT: only count as bot if explicit config, registered, or attribute set
+                local explicit   = (getgenv().Settings and getgenv().Settings.altAccounts
+                                    and getgenv().Settings.altAccounts[nl] == true)
+                local registered = _registeredBots[nl] ~= nil
+                local attrSet    = (p:GetAttribute("DayBreakBot") == true)
+                                   or (p:GetAttribute("DayBreakRAM") ~= nil)
+                local isSelf     = (p == LocalPlayer)
+
+                if isSelf or explicit or registered or attrSet then
                     table.insert(online, nl)
                 end
             else
@@ -299,10 +305,10 @@ local function RefreshBotCache(forceRebuild)
     _bc.setHash = newHash
 
     -- Remove locked positions for bots no longer online
-    local onlineSet = {}
-    for _, n in ipairs(online) do onlineSet[n] = true end
+    local onlineSet2 = {}
+    for _, n in ipairs(online) do onlineSet2[n] = true end
     for name, _ in pairs(_lockedPositions) do
-        if not onlineSet[name] then
+        if not onlineSet2[name] then
             _lockedPositions[name] = nil
         end
     end
@@ -310,7 +316,7 @@ local function RefreshBotCache(forceRebuild)
     -- Assign stable indices: keep existing locked positions, assign new ones to open slots
     local usedSlots = {}
     for name, slot in pairs(_lockedPositions) do
-        if onlineSet[name] then
+        if onlineSet2[name] then
             usedSlots[slot] = name
         end
     end
@@ -359,7 +365,9 @@ local function SafeIndex()
 end
 
 local function TotalBots()
-    RefreshBotCache()
+    -- Force a fresh recount whenever callers ask — this is cheap and
+    -- guarantees formation math always uses the real online count.
+    RefreshBotCache(true)
     return math.max(1, _bc.total)
 end
 
