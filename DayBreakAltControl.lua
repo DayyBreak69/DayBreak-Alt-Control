@@ -1,3 +1,6 @@
+-- ================================================================
+-- DayBreak Adaptive Formation System: supports 1-12 online bots
+-- ================================================================
 -- =================================================================
 --        DAYBREAK ALT CONTROL - CELESTIAL STARLIGHT NOIR
 --                   DEVELOPED BY DAYBREAK
@@ -379,42 +382,14 @@ local function RefreshBotCache(forceRebuild)
     end
     _bc.setHash = newHash
 
-    -- Remove locked positions for bots no longer online
-    local onlineSet2 = {}
-    for _, n in ipairs(online) do onlineSet2[n] = true end
-    for name, _ in pairs(_lockedPositions) do
-        if not onlineSet2[name] then
-            _lockedPositions[name] = nil
-        end
-    end
-
-    -- Assign stable indices: keep existing locked positions, assign new ones to open slots
-    local usedSlots = {}
-    for name, slot in pairs(_lockedPositions) do
-        if onlineSet2[name] then
-            usedSlots[slot] = name
-        end
-    end
-
-    -- New bots get the next available slot in natural-sort order
-    for _, name in ipairs(online) do
-        if not _lockedPositions[name] then
-            local slot = 1
-            while usedSlots[slot] do
-                slot = slot + 1
-            end
-            _lockedPositions[name] = slot
-            usedSlots[slot] = name
-        end
-    end
-
-    -- Build the final sorted list by locked position
-    table.sort(online, function(a, b)
-        return (_lockedPositions[a] or 999) < (_lockedPositions[b] or 999)
-    end)
-
+    -- Deterministic bot slots:
+    -- Every client derives Bot # from the same complete natural-name order.
+    -- This prevents two executors from assigning the same bot different slots.
     local m = {}
-    for i, n in ipairs(online) do m[n] = i end
+    for i, n in ipairs(online) do
+        m[n] = i
+    end
+
     _bc.list, _bc.map, _bc.total = online, m, #online
 end
 
@@ -1003,8 +978,8 @@ Commands.circle = function(args, speaker)
     local radius, target = ParseSpeedTarget(args, speaker, nil)
     if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
     local idx, total = SafeIndex(), SafeTotal()
-    radius = radius or math.max(8, total * 1.2)
-    local angle  = (idx / total) * (2 * math.pi)
+    radius = AdaptiveCircleRadius(total, radius)
+    local angle  = ((idx - 1) / total) * (2 * math.pi)
     local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
     local tRoot  = target.Character:FindFirstChild("HumanoidRootPart")
     local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -1019,7 +994,7 @@ Commands.loopcircle = function(args, speaker)
         while _G.CurrentCommand == "LoopCircle" and target and target.Character do
             local idx, total = SafeIndex(), SafeTotal()
             local radius = radiusIn or math.max(8, total * 1.2)
-            local angle  = (idx / total) * (2 * math.pi)
+            local angle  = ((idx - 1) / total) * (2 * math.pi)
             local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
             local tRoot  = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
             local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -2643,6 +2618,73 @@ Commands.unvfx = function(args, speaker)
 end
 
 -- ===================================================================
+--  ADAPTIVE 1-12 BOT POSITIONING
+--  All formations use the actual online bot count.
+--  Layouts are deliberately compact for small groups and expand smoothly
+--  as more bots join, so 6 bots do not get spaced as if 12 were present.
+local MAX_DAYBREAK_BOTS = 12
+
+local function ClampBotCount(n)
+    return math.clamp(tonumber(n) or 1, 1, MAX_DAYBREAK_BOTS)
+end
+
+local function AdaptiveCircleRadius(total, preferred)
+    total = ClampBotCount(total)
+    if preferred then return math.max(5, tonumber(preferred) or 5) end
+    -- Keeps roughly human-width spacing between neighbors without making
+    -- small groups unnecessarily large.
+    local spacing = 5.5
+    return math.max(7, (spacing * total) / (2 * math.pi))
+end
+
+local function AdaptiveGrid(total)
+    total = ClampBotCount(total)
+    -- Rows x columns chosen to stay compact while keeping each slot usable.
+    local rows, cols
+    if total <= 2 then
+        rows, cols = 1, total
+    elseif total <= 4 then
+        rows, cols = 2, 2
+    elseif total <= 6 then
+        rows, cols = 2, 3
+    elseif total <= 8 then
+        rows, cols = 2, 4
+    elseif total <= 9 then
+        rows, cols = 3, 3
+    else
+        rows, cols = 3, 4
+    end
+    return rows, cols
+end
+
+local function AdaptiveGridOffset(index, total, xSpacing, zSpacing)
+    total = ClampBotCount(total)
+    index = math.clamp(tonumber(index) or 1, 1, total)
+    local rows, cols = AdaptiveGrid(total)
+
+    local row = math.floor((index - 1) / cols)
+    local col = (index - 1) % cols
+    local actualCols = math.min(cols, total - row * cols)
+
+    -- Center every row independently so 5/7/10/11 bots do not leave
+    -- a visually off-center last row.
+    local x = (col - (actualCols - 1) / 2) * xSpacing
+    local z = (row - (rows - 1) / 2) * zSpacing
+    return Vector3.new(x, 0, z)
+end
+
+local function AdaptiveLineOffset(index, total, spacing)
+    total = ClampBotCount(total)
+    index = math.clamp(tonumber(index) or 1, 1, total)
+    spacing = tonumber(spacing) or 4
+    return Vector3.new((index - (total + 1) / 2) * spacing, 0, 0)
+end
+
+local function AdaptiveCoffinOffset(index, total)
+    -- A coffin-style carrier scales from 2 columns up to 3x4.
+    return AdaptiveGridOffset(index, total, 3.5, 3.5)
+end
+
 --  SMART FORMATIONS (Smart dynamic positioning)
 -- ===================================================================
 local function GetFormationTargetHRP(args, speaker)
@@ -2658,7 +2700,7 @@ Commands.circle = function(args, speaker)
     if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
     StopAll(); task.wait(0.05); _G.CurrentCommand = "Circle"
     local idx, total = SafeIndex(), SafeTotal()
-    radius = radius or math.max(8, total * 1.2)
+    radius = AdaptiveCircleRadius(total, radius)
     local angle  = ((idx - 1) / total) * (2 * math.pi)
     local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
     local tRoot  = target.Character:FindFirstChild("HumanoidRootPart")
@@ -3127,7 +3169,7 @@ Commands.bodyguard = function(args, speaker)
         while _G.CurrentCommand == "bodyguard" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local angle = (myIdx / total) * (math.pi * 2)
+                local angle = ((myIdx - 1) / total) * (math.pi * 2)
                 local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
                 local targetPos = hrp.Position + offset
                 myHrp.CFrame = CFrame.lookAt(targetPos, targetPos + (offset.Unit * 10))
@@ -3214,17 +3256,15 @@ Commands.coffin = function(args, speaker)
     local hrp, target = GetFormationTargetHRP(args, speaker)
     if not hrp then return end
     local myIdx = SafeIndex()
-    local offsets = {
-        Vector3.new(3, 0, 4), Vector3.new(-3, 0, 4),
-        Vector3.new(3, 0, 0), Vector3.new(-3, 0, 0),
-        Vector3.new(3, 0, -4), Vector3.new(-3, 0, -4)
-    }
+    -- Adaptive carrier layout: 2x3 for six, 3x4 for ten-to-twelve.
+    -- No bot reuses another bot's position.
+    local offsets = nil
 
     task.spawn(function()
         while _G.CurrentCommand == "coffin" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local relOffset = offsets[((myIdx - 1) % #offsets) + 1]
+                local relOffset = AdaptiveCoffinOffset(myIdx, SafeTotal())
                 local targetCFrame = hrp.CFrame * CFrame.new(relOffset)
                 local bounce = math.sin(tick() * 6) * 1.5
                 myHrp.CFrame = CFrame.new(targetCFrame.Position + Vector3.new(0, bounce, 0), hrp.Position + (hrp.CFrame.LookVector * 10))
@@ -3247,7 +3287,8 @@ Commands.conga = function(args, speaker)
         while _G.CurrentCommand == "conga" and _G.DayBreakActive do
             if hrp and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local myHrp = LocalPlayer.Character.HumanoidRootPart
-                local targetCFrame = hrp.CFrame * CFrame.new(0, 0, myIdx * spacing)
+                local centeredIndex = myIdx - (SafeTotal() + 1) / 2
+                local targetCFrame = hrp.CFrame * CFrame.new(0, 0, centeredIndex * spacing)
                 myHrp.CFrame = myHrp.CFrame:Lerp(targetCFrame, 0.3)
             end
             RunService.Heartbeat:Wait()
@@ -3268,7 +3309,7 @@ Commands.stare = function(args, speaker)
     -- Position bots once into staring ring
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         local myHrp = LocalPlayer.Character.HumanoidRootPart
-        local angle = (myIdx / total) * (math.pi * 2)
+        local angle = ((myIdx - 1) / total) * (math.pi * 2)
         local initialPos = hrp.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
         myHrp.CFrame = CFrame.lookAt(initialPos, hrp.Position)
     end
@@ -3305,7 +3346,7 @@ Commands.tornado = function(args, speaker)
                 local t = tick() * 4
                 local yOffset = ((math.sin(t + myIdx) + 1) / 2) * 14
                 local radius = 5 + (yOffset * 0.4)
-                local angle = t + ((myIdx / total) * (math.pi * 2))
+                local angle = t + (((myIdx - 1) / total) * (math.pi * 2))
                 local targetPos = hrp.Position + Vector3.new(math.cos(angle) * radius, yOffset, math.sin(angle) * radius)
                 myHrp.CFrame = CFrame.lookAt(targetPos, hrp.Position + Vector3.new(0, yOffset, 0))
             end
