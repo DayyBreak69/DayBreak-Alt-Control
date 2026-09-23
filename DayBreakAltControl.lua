@@ -205,37 +205,112 @@ local function ParseBotTarget(args)
     return true, args
 end
 
+local function IsConfiguredAltName(name)
+    if not name then return false end
+    local nl = tostring(name):lower()
+    local alts = GENV.Settings and GENV.Settings.altAccounts
+    if type(alts) ~= "table" then return false end
+
+    -- Supported format: { ["username"] = true }
+    if alts[nl] == true or alts[tostring(name)] == true then
+        return true
+    end
+
+    -- Also support: { "Username1", "Username2", ... }
+    for k, v in pairs(alts) do
+        if type(v) == "string" and v:lower() == nl then
+            return true
+        end
+        if type(k) == "string" and k:lower() == nl and v then
+            return true
+        end
+    end
+
+    return false
+end
+
+-- Shared local registry lets every executor instance discover the same
+-- online bot roster instead of each alt seeing only itself as Bot #1.
+local BOT_REGISTRY_PREFIX = "DayBreak_BotRegistry_"
+local BOT_REGISTRY_TTL = 12
+
+local function RegistryFileFor(name)
+    return BOT_REGISTRY_PREFIX .. tostring(name):lower() .. ".txt"
+end
+
+local function WriteBotRegistryHeartbeat()
+    if not isAltAccount then return end
+    pcall(function()
+        if writefile then
+            writefile(RegistryFileFor(LocalPlayer.Name), tostring(os.time()))
+        end
+    end)
+end
+
+local function IsFreshRegisteredBot(name)
+    if not name or type(readfile) ~= "function" then return false end
+    local ok, raw = pcall(readfile, RegistryFileFor(name))
+    if not ok or not raw then return false end
+    local stamp = tonumber(raw)
+    return stamp ~= nil and (os.time() - stamp) <= BOT_REGISTRY_TTL
+end
+
+local function CleanupOwnBotRegistry()
+    pcall(function()
+        if delfile and isfile and isfile(RegistryFileFor(LocalPlayer.Name)) then
+            delfile(RegistryFileFor(LocalPlayer.Name))
+        end
+    end)
+end
+
+if isAltAccount then
+    WriteBotRegistryHeartbeat()
+
+    task.spawn(function()
+        while _G.DayBreakActive do
+            WriteBotRegistryHeartbeat()
+            task.wait(3)
+        end
+    end)
+
+    if GENV.TrackConnection then
+        GENV.TrackConnection(game:GetService("Players").PlayerRemoving:Connect(function(p)
+            if p == LocalPlayer then
+                CleanupOwnBotRegistry()
+            end
+        end))
+    end
+end
+
 local function IsBotPlayer(plr)
     if not plr then return false end
     local name = plr.Name:lower()
     local mainName = (GENV.Settings and GENV.Settings.mainAccount or ""):lower()
+
     if name == mainName and mainName ~= "" then return false end
-    if name == "daybreak" or name == "dayybreak66" or name == "haylees_ekitty" or name == "xomqhayleealt" then return false end
+    if name == "daybreak" or name == "dayybreak66" or name == "haylees_ekitty" or name == "xomqhayleealt" then
+        return false
+    end
     if GENV.CoHosts and GENV.CoHosts[name] then return false end
+
     local pObj = Players:FindFirstChild(plr.Name)
     if pObj and pObj:GetAttribute("DayBreakHost") then return false end
 
-    -- Self is always a bot if running as alt
+    -- The local client is always its own bot when running on an alt.
     if plr == LocalPlayer and isAltAccount then return true end
 
-    -- 1. Explicitly configured in Settings.altAccounts (STRICT boolean match)
-    if GENV.Settings and GENV.Settings.altAccounts
-       and GENV.Settings.altAccounts[name] == true then
+    -- Explicit configuration, chat registration, replicated attribute,
+    -- or shared local registry can identify an alt.
+    if IsConfiguredAltName(name) then return true end
+    if _registeredBots[name] then return true end
+    if IsFreshRegisteredBot(name) then return true end
+
+    if pObj and (
+        pObj:GetAttribute("DayBreakBot") == true
+        or pObj:GetAttribute("DayBreakRAM") ~= nil
+    ) then
         return true
     end
-
-    -- 2. Registered via chat announcement/handshake
-    if _registeredBots[name] then return true end
-
-    -- 3. Client attribute set by the alt itself on join (most reliable signal)
-    if plr:GetAttribute("DayBreakBot") == true then return true end
-    if plr:GetAttribute("DayBreakRAM") ~= nil then return true end
-
-    -- NOTE: Prefix-matching, keyword-matching, and RAM-file heuristics
-    -- have been REMOVED. They caused false positives (any player with
-    -- "alt"/"bot"/"breaker" in their name, or shared name prefix, was
-    -- wrongly counted as a bot), which inflated SafeTotal() and made
-    -- formations size as if more bots were online than actually were.
 
     return false
 end
@@ -276,14 +351,14 @@ local function RefreshBotCache(forceRebuild)
         if IsBotPlayer(p) or (p == LocalPlayer and isAltAccount) then
             if isAlt then
                 -- STRICT: only count as bot if explicit config, registered, or attribute set
-                local explicit   = (GENV.Settings and GENV.Settings.altAccounts
-                                    and GENV.Settings.altAccounts[nl] == true)
-                local registered = _registeredBots[nl] ~= nil
+                local explicit   = IsConfiguredAltName(nl)
+                local registered = (_registeredBots[nl] ~= nil)
+                local fileReg    = IsFreshRegisteredBot(nl)
                 local attrSet    = (p:GetAttribute("DayBreakBot") == true)
                                    or (p:GetAttribute("DayBreakRAM") ~= nil)
                 local isSelf     = (p == LocalPlayer)
 
-                if isSelf or explicit or registered or attrSet then
+                if isSelf or explicit or registered or fileReg or attrSet then
                     table.insert(online, nl)
                 end
             else
@@ -355,14 +430,35 @@ pcall(function()
 end)
 
 local function MyIndex()
-    RefreshBotCache()
-    return _bc.map[LocalPlayer.Name:lower()] or 1
+    RefreshBotCache(true)
+    local idx = _bc.map[LocalPlayer.Name:lower()]
+    if type(idx) == "number" and idx > 0 then
+        return idx
+    end
+
+    -- If the cache was still being populated, do one immediate second pass.
+    task.wait()
+    RefreshBotCache(true)
+    idx = _bc.map[LocalPlayer.Name:lower()]
+    return (type(idx) == "number" and idx > 0) and idx or 1
 end
 
 local function SafeIndex()
     local idx = MyIndex()
     return (type(idx) == "number" and idx > 0) and idx or 1
 end
+
+task.delay(1, function()
+    pcall(function()
+        RefreshBotCache(true)
+        print(string.format(
+            "[DayBreak] Bot position synced: #%d of %d (%s)",
+            SafeIndex(),
+            SafeTotal(),
+            LocalPlayer.Name
+        ))
+    end)
+end)
 
 local function TotalBots()
     -- Force a fresh recount whenever callers ask — this is cheap and
