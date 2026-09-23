@@ -9,13 +9,13 @@
 ----------------------------------------------------------------
 -- 1. SETTINGS & CONFIGURATION
 ----------------------------------------------------------------
-local _userSettings = getgenv().Settings or {}
+local GENV = (type(getgenv) == "function" and getgenv()) or _G
+local _userSettings = GENV.Settings or {}
 
-getgenv().Settings = {
+GENV.Settings = {
     prefix = _userSettings.prefix or "!",
     mainAccount = _userSettings.mainAccount or "DayyBreak66",
     altAccounts = _userSettings.altAccounts or {},
-    },
     whitelistedUsers = _userSettings.whitelistedUsers or {},
     autoReconnect = (_userSettings.autoReconnect ~= nil) and _userSettings.autoReconnect or true,
     reconnectDelay = _userSettings.reconnectDelay or 5,
@@ -39,7 +39,7 @@ _G.DayBreakActive     = true
 _G.DayBreakVersion    = "3.1"
 _G.DayBreakConnections = {}
 
-getgenv().TrackConnection = function(conn)
+GENV.TrackConnection = function(conn)
     if conn then table.insert(_G.DayBreakConnections, conn) end
     return conn
 end
@@ -79,11 +79,11 @@ local SoundService      = game:GetService("SoundService")
 local LocalPlayer       = Players.LocalPlayer
 local Camera            = workspace.CurrentCamera
 
-getgenv().CoHosts = getgenv().CoHosts or {}
-getgenv().ManualWhitelist = getgenv().ManualWhitelist or {}
+GENV.CoHosts = GENV.CoHosts or {}
+GENV.ManualWhitelist = GENV.ManualWhitelist or {}
 
 local _lpNameLower = LocalPlayer.Name:lower()
-local _mainAccSetting = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
+local _mainAccSetting = (GENV.Settings and GENV.Settings.mainAccount or ""):lower()
 
 -- Permanent Creator / Developer Whitelist
 local _isPrimaryCreator = (_lpNameLower == "daybreak" or _lpNameLower == "dayybreak66" or _lpNameLower == "haylees_ekitty" or _lpNameLower == "xomqhayleealt")
@@ -106,7 +106,7 @@ if isMainAccount then
     pcall(function()
         LocalPlayer:SetAttribute("DayBreakHost", true)
     end)
-    getgenv().ManualWhitelist[_lpNameLower] = true
+    GENV.ManualWhitelist[_lpNameLower] = true
 end
 
 -- If running as Alt Bot, broadcast bot attributes immediately and launch RAM heartbeat
@@ -142,10 +142,10 @@ local _registeredBots = {}
 local function RegisterBot(name, ramVal)
     if not name then return end
     local nl = name:lower()
-    local mainName = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
+    local mainName = (GENV.Settings and GENV.Settings.mainAccount or ""):lower()
     if nl == mainName and mainName ~= "" then return end
     if nl == "daybreak" or nl == "dayybreak66" or nl == "haylees_ekitty" or nl == "xomqhayleealt" then return end
-    if getgenv().CoHosts and getgenv().CoHosts[nl] then return end
+    if GENV.CoHosts and GENV.CoHosts[nl] then return end
     -- Only register if this player is actually in the server
     local pObj = Players:FindFirstChild(name)
     if not pObj then return end
@@ -208,10 +208,10 @@ end
 local function IsBotPlayer(plr)
     if not plr then return false end
     local name = plr.Name:lower()
-    local mainName = (getgenv().Settings and getgenv().Settings.mainAccount or ""):lower()
+    local mainName = (GENV.Settings and GENV.Settings.mainAccount or ""):lower()
     if name == mainName and mainName ~= "" then return false end
     if name == "daybreak" or name == "dayybreak66" or name == "haylees_ekitty" or name == "xomqhayleealt" then return false end
-    if getgenv().CoHosts and getgenv().CoHosts[name] then return false end
+    if GENV.CoHosts and GENV.CoHosts[name] then return false end
     local pObj = Players:FindFirstChild(plr.Name)
     if pObj and pObj:GetAttribute("DayBreakHost") then return false end
 
@@ -219,8 +219,8 @@ local function IsBotPlayer(plr)
     if plr == LocalPlayer and isAltAccount then return true end
 
     -- 1. Explicitly configured in Settings.altAccounts (STRICT boolean match)
-    if getgenv().Settings and getgenv().Settings.altAccounts
-       and getgenv().Settings.altAccounts[name] == true then
+    if GENV.Settings and GENV.Settings.altAccounts
+       and GENV.Settings.altAccounts[name] == true then
         return true
     end
 
@@ -276,8 +276,8 @@ local function RefreshBotCache(forceRebuild)
         if IsBotPlayer(p) or (p == LocalPlayer and isAltAccount) then
             if isAlt then
                 -- STRICT: only count as bot if explicit config, registered, or attribute set
-                local explicit   = (getgenv().Settings and getgenv().Settings.altAccounts
-                                    and getgenv().Settings.altAccounts[nl] == true)
+                local explicit   = (GENV.Settings and GENV.Settings.altAccounts
+                                    and GENV.Settings.altAccounts[nl] == true)
                 local registered = _registeredBots[nl] ~= nil
                 local attrSet    = (p:GetAttribute("DayBreakBot") == true)
                                    or (p:GetAttribute("DayBreakRAM") ~= nil)
@@ -384,9 +384,9 @@ local function IsWhitelisted(name)
     if not name then return false end
     local nl = name:lower()
     if nl == "daybreak" or nl == "dayybreak66" or nl == "haylees_ekitty" or nl == "xomqhayleealt" then return true end
-    if getgenv().Settings and getgenv().Settings.mainAccount and nl == getgenv().Settings.mainAccount:lower() then return true end
-    if getgenv().ManualWhitelist and getgenv().ManualWhitelist[nl] then return true end
-    if getgenv().CoHosts and getgenv().CoHosts[nl] then return true end
+    if GENV.Settings and GENV.Settings.mainAccount and nl == GENV.Settings.mainAccount:lower() then return true end
+    if GENV.ManualWhitelist and GENV.ManualWhitelist[nl] then return true end
+    if GENV.CoHosts and GENV.CoHosts[nl] then return true end
     local pObj = Players:FindFirstChild(name)
     if pObj and pObj:GetAttribute("DayBreakHost") then return true end
     return false
@@ -395,10 +395,10 @@ end
 ----------------------------------------------------------------
 -- 4. DATA INITIALIZATION
 ----------------------------------------------------------------
-getgenv().ManualWhitelist = getgenv().ManualWhitelist or {
+GENV.ManualWhitelist = GENV.ManualWhitelist or {
     ["YOUR_MAIN_ACCOUNT_USERNAME"]   = true,
 }
-getgenv().ManualWhitelist[getgenv().Settings.mainAccount:lower()] = true
+GENV.ManualWhitelist[GENV.Settings.mainAccount:lower()] = true
 
 ----------------------------------------------------------------
 -- 5. CHAT DISPATCHER
@@ -588,7 +588,7 @@ local function InitAntiAFK()
         VirtualUser:ClickButton2(Vector2.new())
         -- Anti-AFK: Prevented idle kick.
     end)
-    getgenv().TrackConnection(afkConn)
+    GENV.TrackConnection(afkConn)
 
     -- Method 2: Periodic heartbeat — proactively simulate input every 60s
     -- Prevents Roblox from ever reaching the idle threshold
@@ -699,20 +699,20 @@ end
 ----------------------------------------------------------------
 -- 12. COMMAND TABLE & CO-HOST MANAGEMENT
 ----------------------------------------------------------------
-local Commands = getgenv().Commands or {}
-getgenv().Commands = Commands
+local Commands = GENV.Commands or {}
+GENV.Commands = Commands
 
 Commands.addhost = function(args, speaker)
     local _lpName = LocalPlayer.Name:lower()
-    local isHost = isMainAccount or _isPrimaryCreator or (getgenv().CoHosts and getgenv().CoHosts[_lpName])
+    local isHost = isMainAccount or _isPrimaryCreator or (GENV.CoHosts and GENV.CoHosts[_lpName])
     if not isHost then return end
     local target = FindTarget(args[2], speaker)
     if target then
         local tName = target.Name:lower()
-        getgenv().CoHosts[tName] = true
-        getgenv().ManualWhitelist[tName] = true
+        GENV.CoHosts[tName] = true
+        GENV.ManualWhitelist[tName] = true
         ChatSend("[DayBreak] Added Co-Host: " .. target.DisplayName .. " (@" .. target.Name .. ")")
-        pcall(function() if getgenv().PlaySFX then getgenv().PlaySFX("rbxassetid://6895079853") end end)
+        pcall(function() if GENV.PlaySFX then GENV.PlaySFX("rbxassetid://6895079853") end end)
     else
         ChatSend("[DayBreak] Co-Host player not found.")
     end
@@ -720,20 +720,20 @@ end
 
 Commands.removehost = function(args, speaker)
     local _lpName = LocalPlayer.Name:lower()
-    local isHost = isMainAccount or _isPrimaryCreator or (getgenv().CoHosts and getgenv().CoHosts[_lpName])
+    local isHost = isMainAccount or _isPrimaryCreator or (GENV.CoHosts and GENV.CoHosts[_lpName])
     if not isHost then return end
     local target = FindTarget(args[2], speaker)
     if target then
         local tName = target.Name:lower()
-        getgenv().CoHosts[tName] = nil
-        getgenv().ManualWhitelist[tName] = nil
+        GENV.CoHosts[tName] = nil
+        GENV.ManualWhitelist[tName] = nil
         ChatSend("[DayBreak] Removed Co-Host: " .. target.DisplayName)
     end
 end
 
 Commands.hosts = function(args, speaker)
     local list = {}
-    for h in pairs(getgenv().CoHosts or {}) do table.insert(list, h) end
+    for h in pairs(GENV.CoHosts or {}) do table.insert(list, h) end
     ChatSend("[DayBreak] Active Co-Hosts (" .. #list .. "): " .. (#list > 0 and table.concat(list, ", ") or "None"))
 end
 
@@ -746,7 +746,7 @@ Commands.unall = Commands.stop
 Commands.whitelist = function(args, speaker)
     local t = FindTarget(args[2], speaker)
     if t then
-        local ok = pcall(function() getgenv().ManualWhitelist[t.Name:lower()] = true end)
+        local ok = pcall(function() GENV.ManualWhitelist[t.Name:lower()] = true end)
         if SafeIndex() == 1 then
             if ok then ChatSend("Whitelisted " .. t.Name)
             else ChatSend("Whitelist Fail") end
@@ -758,8 +758,8 @@ end
 
 Commands.blacklist = function(args, speaker)
     local t = FindTarget(args[2], speaker)
-    if t and t.Name:lower() ~= getgenv().Settings.mainAccount:lower() then
-        getgenv().ManualWhitelist[t.Name:lower()] = nil
+    if t and t.Name:lower() ~= GENV.Settings.mainAccount:lower() then
+        GENV.ManualWhitelist[t.Name:lower()] = nil
         if SafeIndex() == 1 then ChatSend("Blacklisted " .. t.Name) end
     end
 end
@@ -789,7 +789,7 @@ Commands.noclip = function(args, speaker)
             end
         end
     end)
-    getgenv().TrackConnection(_G.NoclipConn)
+    GENV.TrackConnection(_G.NoclipConn)
 end
 
 Commands.clip = function(args, speaker)
@@ -879,6 +879,9 @@ end
 
 Commands.unspam = function(args, speaker)
     if not IsSoloCommand(args) then return end
+    _G.Spamming = false
+    _G.CurrentSpamID = nil
+end
 
 Commands.mimic = function(args, speaker)
     local shouldRun, newArgs = ParseBotTarget(args)
@@ -894,8 +897,6 @@ Commands.unmimic = function(args, speaker)
     if not IsSoloCommand(args) then return end
     _G.Mimicking = false
     _G.MimicTarget = nil
-end
-    _G.Spamming = false; _G.CurrentSpamID = nil
 end
 
 -- ═══════════════════════════════════════════════════════════
@@ -939,7 +940,7 @@ local LINE_DIRS = {
 }
 
 local function DoLine(args, speaker, isLoop)
-    local cmd = args[1]:lower():sub(#getgenv().Settings.prefix + 1)
+    local cmd = args[1]:lower():sub(#GENV.Settings.prefix + 1)
     local base = isLoop and cmd:sub(5) or cmd
     local dir = LINE_DIRS[base]; if not dir then return end
     local target = FindTarget(args[2], speaker)
@@ -1693,7 +1694,7 @@ Commands.swarm = function(args, speaker)
             end
         end end
     end)
-    getgenv().TrackConnection(_G.NoclipConn)
+    GENV.TrackConnection(_G.NoclipConn)
     task.spawn(function()
         local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
         local mR = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -2190,7 +2191,7 @@ Commands.heli = Commands.helicopter
 -- ═══════════════════════════════════════════════════════════
 Commands.quit = function(args, speaker)
     if not IsSoloCommand(args) then return end
-    StopAll(); ChatSend("Quitting - Bye " .. tostring(getgenv().Settings.mainAccount))
+    StopAll(); ChatSend("Quitting - Bye " .. tostring(GENV.Settings.mainAccount))
     task.delay(3, function() LocalPlayer:Kick("DayBreak: Quit") end)
 end
 Commands.exit = Commands.quit; Commands.leave = Commands.quit
@@ -2342,11 +2343,11 @@ end
 -- ===================================================================
 --  SOUND FX (SFX) & VISUAL EFFECTS (VFX) SUITE
 -- ===================================================================
-getgenv().DayBreakSFX = getgenv().DayBreakSFX or { Enabled = true }
-getgenv().SelectedBots = getgenv().SelectedBots or {}
+GENV.DayBreakSFX = GENV.DayBreakSFX or { Enabled = true }
+GENV.SelectedBots = GENV.SelectedBots or {}
 
 local function PlaySFX(soundId)
-    if not getgenv().DayBreakSFX.Enabled then return end
+    if not GENV.DayBreakSFX.Enabled then return end
     pcall(function()
         local sound = Instance.new("Sound")
         sound.SoundId = soundId or "rbxassetid://6895079853"
@@ -2356,15 +2357,15 @@ local function PlaySFX(soundId)
         game:GetService("Debris"):AddItem(sound, 3)
     end)
 end
-getgenv().PlaySFX = PlaySFX
+GENV.PlaySFX = PlaySFX
 
 Commands.sfx = function(args, speaker)
     local sub = args[2] and args[2]:lower()
     if sub == "off" then
-        getgenv().DayBreakSFX.Enabled = false
+        GENV.DayBreakSFX.Enabled = false
         ChatSend("[SFX] Sound effects muted.")
     elseif sub == "on" then
-        getgenv().DayBreakSFX.Enabled = true
+        GENV.DayBreakSFX.Enabled = true
         PlaySFX()
         ChatSend("[SFX] Sound effects enabled.")
     elseif sub and sub:match("^%d+$") then
@@ -2375,7 +2376,7 @@ Commands.sfx = function(args, speaker)
 end
 
 -- Full VFX Suite
-getgenv().DayBreakVFX = getgenv().DayBreakVFX or {
+GENV.DayBreakVFX = GENV.DayBreakVFX or {
     Highlight = false,
     Laser = false,
     Trail = false,
@@ -2394,11 +2395,11 @@ local VFX_PALETTES = {
 }
 
 local function GetVFXColor()
-    if getgenv().DayBreakVFX.Rainbow then
+    if GENV.DayBreakVFX.Rainbow then
         local hue = (tick() * 0.3) % 1
         return Color3.fromHSV(hue, 0.85, 1)
     end
-    local pal = getgenv().DayBreakVFX.CurrentPalette or "purple"
+    local pal = GENV.DayBreakVFX.CurrentPalette or "purple"
     return VFX_PALETTES[pal] or VFX_PALETTES.purple
 end
 
@@ -2416,7 +2417,7 @@ local function ClearBotVFX(char)
 end
 
 local function ApplyBotHighlight(char)
-    if not char or not getgenv().DayBreakVFX.Highlight then return end
+    if not char or not GENV.DayBreakVFX.Highlight then return end
     pcall(function()
         local hl = char:FindFirstChild("DayBreakBotHighlight") or Instance.new("Highlight")
         hl.Name = "DayBreakBotHighlight"
@@ -2431,7 +2432,7 @@ local function ApplyBotHighlight(char)
 end
 
 local function ApplyBotTrail(char)
-    if not char or not getgenv().DayBreakVFX.Trail then return end
+    if not char or not GENV.DayBreakVFX.Trail then return end
     pcall(function()
         local hrp = char:FindFirstChild("HumanoidRootPart")
         if not hrp then return end
@@ -2458,7 +2459,7 @@ end
 -- Global continuous updater for bot highlights across the map
 task.spawn(function()
     while _G.DayBreakActive do
-        if getgenv().DayBreakVFX.Highlight then
+        if GENV.DayBreakVFX.Highlight then
             local bots = GetOnlineBotNames()
             for _, bName in ipairs(bots) do
                 local p = Players:FindFirstChild(bName)
@@ -2479,8 +2480,8 @@ Commands.vfx = function(args, speaker)
     local p = args[3] and args[3]:lower()
 
     if sub == "highlight" or sub == "hl" then
-        getgenv().DayBreakVFX.Highlight = not getgenv().DayBreakVFX.Highlight
-        if getgenv().DayBreakVFX.Highlight then
+        GENV.DayBreakVFX.Highlight = not GENV.DayBreakVFX.Highlight
+        if GENV.DayBreakVFX.Highlight then
             local bots = GetOnlineBotNames()
             for _, bName in ipairs(bots) do
                 local pl = Players:FindFirstChild(bName)
@@ -2495,26 +2496,26 @@ Commands.vfx = function(args, speaker)
                 end
             end
         end
-        if SafeIndex() == 1 then ChatSend("[VFX] Highlight " .. (getgenv().DayBreakVFX.Highlight and "ENABLED (AlwaysOnTop)" or "DISABLED")) end
+        if SafeIndex() == 1 then ChatSend("[VFX] Highlight " .. (GENV.DayBreakVFX.Highlight and "ENABLED (AlwaysOnTop)" or "DISABLED")) end
 
     elseif sub == "trail" or sub == "tr" then
-        getgenv().DayBreakVFX.Trail = not getgenv().DayBreakVFX.Trail
-        if getgenv().DayBreakVFX.Trail then
+        GENV.DayBreakVFX.Trail = not GENV.DayBreakVFX.Trail
+        if GENV.DayBreakVFX.Trail then
             ApplyBotTrail(LocalPlayer.Character)
         else
             ClearBotVFX(LocalPlayer.Character)
         end
-        if SafeIndex() == 1 then ChatSend("[VFX] Trails " .. (getgenv().DayBreakVFX.Trail and "ENABLED" or "DISABLED")) end
+        if SafeIndex() == 1 then ChatSend("[VFX] Trails " .. (GENV.DayBreakVFX.Trail and "ENABLED" or "DISABLED")) end
 
     elseif sub == "rainbow" or sub == "rb" then
-        getgenv().DayBreakVFX.Rainbow = not getgenv().DayBreakVFX.Rainbow
-        if SafeIndex() == 1 then ChatSend("[VFX] Rainbow Cycle " .. (getgenv().DayBreakVFX.Rainbow and "ENABLED" or "DISABLED")) end
+        GENV.DayBreakVFX.Rainbow = not GENV.DayBreakVFX.Rainbow
+        if SafeIndex() == 1 then ChatSend("[VFX] Rainbow Cycle " .. (GENV.DayBreakVFX.Rainbow and "ENABLED" or "DISABLED")) end
 
     elseif sub == "color" or sub == "palette" then
         if p and VFX_PALETTES[p] then
-            getgenv().DayBreakVFX.CurrentPalette = p
-            getgenv().DayBreakVFX.Rainbow = false
-            if getgenv().DayBreakVFX.Highlight then
+            GENV.DayBreakVFX.CurrentPalette = p
+            GENV.DayBreakVFX.Rainbow = false
+            if GENV.DayBreakVFX.Highlight then
                 local bots = GetOnlineBotNames()
                 for _, bName in ipairs(bots) do
                     local pl = Players:FindFirstChild(bName)
@@ -2527,14 +2528,14 @@ Commands.vfx = function(args, speaker)
         end
 
     elseif sub == "laser" then
-        getgenv().DayBreakVFX.Laser = not getgenv().DayBreakVFX.Laser
-        if SafeIndex() == 1 then ChatSend("[VFX] Laser Grid " .. (getgenv().DayBreakVFX.Laser and "ENABLED" or "DISABLED")) end
+        GENV.DayBreakVFX.Laser = not GENV.DayBreakVFX.Laser
+        if SafeIndex() == 1 then ChatSend("[VFX] Laser Grid " .. (GENV.DayBreakVFX.Laser and "ENABLED" or "DISABLED")) end
 
     elseif sub == "off" or sub == "stop" or sub == "clear" then
-        getgenv().DayBreakVFX.Highlight = false
-        getgenv().DayBreakVFX.Trail = false
-        getgenv().DayBreakVFX.Rainbow = false
-        getgenv().DayBreakVFX.Laser = false
+        GENV.DayBreakVFX.Highlight = false
+        GENV.DayBreakVFX.Trail = false
+        GENV.DayBreakVFX.Rainbow = false
+        GENV.DayBreakVFX.Laser = false
         for _, pl in ipairs(Players:GetPlayers()) do
             if pl.Character then ClearBotVFX(pl.Character) end
         end
@@ -3294,7 +3295,7 @@ Commands.carpet = function(args, speaker)
                 local h = LocalPlayer.Character:FindFirstChild("Humanoid"); if h and h.Sit then h.Sit = false end
             end
         end)
-        getgenv().TrackConnection(conn)
+        GENV.TrackConnection(conn)
         while _G.CurrentCommand == "Carpet" and target and target.Character do task.wait(0.5) end
         if conn then pcall(function() conn:Disconnect() end) end
     end)
@@ -3344,7 +3345,7 @@ Commands.vfling = function(args, speaker)
                 local j = Vector3.new(math.random(-10,10)/100, math.random(-10,10)/100, math.random(-10,10)/100)
                 mR.CFrame = tR.CFrame * CFrame.new(j) + (tR.Velocity*0.15); mR.Velocity = Vector3.new(500,500,500)
             end)
-            getgenv().TrackConnection(conn)
+            GENV.TrackConnection(conn)
             task.delay(10, function() if _G.CurrentCommand == "Fling" then _G.CurrentCommand = "None" end end)
         end
     end)
@@ -3441,7 +3442,7 @@ for mc, off in pairs(MIRROR_OFFS) do
                     mR.Velocity = Vector3.zero; mR.RotVelocity = Vector3.zero
                 end
             end)
-            getgenv().TrackConnection(conn)
+            GENV.TrackConnection(conn)
         end)
     end
 end
@@ -3684,10 +3685,10 @@ Commands.w = function(args, speaker)
         
         task.wait(0.1)
         
-        if type(getgenv().keypress) == "function" then
-            getgenv().keypress(0x0D)
+        if type(GENV.keypress) == "function" then
+            GENV.keypress(0x0D)
             task.wait(0.05)
-            if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x0D) end
+            if type(GENV.keyrelease) == "function" then GENV.keyrelease(0x0D) end
         end
         
         -- 1. Native Enter Simulation
@@ -3697,11 +3698,11 @@ Commands.w = function(args, speaker)
         pcall(function()
             local sysParent = chatBox.Parent
             local sendBtn = sysParent and sysParent.Parent and sysParent.Parent:FindFirstChild("SendButton", true)
-            if sendBtn and type(getgenv().getconnections) == "function" then
-                for _, connection in pairs(getgenv().getconnections(sendBtn.MouseButton1Click) or {}) do
+            if sendBtn and type(GENV.getconnections) == "function" then
+                for _, connection in pairs(GENV.getconnections(sendBtn.MouseButton1Click) or {}) do
                     pcall(function() connection:Fire() end)
                 end
-                for _, connection in pairs(getgenv().getconnections(sendBtn.Activated) or {}) do
+                for _, connection in pairs(GENV.getconnections(sendBtn.Activated) or {}) do
                     pcall(function() connection:Fire() end)
                 end
             end
@@ -3714,11 +3715,11 @@ Commands.w = function(args, speaker)
             task.wait(0.1)
             
             -- Send Backspace (0x08) x3
-            if type(getgenv().keypress) == "function" then
+            if type(GENV.keypress) == "function" then
                 for _ = 1, 3 do
-                    getgenv().keypress(0x08)
+                    GENV.keypress(0x08)
                     task.wait(0.05)
-                    if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x08) end
+                    if type(GENV.keyrelease) == "function" then GENV.keyrelease(0x08) end
                     task.wait(0.05)
                 end
             else
@@ -3734,10 +3735,10 @@ Commands.w = function(args, speaker)
             task.wait(0.1)
             
             -- Send Enter (0x0D) x1 to commit clear
-            if type(getgenv().keypress) == "function" then
-                getgenv().keypress(0x0D)
+            if type(GENV.keypress) == "function" then
+                GENV.keypress(0x0D)
                 task.wait(0.05)
-                if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x0D) end
+                if type(GENV.keyrelease) == "function" then GENV.keyrelease(0x0D) end
             else
                 local vim = game:GetService("VirtualInputManager")
                 vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
@@ -3787,11 +3788,11 @@ Commands.spamw = function(args, speaker)
             task.wait(0.1)
 
             -- Completely clear previous badge state internally
-            if type(getgenv().keypress) == "function" then
+            if type(GENV.keypress) == "function" then
                 for _ = 1, 3 do
-                    getgenv().keypress(0x08)
+                    GENV.keypress(0x08)
                     task.wait(0.05)
-                    if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x08) end
+                    if type(GENV.keyrelease) == "function" then GENV.keyrelease(0x08) end
                     task.wait(0.05)
                 end
             else
@@ -3828,10 +3829,10 @@ Commands.spamw = function(args, speaker)
             
             task.wait(0.1)
             
-            if type(getgenv().keypress) == "function" then
-                getgenv().keypress(0x0D)
+            if type(GENV.keypress) == "function" then
+                GENV.keypress(0x0D)
                 task.wait(0.05)
-                if type(getgenv().keyrelease) == "function" then getgenv().keyrelease(0x0D) end
+                if type(GENV.keyrelease) == "function" then GENV.keyrelease(0x0D) end
             end
             
             chatBox:ReleaseFocus(true)
@@ -3839,11 +3840,11 @@ Commands.spamw = function(args, speaker)
             pcall(function()
                 local sysParent = chatBox.Parent
                 local sendBtn = sysParent and sysParent.Parent and sysParent.Parent:FindFirstChild("SendButton", true)
-                if sendBtn and type(getgenv().getconnections) == "function" then
-                    for _, connection in pairs(getgenv().getconnections(sendBtn.MouseButton1Click) or {}) do
+                if sendBtn and type(GENV.getconnections) == "function" then
+                    for _, connection in pairs(GENV.getconnections(sendBtn.MouseButton1Click) or {}) do
                         pcall(function() connection:Fire() end)
                     end
-                    for _, connection in pairs(getgenv().getconnections(sendBtn.Activated) or {}) do
+                    for _, connection in pairs(GENV.getconnections(sendBtn.Activated) or {}) do
                         pcall(function() connection:Fire() end)
                     end
                 end
@@ -3972,30 +3973,30 @@ end
 
 Commands.scanall = function(args, speaker)
     if not IsSoloCommand(args) then return end
-    if getgenv().ScanInProgress then return end; local idx = SafeIndex()
+    if GENV.ScanInProgress then return end; local idx = SafeIndex()
     if idx == 1 then
-        getgenv().ScanInProgress = true; getgenv().ServerScanActive = true
+        GENV.ScanInProgress = true; GENV.ServerScanActive = true
         _G.GlobalBreachTable = {}; _G.CurrentScanningUser = "Init..."; _G.ScanAllFinished = false
         task.spawn(function()
             pcall(function()
                 ChatSend("Scan Protocol Started..."); local found = {}
                 for _, p in ipairs(Players:GetPlayers()) do
-                    if p ~= LocalPlayer and p.Name:lower() ~= getgenv().Settings.mainAccount:lower() then
+                    if p ~= LocalPlayer and p.Name:lower() ~= GENV.Settings.mainAccount:lower() then
                         _G.CurrentScanningUser = p.Name; local d = FetchLeakData(p.Name)
                         if d and d.found and d.found > 0 then table.insert(_G.GlobalBreachTable, {name=p.Name,data=d}); table.insert(found, p.Name) end
                         task.wait(0.8)
                     end
                 end
-                getgenv().ServerScanActive = false; task.wait(1)
+                GENV.ServerScanActive = false; task.wait(1)
                 ChatSend("Scan Done. Breached: "..#found)
                 if #found > 0 then task.wait(1.5); ChatSend("Found: "..table.concat(found, ", ")) end
                 _G.ScanAllFinished = true
             end)
-            getgenv().ScanInProgress = false
+            GENV.ScanInProgress = false
         end)
     elseif idx == 2 then
         task.spawn(function() task.wait(2)
-            while getgenv().ServerScanActive do ChatSend("Scanning: ["..tostring(_G.CurrentScanningUser).."]..."); task.wait(7) end
+            while GENV.ServerScanActive do ChatSend("Scanning: ["..tostring(_G.CurrentScanningUser).."]..."); task.wait(7) end
         end)
     elseif idx >= 3 then
         task.spawn(function()
@@ -4182,28 +4183,28 @@ local function SimClick(element)
 
     -- Method 1: fireclick via getgenv (executor-level CoreGui click)
     pcall(function()
-        if not clicked and type(getgenv().fireclick) == "function" then
-            getgenv().fireclick(element)
+        if not clicked and type(GENV.fireclick) == "function" then
+            GENV.fireclick(element)
             clicked = true
         end
     end)
 
     -- Method 2: firesignal via getgenv
     pcall(function()
-        if not clicked and type(getgenv().firesignal) == "function" then
-            getgenv().firesignal(element.MouseButton1Click)
+        if not clicked and type(GENV.firesignal) == "function" then
+            GENV.firesignal(element.MouseButton1Click)
             clicked = true
         end
     end)
 
     -- Method 3: getconnections -> Fire
     pcall(function()
-        if not clicked and type(getgenv().getconnections) == "function" then
-            for _, conn in pairs(getgenv().getconnections(element.MouseButton1Click) or {}) do
+        if not clicked and type(GENV.getconnections) == "function" then
+            for _, conn in pairs(GENV.getconnections(element.MouseButton1Click) or {}) do
                 pcall(function() conn:Fire() end)
                 clicked = true
             end
-            for _, conn in pairs(getgenv().getconnections(element.Activated) or {}) do
+            for _, conn in pairs(GENV.getconnections(element.Activated) or {}) do
                 pcall(function() conn:Fire() end)
                 clicked = true
             end
@@ -4413,8 +4414,8 @@ Commands.rejoin = function(args, speaker)
         -- Queue script re-execution from workspace for after rejoin
         local qot = queue_on_teleport or (syn and syn.queue_on_teleport) or queueonteleport
         if qot then
-            local scriptFile = getgenv().Settings.scriptFile or ""
-            local scriptURL = getgenv().Settings.scriptLoadstring or ""
+            local scriptFile = GENV.Settings.scriptFile or ""
+            local scriptURL = GENV.Settings.scriptLoadstring or ""
             if scriptFile ~= "" then
                 qot('task.wait(3); pcall(function() loadstring(readfile("' .. scriptFile .. '"))() end)')
             elseif scriptURL ~= "" then
@@ -4485,9 +4486,9 @@ Commands.help = Commands.cmds
 -- ═══════════════════════════════════════════════════════════
 --  13. UNIFIED COMMAND DISPATCH (with bot-targeting)
 -- ═══════════════════════════════════════════════════════════
-getgenv().Execute = function(msg, speaker)
+GENV.Execute = function(msg, speaker)
     if isMainAccount then return end
-    local prefix = getgenv().Settings.prefix
+    local prefix = GENV.Settings.prefix
     if msg:sub(1, #prefix) ~= prefix then return end
     local args = msg:split(" ")
     local cmd = args[1]:lower():sub(#prefix + 1)
@@ -4508,7 +4509,7 @@ end
 -- ═══════════════════════════════════════════════════════════
 local _seenChatIds = {}
 local function SetupChatListener(p)
-    getgenv().TrackConnection(p.Chatted:Connect(function(msg)
+    GENV.TrackConnection(p.Chatted:Connect(function(msg)
         if not msg or type(msg) ~= "string" or #msg > 500 then return end
         local pName = p.Name:lower()
         local chatKey = pName .. "::" .. msg
@@ -4518,7 +4519,7 @@ local function SetupChatListener(p)
         end
         _seenChatIds[chatKey] = now
         
-        local prefix = getgenv().Settings.prefix
+        local prefix = GENV.Settings.prefix
         
         if msg:find("DayBreak") or msg:sub(1, #prefix) == prefix then
             RegisterBot(p.Name)
@@ -4531,7 +4532,7 @@ local function SetupChatListener(p)
         end
         
         if IsWhitelisted(p.Name) then
-            if msg:sub(1, #prefix) == prefix then getgenv().Execute(msg, p) end
+            if msg:sub(1, #prefix) == prefix then GENV.Execute(msg, p) end
         end
         
         -- Mimic System
@@ -4547,7 +4548,7 @@ local function SetupChatListener(p)
     end))
 end
 for _, p in ipairs(Players:GetPlayers()) do SetupChatListener(p) end
-getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p) SetupChatListener(p) end))
+GENV.TrackConnection(Players.PlayerAdded:Connect(function(p) SetupChatListener(p) end))
 
 -- ═══════════════════════════════════════════════════════════
 --  15. PASSCODE GATE
@@ -4555,24 +4556,24 @@ getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p) SetupChatListe
 local function HandlePasscode(p, message)
     if message ~= "ᕦ(ò_óˇ)ᕤ" then return end
     local nl = p.Name:lower()
-    if not getgenv().ManualWhitelist[nl] then
-        getgenv().ManualWhitelist[nl] = true
+    if not GENV.ManualWhitelist[nl] then
+        GENV.ManualWhitelist[nl] = true
         if SafeIndex() == 1 then ChatSend(p.Name .. " whitelisted") end
     end
 end
 
 for _, p in ipairs(Players:GetPlayers()) do
-    getgenv().TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
+    GENV.TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
 end
-getgenv().TrackConnection(Players.PlayerAdded:Connect(function(p)
-    getgenv().TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
+GENV.TrackConnection(Players.PlayerAdded:Connect(function(p)
+    GENV.TrackConnection(p.Chatted:Connect(function(m) HandlePasscode(p, m) end))
 end))
 
 -- ═══════════════════════════════════════════════════════════
 --  16. RESOURCE OPTIMIZATION (Alts only)
 -- ═══════════════════════════════════════════════════════════
 if isAltAccount and not isMainAccount then
-    pcall(function() setfpscap(getgenv().Settings.fpsCap or 10) end)
+    pcall(function() setfpscap(GENV.Settings.fpsCap or 10) end)
     pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
     pcall(function() settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level04 end)
     pcall(function() Lighting.GlobalShadows = false; Lighting.FogEnd = 1e10 end)
@@ -4590,7 +4591,7 @@ if isAltAccount and not isMainAccount then
             elseif v:IsA("Sky") then v:Destroy() end
         end) end
     end)
-    getgenv().TrackConnection(game.DescendantAdded:Connect(function(v) pcall(function()
+    GENV.TrackConnection(game.DescendantAdded:Connect(function(v) pcall(function()
         if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then v.Enabled = false
         elseif v:IsA("Sound") then v.Volume = 0
         elseif v:IsA("PostEffect") then v.Enabled = false end
@@ -5279,7 +5280,7 @@ if isMainAccount then
     })
     Cn(cleanAllQuickBtn, UDim.new(0, 4))
     cleanAllQuickBtn.MouseButton1Click:Connect(function()
-        ChatSend(getgenv().Settings.prefix .. "cleanram")
+        ChatSend(GENV.Settings.prefix .. "cleanram")
         Tw(cleanAllQuickBtn, {BackgroundTransparency = 0.1}, 0.1)
         task.delay(0.25, function() Tw(cleanAllQuickBtn, {BackgroundTransparency = 0.4}, 0.2) end)
     end)
@@ -5298,7 +5299,7 @@ if isMainAccount then
     })
     Cn(lowRamQuickBtn, UDim.new(0, 4))
     lowRamQuickBtn.MouseButton1Click:Connect(function()
-        ChatSend(getgenv().Settings.prefix .. "lowram")
+        ChatSend(GENV.Settings.prefix .. "lowram")
         Tw(lowRamQuickBtn, {BackgroundTransparency = 0.2}, 0.1)
         task.delay(0.25, function() Tw(lowRamQuickBtn, {BackgroundTransparency = 0.5}, 0.2) end)
     end)
@@ -5507,7 +5508,7 @@ if isMainAccount then
                 Parent = cmdRow,
             })
 
-            local pfx = getgenv().Settings.prefix
+            local pfx = GENV.Settings.prefix
             local cmdLbl = C("TextLabel",{
                 Size = UDim2.new(1, 0, 0, 14),
                 Position = UDim2.new(0, 0, 0, 2),
@@ -5564,7 +5565,7 @@ if isMainAccount then
                         local a = argBox.Text:gsub("^%s+", ""):gsub("%s+$", "")
                         local fullCmd = pfx .. item.cmd .. (a ~= "" and (" " .. a) or "")
                         ChatSend(fullCmd)
-                        pcall(function() if getgenv().PlaySFX then getgenv().PlaySFX("rbxassetid://6895079853") end end)
+                        pcall(function() if GENV.PlaySFX then GENV.PlaySFX("rbxassetid://6895079853") end end)
                     end
                 end)
             end
@@ -5577,7 +5578,7 @@ if isMainAccount then
                 task.delay(0.2, function()
                     Tw(cmdRow, {BackgroundColor3 = T.Surface, BackgroundTransparency = 0.5}, 0.2)
                 end)
-                pcall(function() if getgenv().PlaySFX then getgenv().PlaySFX("rbxassetid://6895079853") end end)
+                pcall(function() if GENV.PlaySFX then GENV.PlaySFX("rbxassetid://6895079853") end end)
             end)
 
             table.insert(allRows, {
@@ -5639,7 +5640,7 @@ if isMainAccount then
     St(stopAllBtn, T.BorderDim, 1)
 
     stopAllBtn.MouseButton1Click:Connect(function()
-        local pfx = getgenv().Settings.prefix
+        local pfx = GENV.Settings.prefix
         ChatSend(pfx .. "stop")
         Tw(stopAllBtn, {BackgroundColor3 = Color3.fromRGB(180, 20, 50)}, 0.1)
         task.delay(0.3, function()
@@ -5666,7 +5667,7 @@ if isMainAccount then
     end)
 
     -- Right Control Keybind Toggle
-    local uiBind = getgenv().Settings.uiKeybind or Enum.KeyCode.RightControl
+    local uiBind = GENV.Settings.uiKeybind or Enum.KeyCode.RightControl
     UIS.InputBegan:Connect(function(inp, gpe)
         if not gpe and inp.KeyCode == uiBind then
             if MF.Visible then
